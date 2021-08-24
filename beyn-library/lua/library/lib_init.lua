@@ -2,6 +2,8 @@
 -- connect methods
 --
 
+GM = GAMEMODE or {}
+
 library.shared('netlib/netwrapper/sh_netwrapper')
 library.client('netlib/netwrapper/cl_netwrapper')
 library.server('netlib/netwrapper/sv_netwrapper')
