@@ -145,7 +145,7 @@ function openMenu()
         chat.AddText( Color(255,0,0), 'Ваше новое описание: ', namDesc:GetValue() )
     end
 
-    --
+    -- 
     -- painting
     --
 
