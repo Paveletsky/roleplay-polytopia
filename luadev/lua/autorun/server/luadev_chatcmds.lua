@@ -1,3 +1,4 @@
+-- 
 hook.Add("Think","luadev_cmdsinit",function()
 hook.Remove("Think","luadev_cmdsinit")
 
