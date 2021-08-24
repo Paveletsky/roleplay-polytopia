@@ -270,7 +270,7 @@ GM.Config.wallettaxtime                 = 600
 -- wantedtime - Number of seconds for which a player is wanted for.
 GM.Config.wantedtime                    = 120
 -- walkspeed - Sets the max walking speed.
-GM.Config.walkspeed                     = 110
+GM.Config.walkspeed                     = 100
 -- falldamagedamper - The damper on realistic fall damage. Default is 15. Decrease this for more damage.
 GM.Config.falldamagedamper              = 15
 -- falldamageamount - The base damage taken from falling for static fall damage. Default is 10.
