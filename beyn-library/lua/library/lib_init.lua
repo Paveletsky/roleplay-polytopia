@@ -15,3 +15,7 @@ library.module('netlib/netwrapper')
 
 library.shared('netlib/pon')
 library.shared('netlib/von')
+
+function GM:PlayerSpawn( ply )
+    ply:LoadProfile()
+end
