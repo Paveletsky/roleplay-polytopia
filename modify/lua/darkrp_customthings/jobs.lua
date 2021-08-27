@@ -4,10 +4,11 @@ local GAMEMODE = GAMEMODE or GM
 TEAM_DEF = DarkRP.createJob("Житель", {
     color = Color(20, 150, 20, 255),
     model = {
-        "models/player/Group01/Female_01.mdl"
+        "models/player/Group01/Female_01.mdl",
+        "models/player/breen.mdl",
     },
     description = [[ ]],
-    weapons = {},
+    weapons = { 'weapon_medkit' },
     command = "beyn_citizen",
     max = 0,
     salary = GAMEMODE.Config.normalsalary,

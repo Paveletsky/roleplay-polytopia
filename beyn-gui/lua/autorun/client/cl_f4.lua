@@ -26,7 +26,7 @@ surface.CreateFont('lib.profile', {
 	antialias = true,
 })
 
-function openMenu()
+local function openMenu( ply )
 
     if IsValid(MENU) then MENU:Remove() end
 
@@ -63,7 +63,7 @@ function openMenu()
     mdl:DockMargin(0, 0, 0, 100)
     mdl:SetFOV( 40 )
     mdl:SetAmbientLight(Color(255, 150, 0, 150))
-    mdl:SetAnimated(false)
+    mdl:SetAnimated( true )
     mdl:SetModel( LocalPlayer():GetModel() )
 
     dev = vgui.Create( 'DIconBrowser', gen )
@@ -110,24 +110,48 @@ function openMenu()
     namName = vgui.Create( 'DTextEntry', ch )
     namName:Center()
     namName:SetFont('lib.notify')
-    namName:SetText( tostring( LocalPlayer():GetNetVar( 'name' ) ) )
+    namName:SetText( LocalPlayer():GetNetVar( 'name' ) )
     namName:SetSize( 300, 22 )
     namName:SetPos( 280, 140 )
 	namName.OnEnter = function( self )
 		chat.AddText( self:GetValue() )
 	end
 
-
     namDesc = vgui.Create( 'DTextEntry', ch )
     namDesc:Center()    
     namDesc:SetFont('lib.notify')
-    namDesc:SetText( tostring( LocalPlayer():GetNetVar( 'desc' ) ) )
-    namDesc:SetSize( 300, 150 )
-    namDesc:SetPos( 330, 203 )
-    namDesc:SetMultiline( true )
-	namDesc.OnEnter = function( self )
-		chat.AddText( self:GetValue() )
-	end
+    namDesc:SetText( LocalPlayer():GetNetVar( 'desc' ) or 'Описания нет' )
+    namDesc:SetSize( 400, 22 )
+    namDesc:SetPos( 230, 203 )
+
+    mdlType = ch:Add 'DNumSlider'
+    mdlType:SetSize( 600, 15)
+    mdlType:AlignTop( 450 )
+    mdlType:AlignLeft( 100 )
+    mdlType:SetMax( 1.18 )
+    mdlType:SetMin( 1 )
+    mdlType.OnValueChanged = function( self, value )
+        mdl.Entity:SetModelScale( value )
+    end
+
+    local tempMdl = LocalPlayer():getJobTable()['model']
+
+    mdlSkin = ch:Add 'DNumSlider'
+    mdlSkin:SetSize( 600, 15)
+    mdlSkin:AlignTop( 500 )
+    mdlSkin:AlignLeft( 100 )
+    mdlSkin:SetMax( 2 )
+    mdlSkin:SetMin( 1 )
+    mdlSkin:SetDecimals( 0 )		
+    mdlSkin.OnValueChanged = function( self, value )
+        mdl.Entity:SetAnimation( 1 )
+        mdl.Entity:SetModel( tempMdl[value] or LocalPlayer():GetModel() )
+    end
+
+    function mdl:LayoutEntity( ent )
+        ent:SetSequence( ent:LookupSequence( 'pose_standing_01' ) )
+        mdl:RunAnimation()
+    end
 
     set = vgui.Create( 'DPanel', gen )
     set:Dock(FILL)
@@ -142,7 +166,6 @@ function openMenu()
     applyBut:SetText( '' )
     applyBut.DoClick = function( ply )
         netstream.Start( 'changeChar2', namName:GetValue(), namDesc:GetValue() )
-        chat.AddText( Color(255,0,0), 'Ваше новое описание: ', namDesc:GetValue() )
     end
 
     -- 
@@ -162,11 +185,13 @@ function openMenu()
 
     function gen:Paint( w, h )
         draw.RoundedBox( 2, 0, 0, w, h, Color( 0, 0, 0, 240 ) )
+        Derma_DrawBackgroundBlur( self, 5 )    
     end
 
     function ch:Paint( w, h, ply )
+
         local txt = LocalPlayer():GetNetVar( 'name' )
-        local desc = LocalPlayer():GetNetVar( 'desc' )
+        local desc = LocalPlayer():GetNetVar( 'desc' ) or 'Описания нет' 
         draw.RoundedBox( 5, 0, 0, w, h, Color( 0, 0, 0, 200 ) )
         draw.Text {
             font = "lib.name",
@@ -211,12 +236,7 @@ function openMenu()
 
 end
 
-netstream.Hook( 'startMenu', function()
-    openMenu()
+net.Receive( 'lib.openf4Menu', function( ply )
+        openMenu()
+    netstream.Start( 'library.loadData' )
 end)
-
--- netstream.Hook( 'startMenu', function()
---     if gen:IsVisible() == false then 
---         gen:SetVisible( true ) cls:SetVisible( true )
---     else gen:SetVisible( false ) end
--- end)
