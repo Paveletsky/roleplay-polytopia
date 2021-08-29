@@ -91,10 +91,6 @@ netstream.Hook( 'lib.welcomeMsg', function( ply )
 
     local time = os.date( "%H:%M:%S" , os.time() )
 
-    draw.RoundedBox( 0, 1000, 1000, 0, 0, Color( 0, 0, 0, 255))
-
     chat.AddText( color_types[1], '[~]', Color(249, 174, 71), ' Вы проснулись. На часах ' .. time .. '.' .. ' На улице шумно.' )
 
 end)
-
-draw.RoundedBox( 1, 55, 55, 10, 10, Color( 0, 0, 0, 255))

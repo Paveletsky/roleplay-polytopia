@@ -1,6 +1,4 @@
 netstream.Hook( 'lib.profileLoad', function(ply)
-
-    ply:loadModel()
     
       ply:loadData()
 

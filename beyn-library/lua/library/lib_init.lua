@@ -74,10 +74,12 @@ hook.Add('PlayerInitialSpawn', 'lib.player-spawn', function( ply )
     
         ply:Freeze( true )
 
+            ply:loadModel()
+
+        ply:SetWalkSpeed( 95 )
+
         netstream.Start( ply, 'lib.welcomeOpen' )
 
     end)
     
 end)
-
-netstream.Start( ply, 'lib.welcomeMsg' )
