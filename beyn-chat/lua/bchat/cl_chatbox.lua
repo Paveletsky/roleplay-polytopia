@@ -33,7 +33,6 @@ local function font()
 end
 
 
-
 for i=1, 2 do font() end
 
 
@@ -116,17 +115,11 @@ do
 
 			RunConsoleCommand( "say",  self:GetValue() )
 
+			-- net.Start("clib.addText")
 
+			-- 	net.WriteString(self:GetValue())
 
-			net.Start("alx_chat")
-
-				net.WriteInt(1, 8)
-
-				net.WriteString(self:GetValue())
-
-			net.SendToServer()
-
-
+			-- net.SendToServer()
 
 			chat.Toggle()
 
@@ -423,7 +416,7 @@ end
 
 
 
-net.Receive("alx_chat", function()
+net.Receive("clib.sendMsg", function()
 
 	local act = net.ReadInt(8)
 
@@ -436,8 +429,6 @@ net.Receive("alx_chat", function()
 	end
 
 end)
-
-
 
 timer.Simple(1, function()
 
@@ -453,10 +444,20 @@ local function receive()
 
 	if not istable(data) then return end
 
-	
-
 	chat.AddText(unpack(data))
 
 end
 
-net.Receive(Tag, receive)
+net.Receive('clib.addText', receive)
+
+hook.Add("PlayerStartVoice", "ImageOnVoice", function()
+
+	return false
+
+end)
+
+hook.Add( "PlayerCanHearPlayersVoice", "Maximum Range", function( listener, talker )
+
+	return false
+	
+end )

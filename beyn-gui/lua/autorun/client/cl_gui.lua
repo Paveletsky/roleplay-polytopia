@@ -42,7 +42,7 @@ local function drawPlrs()
 				p.x, p.y = math.floor(p.x), math.floor(p.y)
 
 				local name = ply:GetNetVar('name') or 'Загружается...'
-				local desc = ply:GetNetVar( 'desc' ) or 'Опрятный молодой человек'
+				local desc = ply:GetNetVar( 'desc' )
 
 				draw.RoundedBox( 2, p.x - 150, p.y + 5, 300, 5, Color(0, 0, 0, 200))
 				draw.RoundedBox( 2, p.x - 150, p.y + 10, 300, 1, Color(250, 160, 0, 200))
@@ -61,9 +61,8 @@ local function drawGui()
 	local ply = LocalPlayer()
     local top, left = ScrH() - 840, 40	
 
-	draw.RoundedBox( 2, x, y, 225, 75, Color( 0, 0, 0, 240 ))
-	draw.RoundedBox( 2, x, y, 225, 10, Color( 250, 160, 0, 180))
-
+	draw.RoundedBox( 2, x, y, 245, 85, Color( 0, 0, 0, 240 ))
+	draw.RoundedBox( 2, x, y, 245, 10, Color( 250, 160, 0, 180))
 
 	local healthStatus
 	local hungerStatus
@@ -73,17 +72,17 @@ local function drawGui()
 	if ply:Health() <= 30 and ply:Health() > 0 then healthStatus = 'На грани' end
 	if ply:Health() < 1 then healthStatus = 'Вы мертвы...' end
 
-	if ply:getDarkRPVar( 'Energy' ) >= 80 then hungerStatus = 'Полностью сыт' elseif
-	   ply:getDarkRPVar( 'Energy' ) <= 70 then hungerStatus = 'Умеренно голоден' end
+	if ply:getDarkRPVar( 'Energy' ) <= 100 then hungerStatus = 'Полностью сыт' end
+	if ply:getDarkRPVar( 'Energy' ) <= 70 then hungerStatus = 'Умеренно голоден' end
 	if ply:getDarkRPVar( 'Energy' ) <= 20 then hungerStatus = 'Пора подкрепиться' end
 
-	surface.SetDrawColor( 255, 20, 100, 255 ) -- Set the drawing color
-		surface.SetMaterial( Material( 'icon16/heart.png' ) ) -- Use our cached material
-	surface.DrawTexturedRect(x + 193, y + 20, 20, 20 ) -- Actually draw the rectangle
+	surface.SetDrawColor( 255, 255, 255, 255 ) -- Set the drawing color
+		surface.SetMaterial( Material( 'beyn/pulse.png' ) ) -- Use our cached material
+	surface.DrawTexturedRect(x + 193, y + 18, 45, 25 ) -- Actually draw the rectangle
 
-	surface.SetDrawColor( 255, 255, 25, 255 ) -- Set the drawing color
-		surface.SetMaterial( Material( 'icon16/monkey.png' ) ) -- Use our cached material
-	surface.DrawTexturedRect( x + 193, y + 46, 20, 20 ) -- Actually draw the rectangle
+	surface.SetDrawColor( 255, 255, 255, 255 ) -- Set the drawing color
+		surface.SetMaterial( Material( 'beyn/tin_can.png' ) ) -- Use our cached material
+	surface.DrawTexturedRect( x + 193, y + 46, 45, 35 ) -- Actually draw the rectangle
 
 	draw.Text {
 		text = healthStatus,
@@ -95,7 +94,7 @@ local function drawGui()
 	} draw.Text {
 		text = hungerStatus,
 		font = 'lib.notify',
-		pos = { x + 5, y + 40 },
+		pos = { x + 5, y + 50 },
 		xalign = TEXT_ALIGN_LEFT,
 		yalign = TEXT_ALIGN_LEFT,
 		color = Color( 255, 255, 255 ),
@@ -145,3 +144,4 @@ local hideHUDElements = {
 hook.Add('HUDShouldDraw', 'library-hud', function(name)
 	if hideHUDElements[name] then return false end
 end)
+

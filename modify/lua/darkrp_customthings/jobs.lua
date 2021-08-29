@@ -1,12 +1,28 @@
 local GAMEMODE = GAMEMODE or GM
 
+local civModels = {
+
+    'models/daemon_alyx/players/male_citizen_01.mdl',
+    'models/daemon_alyx/players/male_citizen_02.mdl',
+    'models/daemon_alyx/players/male_citizen_03.mdl',
+    'models/daemon_alyx/players/male_citizen_04.mdl',
+    'models/daemon_alyx/players/male_citizen_05.mdl',
+    'models/daemon_alyx/players/male_citizen_06.mdl',
+    'models/daemon_alyx/players/male_citizen_07.mdl',
+    'models/daemon_alyx/players/male_citizen_08.mdl',
+    'models/daemon_alyx/players/male_citizen_09.mdl',
+    'models/daemon_alyx/players/male_citizen_10.mdl',
+    'models/daemon_alyx/players/male_citizen_11.mdl',
+    'models/daemon_alyx/players/male_citizen_12.mdl',
+    'models/daemon_alyx/players/male_citizen_13.mdl',
+    'models/dizcordum/citizens/playermodels/pm_male_06.mdl',
+
+
+}
 
 TEAM_DEF = DarkRP.createJob("Житель", {
     color = Color(20, 150, 20, 255),
-    model = {
-        "models/player/Group01/Female_01.mdl",
-        "models/player/breen.mdl",
-    },
+    model = civModels,
     description = [[ ]],
     weapons = { 'weapon_medkit' },
     command = "beyn_citizen",

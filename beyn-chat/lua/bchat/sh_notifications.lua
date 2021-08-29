@@ -1,6 +1,6 @@
 if CLIENT then
 
-    local color_types = {
+    color_types = {
 
         [0] = Color(46, 74, 217), -- Generic
 
@@ -28,7 +28,7 @@ if CLIENT then
 
     
 
-        chat.AddText(_type, '[~]', Color(213, 213, 213), ' ' .. text)
+        chat.AddText(_type, '[~]', Color(249, 174, 71), ' ' .. text)
 
     end
 

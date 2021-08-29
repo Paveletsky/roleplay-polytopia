@@ -120,7 +120,7 @@ function PANEL:Paint(w,h)
 
 	draw.RoundedBox( 0, 150, 0, w, h, Color( 0, 0, 0) )
 
-	draw.RoundedBox( 0, 150, -29, w, h, Color( 230, 138, 0, 200 ) )
+	draw.RoundedBox( 0, 150, 29, w, h, Color( 230, 138, 0, 200 ) )
 
 
 
@@ -218,6 +218,16 @@ function PANEL:OnMousePressed(key)
 
 	end
 
+	if meh:IsAdmin() then 
+
+		m:AddSpacer()
+
+		m:AddOption( 'Телепортироваться к игроку', function() 
+			RunConsoleCommand( "say", "~goto", '"""' .. name .. '""' )
+		end)
+
+	end
+
 	m:Open()
 
 end
@@ -228,7 +238,7 @@ end
 
 local function PaintIcon( self, w, h )
 
-	surface.SetMaterial( self.Icon )
+	-- surface.SetMaterial( self.Icon )
 
 	surface.SetDrawColor( color_white )
 
@@ -380,14 +390,12 @@ function Scoreboard:Init()
 		draw.SimpleText( title, "LIB.FontLarge", x, h/2 + pic * 0.4, color_white, 1, 1 )
 
 
+		-- surface.SetMaterial( Material( 'beyn/nobg_logo.png' ) )
 
-		if ALXLogo then
+		-- surface.SetDrawColor( 255,255,255, 255 )
 
-			surface.SetMaterial( ALXLogo )
+		-- surface.DrawTexturedRect(x - pic / 1.6, 5, pic + 15, pic)
 
-			surface.DrawTexturedRect(x - pic / 2, 5, pic, pic)
-
-		end
 
 	end
 
@@ -424,7 +432,7 @@ function Scoreboard:UpdatePlayers()
 
 
 
-		y = y + panel:GetTall() + 2
+		y = y + panel:GetTall() + 15
 
 	end
 

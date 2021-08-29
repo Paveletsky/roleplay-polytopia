@@ -64,7 +64,17 @@ local function openMenu( ply )
     mdl:SetFOV( 40 )
     mdl:SetAmbientLight(Color(255, 150, 0, 150))
     mdl:SetAnimated( true )
+
     mdl:SetModel( LocalPlayer():GetModel() )
+    
+	-- local bJS = util.JSONToTable( LocalPlayer():GetNetVar( 'mdl_bg' ) )
+    -- for k, v in pairs( LocalPlayer():GetBodyGroups() ) do
+    --     if v['name'] != 'head' then 
+    --         mdl.Entity:SetBodygroup( v['id'], bJS[v['id']] )
+    --     end
+
+    -- end
+
 
     dev = vgui.Create( 'DIconBrowser', gen )
     dev.OnChange = function(self)
@@ -94,10 +104,10 @@ local function openMenu( ply )
     descText2:SetSize( 400, 70 )
     descText2:SetVisible(false)
 
-    butDesc = vgui.Create('DImageButton', gen)
+    butDesc = vgui.Create('DImageButton', ch)
     butDesc:SetSize( 18, 18 )
     butDesc:AlignLeft( 970 )
-    butDesc:AlignTop( 245 )
+    butDesc:AlignTop( 207 )
     butDesc:SetToolTip( 'Показать подсказку ( пропадет через 10 секунд )' )
     butDesc:SetMaterial( 'icon16/lightbulb.png' )
     butDesc.DoClick = function()
@@ -128,24 +138,77 @@ local function openMenu( ply )
     mdlType:SetSize( 600, 15)
     mdlType:AlignTop( 450 )
     mdlType:AlignLeft( 100 )
-    mdlType:SetMax( 1.18 )
+    mdlType:SetMax( 1.10 )
     mdlType:SetMin( 1 )
     mdlType.OnValueChanged = function( self, value )
         mdl.Entity:SetModelScale( value )
     end
 
-    local tempMdl = LocalPlayer():getJobTable()['model']
+    local i = 0
+    for k, mdls in pairs( LocalPlayer():getJobTable()['model'] ) do
+        i = i + 1
+    end
 
+
+    local function getIndex(val, tab_to_pasre)
+
+        for k,v in pairs(tab_to_pasre) do 
+            if v==val then return k end
+        end
+        return nil
+
+    end
+
+  local mdlBgroups = {}
+    local prevVal = 1
+    local fromTop = 550
     mdlSkin = ch:Add 'DNumSlider'
     mdlSkin:SetSize( 600, 15)
     mdlSkin:AlignTop( 500 )
     mdlSkin:AlignLeft( 100 )
-    mdlSkin:SetMax( 2 )
+    mdlSkin:SetMax( i )
     mdlSkin:SetMin( 1 )
-    mdlSkin:SetDecimals( 0 )		
+    mdlSkin:SetDecimals( 0 )    
+    mdlSkin:SetValue(getIndex(LocalPlayer():GetNetVar('mdl_skin'),LocalPlayer():getJobTable()['model']))
+    
     mdlSkin.OnValueChanged = function( self, value )
-        mdl.Entity:SetAnimation( 1 )
-        mdl.Entity:SetModel( tempMdl[value] or LocalPlayer():GetModel() )
+    
+        if math.Round(value) != prevVal then 
+
+            prevVal = math.Round(value)
+            mdl.Entity:SetAnimation( 1 )
+            local model = LocalPlayer():getJobTable()['model'][math.Round(value)]
+            mdl.Entity:SetModel(model)
+            fromTop = 550
+
+            for k,v in pairs( mdlBgroups ) do
+                v:InvalidateParent( true )
+                v:Remove()
+                ch:Refresh()
+                
+            end
+
+            table.Empty(mdlBgroups)
+
+            for k,v in pairs(mdl.Entity:GetBodyGroups()) do
+                ch:Refresh()
+                table.insert( mdlBgroups, ch:Add( 'DNumSlider' ) )
+                mdlBgroups[#mdlBgroups]:SetSize(600,15)
+                mdlBgroups[#mdlBgroups]:AlignTop(fromTop)
+                fromTop = fromTop + 50
+                mdlBgroups[#mdlBgroups]:AlignLeft(100)
+                mdlBgroups[#mdlBgroups]:SetMax(v['num'] - 1)
+                mdlBgroups[#mdlBgroups]:SetMin(0)
+                mdlBgroups[#mdlBgroups]:SetDecimals(0)
+                mdlBgroups[#mdlBgroups].OnValueChanged = function(self, value)
+                    mdl.Entity:SetAnimation(1)
+                    mdl.Entity:SetBodygroup(v['id'], value)
+                end
+            
+            end
+    
+        end
+    
     end
 
     function mdl:LayoutEntity( ent )
@@ -165,8 +228,19 @@ local function openMenu( ply )
     applyBut:SetSize(0, 30)
     applyBut:SetText( '' )
     applyBut.DoClick = function( ply )
-        netstream.Start( 'changeChar2', namName:GetValue(), namDesc:GetValue() )
+
+        local bGrps = {}
+        
+        for k,v in pairs (mdlBgroups) do
+            table.insert(bGrps,math.floor(v:GetValue()))
+        end                            
+
+        PrintTable( bGrps )
+
+        netstream.Start( 'changeChar2', namName:GetValue(), namDesc:GetValue(), mdl.Entity:GetModel(), mdl.Entity:GetModelScale(), bGrps )
+    
     end
+
 
     -- 
     -- painting

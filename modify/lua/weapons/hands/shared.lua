@@ -6,7 +6,7 @@ SWEP.PrintName			= "Руки"
 SWEP.Author				= ""
 SWEP.Purpose				= ""
 SWEP.Spawnable				= true
-SWEP.Category				= "Malinogradsk"
+SWEP.Category				= "Бейнбург - Дополнения"
 SWEP.Slot				= 1
 SWEP.SlotPos         	= 0
 
@@ -18,6 +18,7 @@ SWEP.AnimPrefix	 		= "rpg"
 SWEP.Passive			= 'normal'
 SWEP.AnimDrag			= 'magic'
 SWEP.Active				= "pistol"
+SWEP.Weight				= 'duel'
 
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.DefaultClip	= -1
