@@ -1,5 +1,6 @@
 library = library or {}
 
+require('chttp')
 
 --
 -- подключение библиотеки

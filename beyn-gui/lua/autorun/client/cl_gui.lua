@@ -42,7 +42,7 @@ local function drawPlrs()
 				p.x, p.y = math.floor(p.x), math.floor(p.y)
 
 				local name = ply:GetNetVar('name') or 'Загружается...'
-				local desc = ply:GetNetVar( 'desc' )
+				local desc = ply:GetNetVar( 'desc' ) or ''
 
 				draw.RoundedBox( 2, p.x - 150, p.y + 5, 300, 5, Color(0, 0, 0, 200))
 				draw.RoundedBox( 2, p.x - 150, p.y + 10, 300, 1, Color(250, 160, 0, 200))
@@ -144,3 +144,4 @@ local hideHUDElements = {
 hook.Add('HUDShouldDraw', 'library-hud', function(name)
 	if hideHUDElements[name] then return false end
 end)
+

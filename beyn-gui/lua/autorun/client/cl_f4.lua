@@ -159,6 +159,10 @@ local function openMenu( ply )
 
     end
 
+    local mdlBgroups = {}
+    local prevVal = 1
+    local fromTop = 550
+
     local function DrawBodygroupsSliders()
         for k,v in pairs(mdl.Entity:GetBodyGroups()) do
                 ch:Refresh()
@@ -188,9 +192,6 @@ local function openMenu( ply )
             table.Empty(mdlBgroups)
     end
 
-    local mdlBgroups = {}
-    local prevVal = 1
-    local fromTop = 550
     mdlSkin = ch:Add 'DNumSlider'
     mdlSkin:SetSize( 600, 15)
     mdlSkin:AlignTop( 500 )
@@ -226,31 +227,28 @@ local function openMenu( ply )
     bar:AddSheet( "Игровые настройки", set, "icon16/cog.png", false, false, "Для вашего комфорта <3")
     bar:AddSheet( "Для разработки", dev, "games/16/garrysmod.png", false, false, "Иконки GMod'a")
 
-    local ApplyingCoolDown = false
-
     applyBut = vgui.Create( 'DButton', gen )
     applyBut:Dock( BOTTOM )
     applyBut:SetSize(0, 30)
     applyBut:SetText( '' )
     applyBut.DoClick = function( ply )
-        if (!ApplyingCoolDown) then
-            local bGrps = {}
-            
-            for k,v in pairs (mdlBgroups) do
-                table.insert(bGrps,math.floor(v:GetValue()))
-            end                            
 
-            PrintTable( bGrps )
+        applyBut:SetDisabled( true )
 
-            netstream.Start( 'changeChar2', namName:GetValue(), namDesc:GetValue(), mdl.Entity:GetModel(), mdl.Entity:GetModelScale(), bGrps )
-            ApplyingCoolDown = true
-            timer.Simple(10, function () ApplyingCoolDown = false end)
-        else 
-            print('Подожди немного.')
-        end
+        ply:SetNetVar( 'gui.Test', true )
 
+        netstream.Start( 'changeChar2', namName:GetValue(), namDesc:GetValue(), mdl.Entity:GetModel(), mdl.Entity:GetModelScale(), bGrps )
+
+        timer.Create( 'gui.f4-buttonCheck', 5, 1, function()
+        
+            ply:SetNetVar( 'gui.Test', false )
+
+            applyBut:SetDisabled( false )    
+        
+        end)
     
     end
+
 
 
     -- 
@@ -258,17 +256,16 @@ local function openMenu( ply )
     --
 
 
-
-    function applyBut:Paint( w, h )
-        draw.RoundedBox( 6, 0, 0, w, h, Color( 230, 138, 0, 240 ) )
-        draw.Text {
-            font = "lib.notify",
-            text = "Применить настройки",
-            pos = { ScrW() / 3.6, 0 },
-            xalign = TEXT_ALIGN_CENTER,
-            color = Color(255, 255, 255)
-		}
-    end
+    -- function applyBut:Paint( w, h )
+    --     draw.RoundedBox( 6, 0, 0, w, h, Color( 230, 138, 0, 240 ) )
+    --     draw.Text {
+    --         font = "lib.notify",
+    --         text = "Применить настройки",
+    --         pos = { ScrW() / 3.6, 0 },
+    --         xalign = TEXT_ALIGN_CENTER,
+    --         color = Color(255, 255, 255)
+	-- 	}
+    -- end
 
     function gen:Paint( w, h )
         draw.RoundedBox( 2, 0, 0, w, h, Color( 0, 0, 0, 240 ) )
@@ -324,6 +321,9 @@ local function openMenu( ply )
 end
 
 net.Receive( 'lib.openf4Menu', function( ply )
+
         openMenu()
+
     netstream.Start( 'library.loadData' )
+
 end)
