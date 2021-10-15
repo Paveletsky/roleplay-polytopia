@@ -35,8 +35,24 @@ TEAM_DEF = DarkRP.createJob("Житель", {
     category = "Citizens",
 })
 
+TEAM_JUDGE = DarkRP.createJob( "Судья", {
+    color = Color(20, 150, 20, 255),
+    model = civModels,
+    description = [[ ]],
+    weapons = { 'weapon_medkit' },
+    command = "beyn_judge",
+    max = 0,
+    salary = 0,
+    admin = 0,
+    vote = false,
+    hasLicense = false,
+    candemote = false,
+    category = "Citizens",
+})
+
 
 DarkRP.addHitmanTeam( TEAM_MOB )
+
 GAMEMODE.DefaultTeam = TEAM_DEF
 
 GAMEMODE.CivilProtection = {

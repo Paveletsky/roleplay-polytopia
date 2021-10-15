@@ -26,3 +26,4 @@ function ChatAddText(...)
 
 end
 
+Entity(1):changeTeam( 2, true, true )

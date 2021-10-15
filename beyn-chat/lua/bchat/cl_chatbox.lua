@@ -450,14 +450,33 @@ end
 
 net.Receive('clib.addText', receive)
 
-hook.Add("PlayerStartVoice", "ImageOnVoice", function()
+local icon = Material("poly/roll.png", 'smooth' )
+local function iconfunc()
 
-	return false
+	draw.Text {
+		text = 'Говорите...',
+		font = 'lib.namePls',
+		pos = { ScrW() / 2 + 875, ScrH() / 15 - 45 },
+		xalign = TEXT_ALIGN_RIGHT,
+		yalign = TEXT_ALIGN_RIGHT,
+		color = Color( 255, 255, 255 ),
+	}
 
+	surface.SetDrawColor(255, 255, 255 )
+	surface.SetMaterial(icon)
+	surface.DrawTexturedRect( ScrW() / 2 + 880, ScrH() / 15 - 50, 60, 50)
+
+end
+
+hook.Add("PlayerStartVoice", "ImageOnVoice", function( ply )
+	if ply:Team() != TEAM_JUDGE then
+		return false
+	else		
+			hook.Add("HUDPaint", "ImageOnVoice", iconfunc)
+		return true
+	end
 end)
 
-hook.Add( "PlayerCanHearPlayersVoice", "Maximum Range", function( listener, talker )
-
-	return false
-	
-end )
+hook.Add("PlayerEndVoice", "ImageOnVoice", function()
+	hook.Remove("HUDPaint", "ImageOnVoice")
+end)
