@@ -80,7 +80,7 @@ descriptionList = {
 --
 
 
-local function randSpawn( )
+local function randSpawn()
 
     local pls = parseCoords( CFGspPos[math.random( #CFGspPos )] )
 
@@ -177,9 +177,11 @@ end
 
 function meta:loadPosition()
 
-	local lPos = randSpawn() or parseCoords( self:GetPData('position') )
+	local lPos = parseCoords( self:GetPData('position') )
 
-	self:SetPos( Vector( lPos[1], lPos[2], lPos[3] ) )
+    if self:GetPData('position') != nil then 
+	    self:SetPos( Vector( lPos[1], lPos[2], lPos[3] ) )
+    else self:randSpawn() end
 
 end
 
@@ -198,6 +200,5 @@ end
 --
 
 -- Entity(1):loadPosition()
-
 -- Entity(1):loadData()
 -- Entity(1):loadModel()

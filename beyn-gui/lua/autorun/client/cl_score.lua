@@ -477,3 +477,4 @@ hook.Remove( "ScoreboardShow", "CustomScoreboard" )
 
 hook.Remove( "ScoreboardHide", "CustomScoreboard" )
 
+

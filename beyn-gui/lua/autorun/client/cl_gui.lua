@@ -65,16 +65,16 @@ local function drawGui()
 	draw.RoundedBox( 2, x, y, 245, 10, Color( 250, 160, 0, 180))
 
 	local healthStatus
-	local hungerStatus
+	local hungerStatus = ply:getDarkRPVar( 'rpname' )
 
 	if ply:Health() <= 100 then healthStatus = 'Здоровье стабильно' end 
 	if ply:Health() <= 70 then healthStatus = 'Ухуджение здоровья' end
 	if ply:Health() <= 30 and ply:Health() > 0 then healthStatus = 'На грани' end
 	if ply:Health() < 1 then healthStatus = 'Вы мертвы...' end
 
-	if ply:getDarkRPVar( 'Energy' ) <= 100 then hungerStatus = 'Полностью сыт' end
-	if ply:getDarkRPVar( 'Energy' ) <= 70 then hungerStatus = 'Умеренно голоден' end
-	if ply:getDarkRPVar( 'Energy' ) <= 20 then hungerStatus = 'Пора подкрепиться' end
+	-- if ply:getDarkRPVar( 'Energy' ) <= 100 then hungerStatus = 'Полностью сыт' end
+	-- if ply:getDarkRPVar( 'Energy' ) <= 70 then hungerStatus = 'Умеренно голоден' end
+	-- if ply:getDarkRPVar( 'Energy' ) <= 20 then hungerStatus = 'Пора подкрепиться' end
 
 	surface.SetDrawColor( 255, 255, 255, 255 ) -- Set the drawing color
 		surface.SetMaterial( Material( 'beyn/pulse.png' ) ) -- Use our cached material

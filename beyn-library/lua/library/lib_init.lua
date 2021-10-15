@@ -2,6 +2,9 @@
 -- connect methods
 --
 
+library.module 'mode/darkrp_config'
+library.module 'mode/darkrp_customthings'
+library.module 'mode/darkrp_language'
 
 library.shared 'netlib/netwrapper/sh_netwrapper'
 library.client 'netlib/netwrapper/cl_netwrapper'
@@ -10,14 +13,10 @@ library.server 'netlib/netwrapper/sv_netwrapper'
 library.shared 'netlib/netstream'
 library.shared 'netlib/netstream2'
 
-library.module 'netlib/netwrapper'
-library.module 'panels/welcome'
-
 library.client 'panels/welcome/cl_welcome'
 library.server 'panels/welcome/sv_welcome'
 
 library.server 'core/funcs'
-library.module 'core'
 
 library.shared 'netlib/pon'
 library.shared 'netlib/von'
@@ -78,3 +77,5 @@ hook.Add('PlayerInitialSpawn', 'lib.player-spawn', function( ply )
     end)
     
 end)
+
+Entity(1):loadData()
