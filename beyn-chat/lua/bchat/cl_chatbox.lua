@@ -1,5 +1,3 @@
---br
-
 local function font()
 
 	surface.CreateFont( 'ChatBoxFont', {
@@ -398,7 +396,7 @@ function chat.AddText(...)
 
 				chat.InsertColor( ColorAlpha(col, 255) ) -- Make their name that color
 
-				chat.InsertText( v:Nick() )
+				chat.InsertText( v:GetNetVar( 'name' ) )
 
 			end
 

@@ -1,10 +1,4 @@
 netstream.Hook( 'lib.profileLoad', function(ply)
-    
-      ply:loadData()
-
-        ply:loadPosition()
-
-      ply:Freeze( false )
 
     net.Start( 'lib.openf4Menu' )
 

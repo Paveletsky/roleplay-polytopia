@@ -159,12 +159,38 @@ local function openMenu( ply )
 
     end
 
-    local mdlBgroups = {}
+  local mdlBgroups = {}
     local prevVal = 1
     local fromTop = 550
+    mdlSkin = ch:Add 'DNumSlider'
+    mdlSkin:SetSize( 600, 15)
+    mdlSkin:AlignTop( 500 )
+    mdlSkin:AlignLeft( 100 )
+    mdlSkin:SetMax( i )
+    mdlSkin:SetMin( 1 )
+    mdlSkin:SetDecimals( 0 )    
+    mdlSkin:SetValue(getIndex(LocalPlayer():GetNetVar('mdl_skin'),LocalPlayer():getJobTable()['model']))
+    
+    mdlSkin.OnValueChanged = function( self, value )
+    
+        if math.Round(value) != prevVal then 
 
-    local function DrawBodygroupsSliders()
-        for k,v in pairs(mdl.Entity:GetBodyGroups()) do
+            prevVal = math.Round(value)
+            mdl.Entity:SetAnimation( 1 )
+            local model = LocalPlayer():getJobTable()['model'][math.Round(value)]
+            mdl.Entity:SetModel(model)
+            fromTop = 550
+
+            for k,v in pairs( mdlBgroups ) do
+                v:InvalidateParent( true )
+                v:Remove()
+                ch:Refresh()
+                
+            end
+
+            table.Empty(mdlBgroups)
+
+            for k,v in pairs(mdl.Entity:GetBodyGroups()) do
                 ch:Refresh()
                 table.insert( mdlBgroups, ch:Add( 'DNumSlider' ) )
                 mdlBgroups[#mdlBgroups]:SetSize(600,15)
@@ -180,37 +206,7 @@ local function openMenu( ply )
                 end
             
             end
-    end
-
-    local function DeleteBodygroupsSliders()
-        for k,v in pairs( mdlBgroups ) do
-                v:InvalidateParent( true )
-                v:Remove()
-                ch:Refresh()
-                
-            end
-            table.Empty(mdlBgroups)
-    end
-
-    mdlSkin = ch:Add 'DNumSlider'
-    mdlSkin:SetSize( 600, 15)
-    mdlSkin:AlignTop( 500 )
-    mdlSkin:AlignLeft( 100 )
-    mdlSkin:SetMax( i )
-    mdlSkin:SetMin( 1 )
-    mdlSkin:SetDecimals( 0 )    
-    mdlSkin:SetValue(getIndex(LocalPlayer():GetNetVar('mdl_skin'),LocalPlayer():getJobTable()['model']))
-    DrawBodygroupsSliders()
-    mdlSkin.OnValueChanged = function( self, value )
     
-        if math.Round(value) != prevVal then
-            prevVal = math.Round(value)
-            mdl.Entity:SetAnimation( 1 )
-            local model = LocalPlayer():getJobTable()['model'][math.Round(value)]
-            mdl.Entity:SetModel(model)
-            fromTop = 550
-            DeleteBodygroupsSliders()
-            DrawBodygroupsSliders()
         end
     
     end
@@ -233,39 +229,33 @@ local function openMenu( ply )
     applyBut:SetText( '' )
     applyBut.DoClick = function( ply )
 
-        applyBut:SetDisabled( true )
+        local bGrps = {}
+        
+        for k,v in pairs (mdlBgroups) do
+            table.insert(bGrps,math.floor(v:GetValue()))
+        end                            
 
-        ply:SetNetVar( 'gui.Test', true )
+        PrintTable( bGrps )
 
         netstream.Start( 'changeChar2', namName:GetValue(), namDesc:GetValue(), mdl.Entity:GetModel(), mdl.Entity:GetModelScale(), bGrps )
-
-        timer.Create( 'gui.f4-buttonCheck', 5, 1, function()
-        
-            ply:SetNetVar( 'gui.Test', false )
-
-            applyBut:SetDisabled( false )    
-        
-        end)
     
     end
-
 
 
     -- 
     -- painting
     --
 
-
-    -- function applyBut:Paint( w, h )
-    --     draw.RoundedBox( 6, 0, 0, w, h, Color( 230, 138, 0, 240 ) )
-    --     draw.Text {
-    --         font = "lib.notify",
-    --         text = "Применить настройки",
-    --         pos = { ScrW() / 3.6, 0 },
-    --         xalign = TEXT_ALIGN_CENTER,
-    --         color = Color(255, 255, 255)
-	-- 	}
-    -- end
+    function applyBut:Paint( w, h )
+        draw.RoundedBox( 6, 0, 0, w, h, Color( 230, 138, 0, 240 ) )
+        draw.Text {
+            font = "lib.notify",
+            text = "Применить настройки",
+            pos = { ScrW() / 3.6, 0 },
+            xalign = TEXT_ALIGN_CENTER,
+            color = Color(255, 255, 255)
+		}
+    end
 
     function gen:Paint( w, h )
         draw.RoundedBox( 2, 0, 0, w, h, Color( 0, 0, 0, 240 ) )
@@ -321,9 +311,6 @@ local function openMenu( ply )
 end
 
 net.Receive( 'lib.openf4Menu', function( ply )
-
         openMenu()
-
     netstream.Start( 'library.loadData' )
-
 end)

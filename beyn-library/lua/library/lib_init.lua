@@ -16,6 +16,9 @@ library.module 'panels/welcome'
 library.client 'panels/welcome/cl_welcome'
 library.server 'panels/welcome/sv_welcome'
 
+library.server 'core/funcs'
+library.module 'core'
+
 library.shared 'netlib/pon'
 library.shared 'netlib/von'
 
@@ -30,6 +33,7 @@ GM = GAMEMODE or {}
 function GM:PlayerHurt( ply )
 
 	ply:ScreenFade( SCREENFADE.IN, Color( 0, 0, 0, 253 ), 0.1, 0.1 )
+    
 
 end
 
@@ -48,10 +52,6 @@ end
 
 function GM:PlayerSpawn( ply )
 
-    ply:Freeze( false )
-
-    ply:loadData()
-
     for k, v in pairs( GM.Config.DefaultWeapons  ) do
 
         ply:Give( v )
@@ -69,13 +69,9 @@ end
 
 hook.Add('PlayerInitialSpawn', 'lib.player-spawn', function( ply )
 
-    timer.Create( 'lib.player-init', 5, 1, function()
-    
-        ply:Freeze( true )
+    timer.Create( 'lib.player-init', 1, 1, function()
 
-            ply:loadModel()
-
-        ply:SetWalkSpeed( 95 )
+        timer.Remove( 'lib.player-init' )
 
         netstream.Start( ply, 'lib.welcomeOpen' )
 

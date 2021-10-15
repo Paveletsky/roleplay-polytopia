@@ -20,7 +20,7 @@ surface.CreateFont( "LIB.FontSmall", {
 
 	font = "Calibri",
 
-	size = 24,
+	size = 22,
 
 	weight = 300,
 
@@ -34,7 +34,7 @@ surface.CreateFont( "LIB.FontSmall_Blur", {
 
 	font = "Calibri",
 
-	size = 24,
+	size = 22,
 
 	weight = 300,
 
@@ -45,9 +45,15 @@ surface.CreateFont( "LIB.FontSmall_Blur", {
 })
 
 
+
+ALXLogo = Material("gmchan/alx_logo_crown.png", "smooth")
+
+
+
 local PANEL = {}
 
 AccessorFunc( PANEL, "Player", "Player" )
+
 
 
 function PANEL:Init()
@@ -89,6 +95,7 @@ function PANEL:Init()
 	end
 
 
+
 	self.IconBar = self:Add( "EditablePanel" )
 
 	self.IconBar:SetPos(35, 0)
@@ -96,9 +103,9 @@ function PANEL:Init()
 	self.IconBar:SetTall(30)
 
 	self.Profile.Paint = nil
-	
 
 end
+
 
 
 local clr_ok = Color( 0, 200, 0 )
@@ -121,7 +128,6 @@ function PANEL:Paint(w,h)
 
 	draw.SimpleText( self.PlayerTeam or "", "LIB.FontSmall", w / 1.88, h / 2, color_white, 1, 1 )
 
-	
 
 
 	local ping   = self.PlayerPing or 0
@@ -149,23 +155,6 @@ function PANEL:Paint(w,h)
 	surface.SetDrawColor(clr_black)
 
 	surface.DrawOutlinedRect( 150, 0, w, h)
-
-	--
-	-- отрисовка рангов
-	--
-
-
-
-	-- if self:GetPlayer():GetUserGroup() == 'founder' then
-
-	-- 	surface.SetMaterial( ['dev'] )
-
-	-- 	surface.SetDrawColor(color_white)
-		
-	-- 	surface.DrawTexturedRect( surface.GetTextSize( self.PlayerName ) + w / 8, h / 4, 18, 18 ) 
-
-	-- end
-
 
 end
 
@@ -234,7 +223,7 @@ function PANEL:OnMousePressed(key)
 		m:AddSpacer()
 
 		m:AddOption( 'Телепортироваться к игроку', function() 
-			RunConsoleCommand( "say", "~goto", '"""' .. name .. '""' )
+			RunConsoleCommand( "sg", "goto", self.SteamID10 )
 		end)
 
 	end
@@ -321,7 +310,8 @@ function PANEL:Think()
 
 		local plteam = ply:Team()
 
-		self.PlayerName  = ply:GetNetVar( 'name' ) or 'Загрузка...'
+
+		self.PlayerName  = ply:GetName()
 
 		self.PlayerTeam  = team.GetName(plteam)
 
@@ -330,7 +320,6 @@ function PANEL:Think()
 		self.SteamID	 = ply:SteamID64()
 
 		self.SteamID10	 = ply:SteamID()
-
 
 	end
 
@@ -349,8 +338,6 @@ local Scoreboard = {}
 
 
 function Scoreboard:Init()
-
-	local title = "Приятной игры <3"
 
 	self:MakePopup()
 
@@ -386,26 +373,17 @@ function Scoreboard:Init()
 
 		surface.SetFont( "LIB.FontLarge" )
 
-		local tw, th = surface.GetTextSize( title )
 
 		local pic = h * 0.6
-
-		local t_size = tw + pic + 30
-
-		--local x = w/2 - t_size/2
 
 		local x = w / 2
 
 
-
-		-- draw.SimpleText( title, "LIB.FontLarge", x, h/2 + pic * 0.4, color_white, 1, 1 )
-
-
-		surface.SetMaterial( Material( 'beyn/logo_new.png', 'smooth' ) )
+		surface.SetMaterial( Material( 'beyn/logo.png', 'smooth' ) )
 
 		surface.SetDrawColor( 255,255,255, 255 )
 
-		surface.DrawTexturedRect(x - pic / 1, -20, pic + 90, pic + 90)
+		surface.DrawTexturedRect(x - pic - 70, 40, pic + 200, pic + 20 )
 
 
 	end

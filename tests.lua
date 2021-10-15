@@ -1,1 +1,0 @@
-Entity(1):setRPName( 'Кевин Сука' )

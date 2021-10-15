@@ -5,6 +5,7 @@ function startWelcome()
     goMen = vgui.Create 'DFrame'
     goMen:Dock( FILL )
     goMen:ShowCloseButton( false )
+    goMen:MakePopup()
     goMen:SetTitle('')
     goMen:SetDraggable( false )
 
