@@ -2,10 +2,6 @@
 -- connect methods
 --
 
-library.module 'mode/darkrp_config'
-library.module 'mode/darkrp_customthings'
-library.module 'mode/darkrp_language'
-
 library.shared 'netlib/netwrapper/sh_netwrapper'
 library.client 'netlib/netwrapper/cl_netwrapper'
 library.server 'netlib/netwrapper/sv_netwrapper'
@@ -78,4 +74,4 @@ hook.Add('PlayerInitialSpawn', 'lib.player-spawn', function( ply )
     
 end)
 
-Entity(1):loadData()
+-- Entity(1):loadData()

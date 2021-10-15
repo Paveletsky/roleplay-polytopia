@@ -65,7 +65,7 @@ local function drawGui()
 	draw.RoundedBox( 2, x, y, 245, 10, Color( 250, 160, 0, 180))
 
 	local healthStatus
-	local hungerStatus = ply:getDarkRPVar( 'rpname' )
+	local hungerStatus = ply:getDarkRPVar( 'Energy' )
 
 	if ply:Health() <= 100 then healthStatus = 'Здоровье стабильно' end 
 	if ply:Health() <= 70 then healthStatus = 'Ухуджение здоровья' end
