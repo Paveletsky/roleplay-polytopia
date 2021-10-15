@@ -481,4 +481,4 @@ hook.Add("PlayerEndVoice", "ImageOnVoice", function()
 	hook.Remove("HUDPaint", "ImageOnVoice")
 end)
 
--- tes
+-- tesa
