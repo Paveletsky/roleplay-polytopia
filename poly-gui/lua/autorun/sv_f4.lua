@@ -33,4 +33,4 @@ netstream.Hook( 'library.loadData', function( ply )
         ply:loadData()
     ply:loadModel()
 end)
---
+--фыа
