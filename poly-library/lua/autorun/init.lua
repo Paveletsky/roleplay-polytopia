@@ -50,5 +50,4 @@ function library.module(path)
 
 end
 
-
 library.shared('library/lib_init')
