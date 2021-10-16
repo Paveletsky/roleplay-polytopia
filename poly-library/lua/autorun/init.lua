@@ -52,4 +52,4 @@ end
 
 library.shared('library/lib_init')
 
--- testaфыаsdaqwfsfqfw
+-- testaфыаsdaqwfsasdfqfw
