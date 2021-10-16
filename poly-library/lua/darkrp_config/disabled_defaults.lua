@@ -76,7 +76,7 @@ DarkRP.disabledDefaults["shipments"] = {
 }
 
 --[[---------------------------------------------------------------------------
-Entitiesaфыафыа
+Entitiesaфыафыаas
 ---------------------------------------------------------------------------]]
 DarkRP.disabledDefaults["entities"] = {
     ["Drug lab"]      = false,
