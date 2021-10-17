@@ -108,6 +108,7 @@ function library.toKeys(tbl)
 end
 
 
+
 function roundNum(pos) -- округление векторных координат для глобального использование
 
     pos.x = math.Round(pos.x)
@@ -185,15 +186,22 @@ function meta:loadPosition()
 
 end
 
-
 function meta:loadModel()
 
-    local bgroups = util.JSONToTable( self:GetPData( 'mdl_bg' ) )
-
-	self:SetModel( tostring( self:GetPData( 'mdl_skin' )) )
+    -- local bgroups = util.JSONToTable( self:GetPData( 'mdl_bg' ) )
+    if self:GetPData( 'mdl_skin' ) == nil then 
+	    self:SetModel( table.Random( self:getJobTable()['model'] ) )
+    else 
+        self:SetModel( self:GetPData( 'mdl_skin' ) )
+    end
 
 end
 
+netstream.Hook( 'entlib.becomeJob', function( ply, key )
+
+	ply:changeTeam( key, true, true )
+
+end)
 
 --
 -- tests

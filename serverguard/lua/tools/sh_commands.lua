@@ -1806,8 +1806,16 @@ command.bDisallowConsole 	= true;
 function command:OnPlayerExecute(player, target, arguments)
 	if (target:GetMoveType() != MOVETYPE_NOCLIP) then
 		target:SetMoveType(MOVETYPE_NOCLIP);
+		target:SetNoDraw(true);
+        target:SetNotSolid(true);
+        target:GodEnable();
+        target:DrawWorldModel(false);
 	else
 		target:SetMoveType(MOVETYPE_WALK);
+		target:SetNoDraw(false);
+        target:SetNotSolid(false);
+        target:GodDisable();
+        target:DrawWorldModel(true);
 	end;
 
 	return true;

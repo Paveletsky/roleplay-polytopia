@@ -29,7 +29,6 @@ function GM:PlayerHurt( ply )
 
 	ply:ScreenFade( SCREENFADE.IN, Color( 0, 0, 0, 253 ), 0.1, 0.1 )
     
-
 end
 
 
@@ -68,10 +67,30 @@ hook.Add('PlayerInitialSpawn', 'lib.player-spawn', function( ply )
 
         timer.Remove( 'lib.player-init' )
 
-        netstream.Start( ply, 'lib.welcomeOpen' )
+            netstream.Start( ply, 'lib.welcomeOpen' )
+
+                ply:changeTeam( 1, true, true )
+                ply:SetNoDraw(true);
+                ply:SetNotSolid(true);
+                ply:GodEnable();
+                ply:DrawWorldModel(false);
+                
+            if ( ply:IsBot() ) then
+                    ply:SetNoDraw(false);
+                    ply:SetNotSolid(false);
+                    ply:GodDisable();
+                    ply:DrawWorldModel(true);
+                    ply:loadData()
+                    ply:changeTeam( 2, true, true )
+                ply:loadModel()
+            end
 
     end)
     
 end)
 
 -- Entity(1):loadData()
+
+-- for k, v in pairs( RPExtraTeams ) do
+--     print( k, v.name )
+-- end

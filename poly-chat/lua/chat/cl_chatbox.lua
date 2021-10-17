@@ -481,4 +481,8 @@ hook.Add("PlayerEndVoice", "ImageOnVoice", function()
 	hook.Remove("HUDPaint", "ImageOnVoice")
 end)
 
--- tesaайqdaf
+hook.Add( "PlayerBindPress", "PlayerBindPressExample", function( ply, bind, pressed )
+	if ( string.find( bind, "+voicerecord" ) ) and ply:Team() != TEAM_JUDGE then
+		return true
+	end
+end )

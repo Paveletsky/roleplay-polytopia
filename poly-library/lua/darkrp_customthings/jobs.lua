@@ -20,11 +20,26 @@ local civModels = {
 
 }
 
+TEAM_NOTLOADING = DarkRP.createJob("Загружается", {
+    color = Color(20, 150, 20, 255),
+    model = civModels,
+    description = [[ ]],
+    weapons = { '' },
+    command = "beyn_citizen0",
+    max = 0,
+    salary = GAMEMODE.Config.normalsalary,
+    admin = 0,
+    vote = false,
+    hasLicense = false,
+    candemote = false,
+    category = "Other",
+})
+
 TEAM_DEF = DarkRP.createJob("Житель", {
     color = Color(20, 150, 20, 255),
     model = civModels,
     description = [[ ]],
-    weapons = { 'weapon_medkit' },
+    weapons = { '' },
     command = "beyn_citizen",
     max = 0,
     salary = GAMEMODE.Config.normalsalary,
@@ -43,7 +58,7 @@ TEAM_JUDGE = DarkRP.createJob( "Судья", {
     command = "beyn_judge",
     max = 0,
     salary = 0,
-    admin = 0,
+    admin = 1,
     vote = false,
     hasLicense = false,
     candemote = false,
