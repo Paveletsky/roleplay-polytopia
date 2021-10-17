@@ -1,8 +1,11 @@
 util.AddNetworkString( 'clib.addText' )
 
+util.AddNetworkString( 'clib.sendMsg' )
+
+util.AddNetworkString( 'NotificationChat' )
+
+
 local PLAYER = FindMetaTable("Player")
-
-
 
 function PLAYER:ChatAddText(...)
 
@@ -26,4 +29,4 @@ function ChatAddText(...)
 
 end
 
--- теыфqasfeasfassafаффыаafаafaafsfasfasfwasfsaaafaasasdasfffasfasasfffas
+Entity(1):ChatAddText( 3,'Хуй' )
