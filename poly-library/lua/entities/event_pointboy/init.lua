@@ -2,7 +2,7 @@ AddCSLuaFile( "cl_init.lua" ) -- Make sure clientside
 AddCSLuaFile( "shared.lua" )  -- and shared scripts are sent.
  
 include('shared.lua')
- 
+
 function ENT:Initialize()
  
 	self:SetModel( "models/props_interiors/corkboardverticle01.mdl" )
@@ -17,10 +17,10 @@ function ENT:Initialize()
 end
 
 function ENT:Use( a, c, useType )
-	
-	self:SetUseType(SIMPLE_USE)
 
-	netstream.Start( c, 'entlib.createJobMenu', a, c )
+		netstream.Start( c, 'entlib.createJobMenu', a, c )
+
+	self:SetUseType(SIMPLE_USE)
 
 end
  

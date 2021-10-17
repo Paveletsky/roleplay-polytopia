@@ -32,13 +32,13 @@ TEAM_NOTLOADING = DarkRP.createJob("Загружается", {
     vote = false,
     hasLicense = false,
     candemote = false,
-    category = "Other",
+    category = "Другое",
 })
 
 TEAM_DEF = DarkRP.createJob("Житель", {
     color = Color(20, 150, 20, 255),
     model = civModels,
-    description = [[ ]],
+    description = [[ Я помню пенис айцщйцшоащйцоашщйоашщйцоайцщйцшоащйцоашщйоашщйцоайцщйцшоащйцоашщйоашщйцоайцщйцшоащйцоашщйоашщйцоайцщйцшоащйцоашщйоашщйцоайцщйцшоащйцоашщйоашщйцоайцщйцшоащйцоашщйоашщйцоайцщйцшоащйцоашщйоашщйцоайцщйцшоащйцоашщйоашщйцо ]],
     weapons = { '' },
     command = "beyn_citizen",
     max = 0,
@@ -47,7 +47,7 @@ TEAM_DEF = DarkRP.createJob("Житель", {
     vote = false,
     hasLicense = false,
     candemote = false,
-    category = "Citizens",
+    category = "Гражданские",
 })
 
 TEAM_JUDGE = DarkRP.createJob( "Судья", {
@@ -62,7 +62,7 @@ TEAM_JUDGE = DarkRP.createJob( "Судья", {
     vote = false,
     hasLicense = false,
     candemote = false,
-    category = "Citizens",
+    category = "Другое",
 })
 
 

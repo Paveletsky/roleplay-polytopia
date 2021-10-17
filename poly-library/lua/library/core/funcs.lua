@@ -79,7 +79,6 @@ descriptionList = {
 -- local functions
 --
 
-
 local function randSpawn()
 
     local pls = parseCoords( CFGspPos[math.random( #CFGspPos )] )
@@ -94,7 +93,6 @@ end
 --
 -- global functions
 --
-
 
 function library.toKeys(tbl)
 

@@ -4,9 +4,9 @@ local function font()
 
 		font = 'Roboto',
 
-		size = ScreenScale(7),
+		size = ScreenScale(7.4),
 
-		weight = 300,
+		weight = 350,
 
 		extended = true,
 
@@ -22,7 +22,7 @@ local function font()
 
 		size = ScreenScale(7.5),
 
-		weight = 300,
+		weight = 350,
 
 		extended = true,
 
@@ -113,13 +113,7 @@ do
 
 		function self.TextEntry:OnEnter()
 
-			RunConsoleCommand( "say",  self:GetValue() )
-
-			-- net.Start("clib.addText")
-
-			-- 	net.WriteString(self:GetValue())
-
-			-- net.SendToServer()
+				RunConsoleCommand( 'say', self:GetValue() )
 
 			chat.Toggle()
 
@@ -148,10 +142,6 @@ do
 			self:SetFGColor( Color( 255, 255, 255 ) )
 
 		end
-
-
-
-
 
 		self:MakePopup()
 
@@ -392,11 +382,9 @@ function chat.AddText(...)
 
 			elseif v:IsPlayer() then
 
-				local col = team.GetColor(v:GetColor()) -- Get the player's team color
+				chat.InsertColor( Color( 255,99,71 ) ) -- Make their name that color
 
-				chat.InsertColor( ColorAlpha(col, 255) ) -- Make their name that color
-
-				chat.InsertText( v:GetNetVar( 'name' ) )
+				chat.InsertText( '[' .. team.GetName( v:Team() ) .. '] ' .. v:Nick() )
 
 			end
 
@@ -449,6 +437,7 @@ local function receive()
 end
 
 net.Receive('clib.addText', receive)
+
 
 local icon = Material("poly/roll.png", 'smooth' )
 local function iconfunc()

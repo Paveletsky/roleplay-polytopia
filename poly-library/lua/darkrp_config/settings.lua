@@ -356,17 +356,6 @@ GM.Config.DefaultWeapons = {
 -- This will NOT work for your own custom stuff.
 -- Make sure the category is created in the darkrp_customthings/categories.lua, otherwise it won't work!
 GM.Config.CategoryOverride = {
-    jobs = {
-        ["Citizen"]                             = "Citizens",
-        ["Hobo"]                                = "Citizens",
-        ["Gun Dealer"]                          = "Citizens",
-        ["Medic"]                               = "Citizens",
-        ["Civil Protection"]                    = "Civil Protection",
-        ["Gangster"]                            = "Gangsters",
-        ["Mob boss"]                            = "Gangsters",
-        ["Civil Protection Chief"]              = "Civil Protection",
-        ["Mayor"]                               = "Civil Protection",
-    },
     entities = {
         ["Drug lab"]                            = "Other",
         ["Money printer"]                       = "Other",
