@@ -243,7 +243,7 @@ end
 
 function SKIN:PaintPropertySheet(pnl, w, h)
 
-	draw.RoundedBox(4, 0, 2, w, h-2, Color(0,0,0, 240))
+	draw.RoundedBox(4, 0, 2, w, h-2, Color(25,25,25, 240))
 	draw.RoundedBoxEx(4, 0, 2, w, 18, Color(0,0,0, 240), true, true, false, false)
 
 end
