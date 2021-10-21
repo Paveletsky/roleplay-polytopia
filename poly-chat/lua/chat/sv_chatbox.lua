@@ -29,4 +29,3 @@ function ChatAddText(...)
 
 end
 
-Entity(1):ChatAddText( 3,'Хуй' )

@@ -140,38 +140,38 @@ end
 --
 
 
-function meta:saveData()
+-- function meta:saveData()
 
-	self:SetPData( 'name', self:GetNetVar( 'name' ) ) self:SetPData( 'desc', self:GetNetVar( 'desc' ) )
+-- 	self:SetPData( 'name', self:GetNetVar( 'name' ) ) self:SetPData( 'desc', self:GetNetVar( 'desc' ) )
 
-end
+-- end
 
 
-function meta:loadData( )
+-- function meta:loadData( )
 
-    if self:GetPData( 'name' or 'desc' or 'mdl_skin' ) == nil then 
+--     if self:GetPData( 'name' or 'desc' or 'mdl_skin' ) == nil then 
     
-        self:SetPData( 'name', table.Random( namesTable ) ) 
+--         self:SetPData( 'name', table.Random( namesTable ) ) 
 
-            self:SetPData( 'desc', table.Random( descriptionList ) ) 
+--             self:SetPData( 'desc', table.Random( descriptionList ) ) 
 
-                self:SetPData( 'mdl_skin', table.Random( self:getJobTable()['model'] ) ) 
+--                 self:SetPData( 'mdl_skin', table.Random( self:getJobTable()['model'] ) ) 
                 
-                -- netvars -- 
+--                 -- netvars -- 
         
-            self:SetNetVar( 'name', table.Random( namesTable ) ) 
+--             self:SetNetVar( 'name', table.Random( namesTable ) ) 
         
-        self:SetNetVar( 'desc', table.Random( descriptionList ) )
+--         self:SetNetVar( 'desc', table.Random( descriptionList ) )
 
-    else
+--     else
         
-        self:SetNetVar( 'name', self:GetPData( 'name' ) ) 
+--         self:SetNetVar( 'name', self:GetPData( 'name' ) ) 
         
-        self:SetNetVar( 'desc', self:GetPData( 'desc' ) )
+--         self:SetNetVar( 'desc', self:GetPData( 'desc' ) )
     
-    end
+--     end
 
-end
+-- end
 
 
 function meta:loadPosition()
@@ -184,27 +184,29 @@ function meta:loadPosition()
 
 end
 
-function meta:loadModel()
+-- function meta:loadModel()
 
-    -- local bgroups = util.JSONToTable( self:GetPData( 'mdl_bg' ) )
-    if self:GetPData( 'mdl_skin' ) == nil then 
-	    self:SetModel( table.Random( self:getJobTable()['model'] ) )
-    else 
-        self:SetModel( self:GetPData( 'mdl_skin' ) )
-    end
+--     -- local bgroups = util.JSONToTable( self:GetPData( 'mdl_bg' ) )
+--     if self:GetPData( 'mdl_skin' ) == nil then 
+-- 	    self:SetModel( table.Random( self:getJobTable()['model'] ) )
+--     else 
+--         self:SetModel( self:GetPData( 'mdl_skin' ) )
+--     end
 
-end
+-- end
 
 netstream.Hook( 'entlib.becomeJob', function( ply, key )
-
 	ply:changeTeam( key, true, true )
-
 end)
+
+
+netstream.Hook( 'entlib.jobsCategory', function( ply, cat, ent ) 
+  local tab = util.JSONToTable(file.Read("entlib-jobscategory.json", "DATA"))
+  tab[cat][#tab[cat] + 1] = tostring( ent )
+  file.Write("entlib-jobscategory.json",util.TableToJSON(tab, true))
+end)
+
 
 --
 -- tests
 --
-
--- Entity(1):loadPosition()
--- Entity(1):loadData()
--- Entity(1):loadModel()

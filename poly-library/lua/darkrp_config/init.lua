@@ -1,22 +1,5 @@
 library = library or {}
 
-sql.Query("CREATE TABLE IF NOT EXISTS testpolysql('id' INTEGER NOT NULL, 'bruh' TEXT NOT NULL, 'bruhovich' TEXT NOT NULL, PRIMARY KEY('id'));")
-
-library.SQL = {}
-
-library.SQL.MySQL = true
-library.SQL.Host = "188.40.204.221"
-library.SQL.Username = "lasexille"
-library.SQL.Password = "yG0cK8eY5njS"
-library.SQL.Database_name = "s1_testpolysql"
-library.SQL.Database_port = 3306
-library.SQL.Preferred_module = "mysqloo"
-
-function library.SQL.Query( data )
-
-	return sql.Query( data )
-
-end
 
 --
 -- подключение библиотеки
@@ -67,5 +50,5 @@ function library.module(path)
 
 end
 
-library.shared('library/lib_init')
 
+library.shared('library/lib_init')

@@ -144,3 +144,4 @@ local hideHUDElements = {
 hook.Add('HUDShouldDraw', 'library-hud', function(name)
 	if hideHUDElements[name] then return false end
 end)
+
