@@ -75,9 +75,9 @@ function polychars.mainMenu( ply )
 
                 mdl:SetPos( 0, y )
 
-                mdl:SetFOV( 20 )
+                mdl:SetFOV( 10 )
 
-                mdl:SetLookAt( Vector( 0, 0, 60 ) )
+                mdl:SetLookAt( Vector( 0, -2, 67 ) )
 
                 mdl:SetModel( v.skin )
 
@@ -114,9 +114,21 @@ function polychars.mainMenu( ply )
                     end):SetImage("icon16/user_delete.png")
 
                     m:Open()
+                                  
 
                 end
 
+                function mdl:LayoutEntity( ent )
+                    mdl:RunAnimation()
+
+                    local i = 1
+                    for k, v in pairs( ent:GetBodyGroups() ) do
+                        ent:SetBodygroup( v['id'], tonumber( 4 ) )
+                            i = i + 1
+                    end
+
+                end  
+            
             end
 
     lst:SetDataHeight( 50 )
