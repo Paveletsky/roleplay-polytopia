@@ -160,12 +160,12 @@ if CLIENT then
 
 		local off = h > 20 and 2 or 1
 
-		draw.RoundedBox(15, 0, 1, w, h, Color(0, 0, 0, 155))
-		draw.RoundedBox(15, 0, 1, w, h-off, Color(184, 53, 64, 255))
+		draw.RoundedBox(5, 0, 1, w, h, Color(0, 0, 0, 155))
+		draw.RoundedBox(5, 0, 1, w, h - off, Color(184, 53, 64, 255))
 		if pnl.Disabled then
-			draw.RoundedBox(15, 0, 1, w, h, Color(25,25,25, 255))
+			draw.RoundedBox(5, 0, 1, w, h, Color(25,25,25, 255))
 		elseif pnl.Hovered then
-			draw.RoundedBox(15, 0, 1, w, h, Color(184, 53, 64, 255))
+			draw.RoundedBox(5, 0, 1, w, h - off, Color(184, 53, 64, 255))
 		end
 
 	end

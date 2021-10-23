@@ -28,4 +28,3 @@ function ChatAddText(...)
 	net.Broadcast()
 
 end
-

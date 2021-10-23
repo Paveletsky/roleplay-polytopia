@@ -2,18 +2,17 @@
 -- hello world 
 --
 
-LP = FindMetaTable( 'Player' )
-
 local pl = LocalPlayer()
 
-local data_char = pon.decode( pl:GetNetVar( 'character' ) )
+local data_char = pon.decode( pl:GetNetVar( 'characters' ) )
 
-function LP:mainMenu( )
+function polychars.mainMenu( ply )
+
+        hook.Add('CalcView', 'flyover', flyover)
 
     if IsValid(MENU) then MENU:Remove() end
 
     mainFr = vgui.Create 'DFrame'
-
         MENU = mainFr
 
     mainFr:SetSize( 500, 700 )
@@ -21,6 +20,8 @@ function LP:mainMenu( )
     mainFr:Center()
 
     mainFr:MakePopup()
+
+    mainFr:SetDraggable( false )
 
     mainFr:SetTitle('Меню персонажей')
 
@@ -58,24 +59,65 @@ function LP:mainMenu( )
 
 	lst:AddColumn( 'Модель' )
 
-
-    mdl = lst:Add 'DModelPanel'
-
-    mdl:SetSize( 50, 50 )
-
-    mdl:SetPos( 0, 15 )
-
-    mdl:SetFOV( 20 )
-
-    mdl:SetLookAt( Vector( 0, 0, 60 ) )
-
-    mdl:SetModel( data_char.skin )
+    lst:SetMultiSelect( false )
 
     	lst:AddColumn( 'Имя персонажа' )
 
     	lst:AddColumn( 'Описание' )
 
-    lst:AddLine( '', data_char.name, data_char.desc )
+        local y = 15
+
+            for k, v in pairs( data_char ) do
+            
+                mdl = lst:Add 'DModelPanel'
+
+                mdl:SetSize( 50, 50 )
+
+                mdl:SetPos( 0, y )
+
+                mdl:SetFOV( 20 )
+
+                mdl:SetLookAt( Vector( 0, 0, 60 ) )
+
+                mdl:SetModel( v.skin )
+
+                y = y + mdl:GetTall()
+                
+                lst:AddLine( '', v.name, v.desc )
+            
+                lst.OnRowRightClick = function( lineID, line )
+
+                    local m = DermaMenu()
+
+                    m:AddOption("Взять персонажа", function()
+
+                        netstream.Start( 'polychar.pickCharacter', data_char[line].name, data_char[line].desc, data_char[line].skin, data_char[line].bgroups )
+                        hook.Remove( 'CalcView', 'flyover' )
+                            hook.Add('HUDPaint', 'library-hud', function()
+                                drawPlrs()
+                                drawGui()
+                            end)
+                        mainFr:Close()
+
+                    end):SetImage("icon16/user.png")
+
+                    m:AddOption("Удалить", function()
+
+                        Derma_Query( 'Вы уверены, что хотите удалить этого персонажа? Восстановить ничего уже не получится!', 'Подтвердить удаление', 'Подтвердить', function() 
+                                    
+                                    netstream.Start( 'polychar.deleteCharacter', line )
+                                    lst:RemoveLine( line )
+                                    mdl:SetModel('')
+                                    
+                            end, 'Отменить' )
+
+                    end):SetImage("icon16/user_delete.png")
+
+                    m:Open()
+
+                end
+
+            end
 
     lst:SetDataHeight( 50 )
 
@@ -84,20 +126,19 @@ function LP:mainMenu( )
     bar:AddSheet( "Персонаж", set, "icon16/cog.png", false, false, "Для вашего комфорта <3")
 
 	function but2:DoClick()
-		LocalPlayer():charMenu()
+		if #data_char == 3 then pl:polyMsg( 1, 'Больше персонажей вы создать не сможете.' ) return false else polychars.charMenu() end
 	end
 
 	function but1:DoClick()
-        mainFr:Remove()
-        lst:Refresh()
-        timer.Simple( 0.4, function() pl:mainMenu() end)
+        mainFr:Close()
+        polychars.mainMenu()
 	end
 
 end
 
 
 
-function LP:charMenu()
+function polychars.charMenu()
 
 	if charFr then charFr:Remove() end
 	
@@ -142,7 +183,7 @@ function LP:charMenu()
 
     namName:SetFont('lib.notify')
 
-    namName:SetText( data_char.name )
+    namName:SetText( 'Введите имя' )
 
     namName:SetSize( 300, 22 )
 
@@ -160,7 +201,7 @@ function LP:charMenu()
 
     namDesc:SetFont('lib.notify')
 
-    namDesc:SetText( data_char.desc or 'Описания нет' )
+    namDesc:SetText( 'Введите описание' )
 
 	namDesc:SetMultiline( true )
 
@@ -239,7 +280,7 @@ function LP:charMenu()
 
                 v:Remove()
 
-                charFr:Refresh()
+                charFr:Refresh( true )
                 
             end
 
@@ -293,10 +334,12 @@ function LP:charMenu()
             table.insert(bGrps,math.floor(v:GetValue()))
         end                            
 
-        PrintTable( bGrps )
-
         netstream.Start( 'changeChar2', namName:GetValue(), namDesc:GetValue(), mdl.Entity:GetModel(), mdl.Entity:GetModelScale(), bGrps )
-    
+
+        local i = 1
+
+        lst:AddLine( '', namName:GetValue(), namDesc:GetValue() )            
+
         charFr:Remove()
 
     end
@@ -312,7 +355,10 @@ function LP:charMenu()
 
 end
 
-netstream.Hook( 'polychar.OpenMenu', mainMenu )
+netstream.Hook( 'polychar.openMain', polychars.mainMenu )
 
--- Entity(1):charMenu()
-Entity(1):mainMenu()
+polychars.mainMenu()
+
+-- print( Entity(1):GetNetVar( 'session_model' ) )
+
+concommand.Add( 'poly_chars', polychars.mainMenu )

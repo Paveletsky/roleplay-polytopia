@@ -111,10 +111,10 @@ do
 
 
 
-		function self.TextEntry:OnEnter()
+		function self.TextEntry:OnEnter( ... )
 
-				RunConsoleCommand( 'say', self:GetValue() )
-
+				chat.AddText({...})
+			
 			chat.Toggle()
 
 		end
@@ -317,20 +317,6 @@ hook.Add( 'HUDShouldDraw', 'HideChatbox', function(name)
 	end
 
 end)
-
-
-
-hook.Add( "ChatText", "serverNotifications", function( index, name, text, type )
-
-	if type == "joinleave" or type == "none" then
-
-		chat.InsertColor(Color(255,255,255,255))
-
-		chat.InsertText( text .. "\n" )
-
-	end
-
-end )
 
 
 

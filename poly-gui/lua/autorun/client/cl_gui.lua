@@ -15,7 +15,7 @@ surface.CreateFont('lib.descPls', {
 })
 
 local offsetA, offsetB = Vector(15,0,0), Angle()
-local function drawPlrs()
+function drawPlrs()
   local pos, ang = EyePos(), EyeAngles()
 	for i, ply in ipairs(ents.FindInCone(pos, ang:Forward(), 200, 0.9)) do
 		if ply:IsPlayer() and ply:Alive() and ply ~= LocalPlayer() then
@@ -41,8 +41,8 @@ local function drawPlrs()
 				local p = pos:ToScreen()
 				p.x, p.y = math.floor(p.x), math.floor(p.y)
 
-				local name = ply:GetNetVar('name') or 'Загружается...'
-				local desc = ply:GetNetVar( 'desc' )
+				local name = ply:GetNetVar('session_name') or 'Загружается...'
+				local desc = ply:GetNetVar( 'session_desc' )
 
 				draw.RoundedBox( 2, p.x - 150, p.y + 5, 300, 5, Color(0, 0, 0, 200))
 				draw.RoundedBox( 2, p.x - 150, p.y + 10, 300, 1, Color(250, 160, 0, 200))
@@ -55,7 +55,7 @@ local function drawPlrs()
 	end
 end
 
-local function drawGui()
+function drawGui()
 
 	local x, y = ScrW() / 300, ScrH() / 125
 	local ply = LocalPlayer()

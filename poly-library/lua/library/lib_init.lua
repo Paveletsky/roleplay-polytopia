@@ -66,22 +66,9 @@ hook.Add('PlayerInitialSpawn', 'lib.player-spawn', function( ply )
 
         timer.Remove( 'lib.player-init' )
 
-        netstream.Start( ply, 'lib.welcomeOpen' )
+        ply:getCharacters()
 
-            ply:changeTeam( 1, true, true )
-            ply:SetNoDraw(true);
-            ply:SetNotSolid(true);
-            ply:GodEnable();
-            ply:DrawWorldModel(false);
-            
-        if ( ply:IsBot() ) then
-                ply:SetNoDraw(false);
-                ply:SetNotSolid(false);
-                ply:GodDisable();
-                ply:DrawWorldModel(true);
-                ply:changeTeam( 2, true, true )
-            ply:loadModel()
-        end
+        netstream.Start( ply, 'lib.welcomeOpen' )
 
     end)
     
@@ -92,7 +79,7 @@ function GM:PostPlayerDeath( ply )
 end
 
 
-hook.Add('StartCommand', 'dbg-move', function(ply, cmd)
+hook.Add('StartCommand', 'move', function(ply, cmd)
 
     if cmd:KeyDown(IN_SPEED) or ply:IsSprinting() then
         local fwd = cmd:GetForwardMove()
@@ -129,4 +116,33 @@ if CLIENT then
     	end
 
     end)
+end
+
+
+// whitelist server
+
+if SERVER then
+
+    local allowed = {
+        [ "76561198021443322" ] = true,
+        [ '765611983308226091' ] = true,
+    }
+
+    hook.Add( "CheckPassword", "access_whitelist", function( steamID64 )
+        if not allowed[ steamID64 ] then
+            return false, "Сервер в разработке. Наш проект - https://discord.gg/tFYctGUXMA"
+        end
+    end )
+
+end
+
+if CLIENT then
+
+    concommand.Add( 'polychars_getmychars', function( ply )
+
+        print( #pon.decode( ply:GetNetVar 'characters'  ))
+        PrintTable( pon.decode( ply:GetNetVar 'characters' )) 
+
+    end)
+    
 end
