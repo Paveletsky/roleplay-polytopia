@@ -31,6 +31,7 @@ function library.module(path)
 	if file.Exists(path .. '/client.lua', 'LUA') then library.client(path .. '/client') end
 end
 
+library.shared('library/lib_init')
 
 library.shared('library/modules')
 
