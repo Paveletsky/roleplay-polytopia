@@ -190,8 +190,6 @@ function PANEL:OnMousePressed(key)
 
 	end):SetImage("icon16/user_edit.png")
 
-	m:AddSpacer()
-
 	m:AddOption("Отправить сообщение", function()
 
 		Derma_StringRequest("Отправить сообщение", "Введите текст", "", function(s)
@@ -203,8 +201,6 @@ function PANEL:OnMousePressed(key)
 	end):SetImage("icon16/user_comment.png")
 
 	if meh:isCP() then
-
-		m:AddSpacer()
 
 		m:AddOption("Уволить", function()
 

@@ -28,5 +28,3 @@ function ChatAddText(...)
 	net.Broadcast()
 
 end
-
-Entity(1):ChatAddText( 3,'Хуй' )
