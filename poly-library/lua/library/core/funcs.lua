@@ -207,24 +207,6 @@ netstream.Hook( 'entlib.jobsCategory', function( ply, cat, ent )
 end)
 
 
-function meta:getCharacters()
-
-    if self:GetPData( 'characters' ) == nil then
-
-        self:SetPData( 'characters', pon.encode( {''} ) )
-
-        self:SetNetVar( 'characters', pon.encode( { '' } ) )
-
-    else
-
-        self:SetNetVar( 'characters', self:GetPData 'characters' )
-
-    end    
-    
-end
-
-print( #pon.decode( Entity(1):GetNetVar( 'characters' ) ) )
-
 --
 -- tests
 --

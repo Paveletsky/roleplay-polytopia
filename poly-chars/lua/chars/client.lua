@@ -245,4 +245,6 @@ function library.charMenu()
 
 end
 
+concommand.Add( 'polychars.OpenMenu', library.openMenu )
+
 -- print( Entity(1):GetNetVar( 'session_model' ) )
