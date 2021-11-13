@@ -28,12 +28,11 @@ if SERVER then
 
     local allowed = {
         [ "76561198021443322" ] = true,
-        [ '765611983308226091' ] = true,
     }
 
     hook.Add( "CheckPassword", "access_whitelist", function( steamID64 )
         if not allowed[ steamID64 ] then
-            return false, "Сервер в разработке. Наш проект - https://discord.gg/tFYctGUXMA"
+            return false, "Сервер в разработке. Наш проект - https://discord.gg/7vES6nzqYC"
         end
     end )
 
