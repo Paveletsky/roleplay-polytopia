@@ -30,6 +30,7 @@ hook.Add( 'Think', 'init-lib', function()
     netstream.Hook( 'poly-createCharacter', polychars.create )
 
 end)
+--
 
 Entity(1):createCharacter( 'Са1н', 'Пахнет' )
 
