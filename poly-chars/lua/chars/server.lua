@@ -31,8 +31,6 @@ hook.Add( 'Think', 'init-lib', function()
 
 end) 
 
---
-
 -- Entity(1):createCharacter( 'Са1н', 'Пахнет' )
 
 -- PrintTable( Entity(1):getCharacters() )
