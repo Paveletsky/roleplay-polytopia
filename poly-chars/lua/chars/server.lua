@@ -10,6 +10,10 @@ hook.Add( 'Think', 'init-lib', function()
     end
 
     function GM:PlayerSpawn( ply )
+        local data = sql.Query( "SELECT * FROM polytopia_characters WHERE steamid = " .. sql.SQLStr( ply:SteamID() ) .. ";")
+        if data == nil then 
+            sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( ply:SteamID() ) .. ", " .. SQLStr( "" ) .. " )" )
+        end
         ply:SetNetVar( 'os_characters', sql.Query("SELECT * FROM polytopia_characters") )
     end
 
@@ -46,9 +50,28 @@ hook.Add( 'Think', 'init-lib', function()
 
     end
 
+    function PL:deleteCharacter( id )
+
+        for k, v in pairs( self:getCharacters() ) do
+            if ( v.chars == '' ) then
+                self:ChatPrint( 'Так-то у тебя нет персонажей.' )
+                return false
+            end
+            local cache = pon.decode( v.chars )
+            table.remove( cache, id ) 
+            sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( cache ) ) .. " )" )       
+        end        
+
+    end
+    
     concommand.Add( 'polychars.Create', function( ply, cmd, args )
         local rpname, desc = args[1], args[2]
         ply:createCharacter( rpname, desc )
+    end)
+
+    concommand.Add( 'polychars.Delete', function( ply, cmd, args )
+        local id = args[1]
+        ply:deleteCharacter( id )
     end)
 
 end)

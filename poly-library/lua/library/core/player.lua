@@ -34,7 +34,6 @@ hook.Add( 'Think', 'init-lib', function()
     function GM:PlayerInitialSpawn( ply )
         timer.Simple( 0.1, function()
             netstream.Start( ply, 'lib.welcomeOpen' )
-            sql.Query( "INSERT INTO IF NOT EXISTS polytopia_userdata( steamid , name ) VALUES( " .. sql.SQLStr(ply:SteamID()) .. " , " .. sql.SQLStr(ply:Nick()) .. " )" )
         end)
     end
 
