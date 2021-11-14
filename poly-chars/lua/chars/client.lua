@@ -8,6 +8,7 @@ hook.Add( 'Think', 'init-lib', function()
 
     function library.openMenu()
 
+        hook.Remove( 'HUDPaint', 'library-hud')
         hook.Add( 'CalcView', 'lib-flycam', flycam )
         netstream.Start( 'lib-lockplayer' )
 
@@ -18,6 +19,7 @@ hook.Add( 'Think', 'init-lib', function()
 
         mainFr:SetSize( 500, 700 )
         mainFr:Center()
+        mainFr:ShowCloseButton( false )
         mainFr:MakePopup()
         mainFr:SetDraggable( false )
         mainFr:SetTitle('Меню персонажей')
