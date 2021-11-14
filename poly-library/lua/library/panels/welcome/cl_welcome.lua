@@ -15,7 +15,7 @@ function flycam( ply, pos, ang, fov )
 
 end
 
-local function startWelcome()
+function startWelcome()
 
     hook.Add( 'CalcView', 'lib-flycam', flycam )
 
@@ -83,8 +83,6 @@ local function startWelcome()
     goBut:SetTextColor( Color( 0, 0, 0 ) )
     goBut.DoClick = function(ply)
         RunConsoleCommand( 'polychars.OpenMenu' )
-                -- netstream.Start( 'lib-unlockplayer' )
-            -- hook.Remove( 'CalcView', 'flyover' )
         goMen:Remove()
     end
 
@@ -118,7 +116,7 @@ local function startWelcome()
             pos = { ScrW() / 5+10, -6 },
             xalign = TEXT_ALIGN_CENTER,
             color = Color(0, 0, 0)
-		} 
+        } 
     end
 
 end
@@ -131,14 +129,9 @@ netstream.Hook( 'lib.unspawnState', function()
     hook.Remove( 'CalcView', 'flyover' )
 end)
 
-netstream.Hook( 'lib.welcomeOpen', startWelcome )
+hook.Add( 'Think', 'welcome-onNewUser', function()
+    hook.Remove( 'Think', 'welcome-onNewUser' )
 
-netstream.Hook( 'lib.welcomeMsg', function( ply )
-
-    local time = os.date( "%H:%M:%S" , os.time() )
-
-    chat.AddText( color_types[1], '[~]', Color(249, 174, 71), ' Вы проснулись. На часах ' .. time .. '.' .. ' На улице шумно.' )
+    startWelcome()
 
 end)
-
-startWelcome()

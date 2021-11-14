@@ -61,32 +61,19 @@ hook.Add( 'Think', 'init-lib', function()
         end        
     end
 
-    function PL:changeCharacter( ply, rpname, desc, scale, skin, bg )
-        ply:Spawn()
-        timer.Simple( 3, function()
-            ply:SetNetVar( 'session_name', rpname )
-            ply:SetNetVar( 'session_desc', desc )
-
-            ply:SetPos( library.randSpawn() )
-            ply:changeTeam( 1, true, true )
-            ply:SetModel( skin )
-            ply:SetModelScale( scale )
-            
-            local i = 1
-            for k, v in pairs( ply:GetBodyGroups() ) do
-                ply:SetBodygroup( v['id'], tonumber( bg[i] ) )
-                    i = i + 1
-            end
-        end)
-    end
+    -- print( Entity(1):GetNetVar( 'os_characters' ) )
 
     netstream.Hook( 'polychars.Pick', function( ply, rpname, desc, scale, skin, bg ) 
-        ply:Spawn()
-        timer.Simple( 0.2, function()
+        ply:SetPos( library.randSpawn() )
+
+        timer.Create( 'lib-charPick', 0.2, 1, function()
+            timer.Remove( 'lib-charPick' )
+            
+            ply:UnlockPlayer()
+
             ply:SetNetVar( 'session_name', rpname )
             ply:SetNetVar( 'session_desc', desc )
 
-            ply:SetPos( library.randSpawn() )
             ply:SetTeam( 2 )
             ply:SetModel( skin )
             ply:SetModelScale( scale )
@@ -97,11 +84,15 @@ hook.Add( 'Think', 'init-lib', function()
             for k, v in pairs( ply:getJobTable()['weapons'] ) do
                 ply:Give( v )
             end
+            
+            local time = os.date( "%H:%M:%S" , os.time() )
+            ply:ChatPrint( 'Вы проснулись. На часах ' .. time .. '.' .. ' На улице шумно.'  )
+            
         end)
     end)
 
     netstream.Hook( 'testBG', function( ply, bg ) 
-        timer.Simple( 0.4, function()    
+        timer.Create( 'lib-charPickBG', 0.2, 1, function()
             local a = 1
             for l, p in pairs( ply:GetBodyGroups() ) do
                 ply:SetBodygroup( p['id'], tonumber( bg[a] ) )

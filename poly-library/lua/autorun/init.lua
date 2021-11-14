@@ -4,7 +4,6 @@ library = library or {}
 -- подключение библиотеки
 --
 
-
 function library.server(path)
 	path = path .. '.lua'
 	if SERVER then include(path) end
@@ -32,6 +31,7 @@ function library.module(path)
 end
 
 library.shared('library/modules')
+
 
 if SERVER then
 

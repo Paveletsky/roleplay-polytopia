@@ -48,8 +48,7 @@ hook.Add( 'Think', 'init-lib', function()
         local y = 15
         
         local cache = pl:GetNetVar( 'os_characters' )
-
-        if cache != nil then
+        -- if cache != '' then
             for k, v in pairs( cache ) do
                 local charList = pon.decode( v.chars )
                 local glList = pon.decode( v.chars )
@@ -97,11 +96,9 @@ hook.Add( 'Think', 'init-lib', function()
                     end
                     
                 end
-                
             end      
-        end
+        -- end
         
-
         bar:AddSheet( "Персонаж", set, "icon16/cog.png", false, false, "Для вашего комфорта <3")
 
         function but2:DoClick()
