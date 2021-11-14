@@ -61,8 +61,6 @@ hook.Add( 'Think', 'init-lib', function()
         end        
     end
 
-    -- print( Entity(1):GetNetVar( 'os_characters' ) )
-
     netstream.Hook( 'polychars.Pick', function( ply, rpname, desc, scale, skin, bg ) 
         ply:SetPos( library.randSpawn() )
 
