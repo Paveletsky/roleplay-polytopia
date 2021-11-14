@@ -13,53 +13,42 @@ hook.Add( 'Think', 'init-lib', function()
         ply:SetNetVar( 'os_characters', sql.Query("SELECT * FROM polytopia_characters") )
     end
 
-    function PL:getCharacters(steamid)
-        local val = sql.Query("SELECT * FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) )
+    function PL:getCharacters()
+        local val = sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) )
         return val
     end
 
     function PL:createCharacter( rpname, desc )
-        local data = self:getCharacters()[1].chars
-        data = {
-            rpname = rpname,
-            desc = desc,
-        }
-        sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( data ) ) .. " )" )
+
+        local cache = {}
+        for k, v in pairs( self:getCharacters() ) do
+            if ( v.chars != '' and #pon.decode(v.chars) == 3 ) then
+                return false 
+            end
+
+            if ( v.chars == '' ) then
+                cache[#cache+1] = {
+                    rpname = rpname,
+                    desc = desc,
+                }
+                sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( cache ) ) .. " )" )
+            end
+
+            if ( v.chars != '' ) then
+                cache = pon.decode( v.chars )
+                cache[#cache+1] = {
+                    rpname = rpname,
+                    desc = desc,
+                }
+                sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( cache ) ) .. " )" )
+            end
+        end
+
     end
 
-    netstream.Hook( 'poly-createCharacter', polychars.create )
+    concommand.Add( 'polychars.Create', function( ply, cmd, args )
+        local rpname, desc = args[1], args[2]
+        ply:createCharacter( rpname, desc )
+    end)
 
-end) 
-
--- Entity(1):createCharacter( 'Са1н', 'Пахнет' )
-
--- PrintTable( Entity(1):getCharacters() )
-
-
--- local tbl = {
---     ['STEAM:2281337']   = {
---         chars = {},
---     },
---     ['STEAM:1337ХУЙ']   = {
---         chars = {},
---     }
--- }
-
--- local function tblTest( name, desc )
---     tbl[''] = pon.encode({
---         name = name,
---         desc = desc,
---     })
---     return tbl
--- end
-
--- local function deleteChar( id )
---     table.remove( tbl, id )
---     return tbl
--- end
-
--- -- tblTest( 'Сашка Хохлякин', "Мертвый внутри" )
--- -- tblTest( 'Костечка Злякин', "На него нельзя пукать" )
--- -- tblTest( 'Данилка Плакин', "Любит плакать в доте" )
-
--- PrintTable(tbl)
+end)
