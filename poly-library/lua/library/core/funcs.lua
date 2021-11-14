@@ -1,6 +1,6 @@
 local meta = FindMetaTable( 'Player' )
 
-CFGspPos = {
+LIB_CONFIG_POSITIONS = {
 
     '-5710, -328, -42',
 
@@ -18,7 +18,7 @@ CFGspPos = {
 
 }
 
-namesTable = {
+LIB_CONFIG_RANDNAMES = {
 
 	'Джэк Старший',
 	
@@ -60,7 +60,7 @@ namesTable = {
 
 }
 
-descriptionList = {
+LIB_CONFIG_RANDDESCRIPTIONS = {
 
     'Парень, лицо побитое, на вид ему около 27 лет.',
 
@@ -79,9 +79,9 @@ descriptionList = {
 -- local functions
 --
 
-local function randSpawn()
+function library.randSpawn()
 
-    local pls = parseCoords( CFGspPos[math.random( #CFGspPos )] )
+    local pls = parseCoords( LIB_CONFIG_POSITIONS[math.random( #LIB_CONFIG_POSITIONS )] )
 
       local position = Vector( tonumber(pls[1]), tonumber(pls[2]), tonumber(pls[3]) )
 
@@ -151,17 +151,17 @@ end
 
 --     if self:GetPData( 'name' or 'desc' or 'mdl_skin' ) == nil then 
     
---         self:SetPData( 'name', table.Random( namesTable ) ) 
+--         self:SetPData( 'name', table.Random( LIB_CONFIG_RANDNAMES ) ) 
 
---             self:SetPData( 'desc', table.Random( descriptionList ) ) 
+--             self:SetPData( 'desc', table.Random( LIB_CONFIG_RANDDESCRIPTIONS ) ) 
 
 --                 self:SetPData( 'mdl_skin', table.Random( self:getJobTable()['model'] ) ) 
                 
 --                 -- netvars -- 
         
---             self:SetNetVar( 'name', table.Random( namesTable ) ) 
+--             self:SetNetVar( 'name', table.Random( LIB_CONFIG_RANDNAMES ) ) 
         
---         self:SetNetVar( 'desc', table.Random( descriptionList ) )
+--         self:SetNetVar( 'desc', table.Random( LIB_CONFIG_RANDDESCRIPTIONS ) )
 
 --     else
         

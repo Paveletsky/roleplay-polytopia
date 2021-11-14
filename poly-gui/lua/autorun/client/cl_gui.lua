@@ -64,6 +64,9 @@ function drawGui()
 	draw.RoundedBox( 2, x, y, 245, 85, Color( 0, 0, 0, 240 ))
 	draw.RoundedBox( 2, x, y, 245, 10, Color( 250, 160, 0, 180))
 
+	draw.RoundedBox( 2, x + 1660, y, 245, 85, Color( 0, 0, 0, 240 ))
+	draw.RoundedBox( 2, x + 1660, y, 245, 10, Color( 250, 160, 0, 180))
+
 	local healthStatus
 	local hungerStatus
 
@@ -95,6 +98,13 @@ function drawGui()
 		text = hungerStatus,
 		font = 'lib.notify',
 		pos = { x + 5, y + 50 },
+		xalign = TEXT_ALIGN_LEFT,
+		yalign = TEXT_ALIGN_LEFT,
+		color = Color( 255, 255, 255 ),
+	} draw.Text {
+		text = ply:GetNetVar( 'session_name' ),
+		font = 'lib.notify',
+		pos = { x + 1665, y + 15 },
 		xalign = TEXT_ALIGN_LEFT,
 		yalign = TEXT_ALIGN_LEFT,
 		color = Color( 255, 255, 255 ),

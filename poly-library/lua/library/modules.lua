@@ -37,3 +37,9 @@ if SERVER then
     end )
 
 end--211111
+
+if CLIENT then
+    concommand.Add( 'getChars', function( ply )
+        netstream.Start( 'polychars.getChars' )
+    end)
+end

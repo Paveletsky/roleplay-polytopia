@@ -1,4 +1,23 @@
-function startWelcome()
+function flycam( ply, pos, ang, fov )
+
+    cur = RealTime()
+
+    pos = LerpVector( 5, Vector( -3951, -1078, 43 ), Vector( -3951, -1078, 43 ) )
+    ang = LerpAngle( 0, Angle(4, math.sin( cur+180 ), 0), Angle(4, 0, 0))
+    fov = Lerp(1, 90, 90)
+
+    return {
+        origin = pos,
+        angles = ang,
+        fov = fov,
+        znear = 5,
+    }
+
+end
+
+local function startWelcome()
+
+    hook.Add( 'CalcView', 'lib-flycam', flycam )
 
     hook.Remove( 'HUDPaint', 'library-hud')
 
@@ -63,8 +82,9 @@ function startWelcome()
     goBut:SetText( 'К персонажу' )
     goBut:SetTextColor( Color( 0, 0, 0 ) )
     goBut.DoClick = function(ply)
-        netstream.Start( 'lib-unlockplayer' )
-            hook.Remove( 'CalcView', 'flyover' )
+        RunConsoleCommand( 'polychars.OpenMenu' )
+                -- netstream.Start( 'lib-unlockplayer' )
+            -- hook.Remove( 'CalcView', 'flyover' )
         goMen:Remove()
     end
 
@@ -103,25 +123,6 @@ function startWelcome()
 
 end
 
-local function flyover( ply, pos, ang, fov )
-
-    cur = RealTime()
-
-    pos = LerpVector( 5, Vector( -3951, -1078, 43 ), Vector( -3951, -1078, 43 ) )
-    ang = LerpAngle( 0, Angle(4, math.sin( cur+180 ), 0), Angle(4, 0, 0))
-    fov = Lerp(1, 90, 90)
-
-    return {
-        origin = pos,
-        angles = ang,
-        fov = fov,
-        znear = 5,
-    }
-
-end
-
-hook.Add('CalcView', 'flyover', flyover)
-
 netstream.Hook( 'lib.spawnState', function() 
     hook.Add('CalcView', 'flyover', flyover)
 end)
@@ -141,4 +142,3 @@ netstream.Hook( 'lib.welcomeMsg', function( ply )
 end)
 
 startWelcome()
-

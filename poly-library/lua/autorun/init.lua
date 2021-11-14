@@ -33,3 +33,16 @@ end
 
 library.shared('library/modules')
 
+if SERVER then
+
+	resource.AddWorkshop( '1363659220' ) -- survivor citizens
+	resource.AddWorkshop( '2097587957' ) -- post apoc. models
+	resource.AddWorkshop( '2078732967' ) -- alyx models
+	resource.AddWorkshop( '2563285523' ) -- ench. civilies
+	resource.AddWorkshop( '2136700990' ) -- army models
+
+	resource.AddWorkshop( '822313622' ) -- rp isolation
+
+	resource.AddWorkshop('2651123345') -- [~] Polytopia Assets - Icons
+
+end
