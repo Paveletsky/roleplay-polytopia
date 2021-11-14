@@ -36,7 +36,7 @@ if SERVER then
         end
     end )
 
-end--211111
+end
 
 if CLIENT then
     concommand.Add( 'getChars', function( ply )

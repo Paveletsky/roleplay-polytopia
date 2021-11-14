@@ -33,7 +33,7 @@ hook.Add( 'Think', 'init-lib', function()
             local data = sql.Query( "SELECT * FROM polytopia_characters WHERE steamid = " .. sql.SQLStr( ply:SteamID() ) .. ";")
             if data == nil then 
                 sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( ply:SteamID() ) .. ", " .. SQLStr( "" ) .. " )" )
-                return
+                return--
             end
             ply:SetNetVar( 'os_characters', sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr(ply:SteamID())) )
             ply:SetTeam( 2 )
