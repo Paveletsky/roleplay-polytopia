@@ -138,7 +138,7 @@ hook.Add( 'Think', 'init-lib', function()
         mdl:SetFOV( 30 )
         mdl:SetAmbientLight(Color(255, 150, 0, 150))
         mdl:SetAnimated( true )
-        mdl:SetModel( LocalPlayer():GetModel() )
+        mdl:SetModel( table.Random( LocalPlayer():getJobTable()['model'] ) )
 
         -- mdl:SetLookAt( Vector( 0,10,0 ) )
 

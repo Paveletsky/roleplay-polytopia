@@ -41,6 +41,9 @@ function library.playerInit( ply )
     ply:SetNetVar( 'os_characters', sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr(ply:SteamID())) )
 end
 
+function library.playerDisconnect( ply )
+end
+
 function GM:PlayerHurt( ply )
     ply:ScreenFade( SCREENFADE.IN, Color( 0, 0, 0, 253 ), 0.1, 0.1 )
 end
@@ -54,6 +57,6 @@ hook.Add( 'Think', 'init-player', function()
 
     hook.Add( 'PlayerSpawn', 'pl-spawn', library.PlayerSpawn )
     hook.Add( 'PlayerInitialSpawn', 'pl-init', library.playerInit )
-
+    hook.Add( 'PlayerDisconnected', 'pl-disconnect', library.playerDisconnect )
+    
 end)
-

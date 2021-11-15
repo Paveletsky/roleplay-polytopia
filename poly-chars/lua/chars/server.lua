@@ -20,8 +20,14 @@ hook.Add( 'Think', 'init-lib', function()
         local cache = {}
         for k, v in pairs( self:getCharacters() ) do
             if ( v.chars != '' and #pon.decode(v.chars) == 3 ) then
-                return false 
+                    self:ChatPrint( 'Так-то у тебя не может быть больше трех персонажей 0_o' )
+                return
             end
+            if scale < 1 or scale > 1.10 then 
+                self:ChatPrint( 'Некорректные значения.' ) 
+                return 
+            end
+
             if ( v.chars == '' ) then
                 cache[#cache+1] = {
                     rpname = rpname,
@@ -63,6 +69,50 @@ hook.Add( 'Think', 'init-lib', function()
         end        
     end
 
+    function PL:pickCharacter( id )
+        ply = self
+        ply:SetPos( library.randSpawn() )
+        timer.Create( 'lib-charPick', 0.2, 1, function()
+            timer.Remove( 'lib-charPick' )
+            for k, v in pairs( ply:getCharacters() ) do
+                local charTmp = pon.decode( v.chars )
+                local charId = pon.decode( v.chars )[id]
+                local a = 1
+
+                if not id or not charId then
+                    ply:ChatPrint("Такого персонажа не существует.")
+                    return
+                end
+
+                ply:UnlockPlayer()
+
+                ply:SetNetVar( 'session_name', charId.rpname )
+                ply:SetNetVar( 'session_desc', charId.desc )
+
+                ply:SetTeam( 2 )
+                ply:SetModel( charId.skin )
+                ply:SetModelScale( charId.scale )
+
+                ply:setDarkRPVar( 'Energy', charId.hunger )
+
+                ply:SetWalkSpeed( 100 )
+                ply:SetRunSpeed( 180 )
+
+                for k, v in pairs( ply:getJobTable()['weapons'] ) do
+                    ply:Give( v )
+                end
+                
+                for l, p in pairs( ply:GetBodyGroups() ) do
+                    ply:SetBodygroup( p['id'], tonumber( charId.bg[a] ) )
+                    a = a + 1
+                end
+
+                local time = os.date( "%H:%M:%S" , os.time() )
+                ply:ChatPrint( 'Вы проснулись. На часах ' .. time .. '.' .. ' На улице шумно.'  )
+            end
+        end)
+    end
+
     netstream.Hook( 'polychars.Pick', function( ply, id ) 
         ply:SetPos( library.randSpawn() )
         timer.Create( 'lib-charPick', 0.2, 1, function()
@@ -71,6 +121,11 @@ hook.Add( 'Think', 'init-lib', function()
                 local charTmp = pon.decode( v.chars )
                 local charId = pon.decode( v.chars )[id]
                 local a = 1
+
+                if not id or not charId then
+                    ply:ChatPrint("Такого персонажа не существует.")
+                    return
+                end
 
                 ply:UnlockPlayer()
 
