@@ -29,6 +29,7 @@ hook.Add( 'Think', 'init-lib', function()
                     scale = scale,
                     skin = skin,
                     bg = bg,
+                    hunger = 100,
                 }
                 sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( cache ) ) .. " )" )
                 self:SetNetVar( 'os_characters', sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr(self:SteamID())) )
@@ -40,7 +41,8 @@ hook.Add( 'Think', 'init-lib', function()
                     desc = desc,
                     scale = scale,
                     skin = skin,
-                    bg = bg,                    
+                    bg = bg,
+                    hunger = 100,                        
                 }
                 sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( cache ) ) .. " )" )
                 self:SetNetVar( 'os_characters', sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr(self:SteamID())) )
@@ -61,46 +63,46 @@ hook.Add( 'Think', 'init-lib', function()
         end        
     end
 
-    netstream.Hook( 'polychars.Pick', function( ply, rpname, desc, scale, skin, bg ) 
+    netstream.Hook( 'polychars.Pick', function( ply, id ) 
         ply:SetPos( library.randSpawn() )
-
         timer.Create( 'lib-charPick', 0.2, 1, function()
             timer.Remove( 'lib-charPick' )
-            
-            ply:UnlockPlayer()
+            for k, v in pairs( ply:getCharacters() ) do
+                local charTmp = pon.decode( v.chars )
+                local charId = pon.decode( v.chars )[id]
+                local a = 1
 
-            ply:SetNetVar( 'session_name', rpname )
-            ply:SetNetVar( 'session_desc', desc )
+                ply:UnlockPlayer()
 
-            ply:SetTeam( 2 )
-            ply:SetModel( skin )
-            ply:SetModelScale( scale )
+                ply:SetNetVar( 'session_name', charId.rpname )
+                ply:SetNetVar( 'session_desc', charId.desc )
 
-            ply:SetWalkSpeed( 100 )
-            ply:SetRunSpeed( 180 )
+                ply:SetTeam( 2 )
+                ply:SetModel( charId.skin )
+                ply:SetModelScale( charId.scale )
 
-            for k, v in pairs( ply:getJobTable()['weapons'] ) do
-                ply:Give( v )
+                ply:setDarkRPVar( 'Energy', charId.hunger )
+
+                ply:SetWalkSpeed( 100 )
+                ply:SetRunSpeed( 180 )
+
+                for k, v in pairs( ply:getJobTable()['weapons'] ) do
+                    ply:Give( v )
+                end
+                
+                for l, p in pairs( ply:GetBodyGroups() ) do
+                    ply:SetBodygroup( p['id'], tonumber( charId.bg[a] ) )
+                    a = a + 1
+                end
+
+                local time = os.date( "%H:%M:%S" , os.time() )
+                ply:ChatPrint( 'Вы проснулись. На часах ' .. time .. '.' .. ' На улице шумно.'  )
             end
-            
-            local time = os.date( "%H:%M:%S" , os.time() )
-            ply:ChatPrint( 'Вы проснулись. На часах ' .. time .. '.' .. ' На улице шумно.'  )
-            
         end)
     end)
 
-    netstream.Hook( 'testBG', function( ply, bg ) 
-        timer.Create( 'lib-charPickBG', 0.2, 1, function()
-            local a = 1
-            for l, p in pairs( ply:GetBodyGroups() ) do
-                ply:SetBodygroup( p['id'], tonumber( bg[a] ) )
-                a = a + 1
-            end
-        end)
-    end)
-
-    netstream.Hook( 'polychars.Create', function( ply, rpname, desc, scale, skin, bg ) 
-        ply:createCharacter( rpname, desc, scale, skin, bg )
+    netstream.Hook( 'polychars.Create', function( ply, rpname, desc, scale, skin, bg, hunger ) 
+        ply:createCharacter( rpname, desc, scale, skin, bg, hunger )
     end)
 
     netstream.Hook( 'polychars.Delete', function( ply, id ) 

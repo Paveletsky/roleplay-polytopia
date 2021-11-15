@@ -75,9 +75,9 @@ function drawGui()
 	if ply:Health() <= 30 and ply:Health() > 0 then healthStatus = 'На грани' end
 	if ply:Health() < 1 then healthStatus = 'Вы мертвы...' end
 
-	-- if ply:getDarkRPVar( 'Energy' ) <= 100 then hungerStatus = 'Полностью сыт' end
-	-- if ply:getDarkRPVar( 'Energy' ) <= 70 then hungerStatus = 'Умеренно голоден' end
-	-- if ply:getDarkRPVar( 'Energy' ) <= 20 then hungerStatus = 'Пора подкрепиться' end
+	if ply:getDarkRPVar( 'Energy' ) <= 100 then hungerStatus = 'Полностью сыт' end
+	if ply:getDarkRPVar( 'Energy' ) <= 70 then hungerStatus = 'Умеренно голоден' end
+	if ply:getDarkRPVar( 'Energy' ) <= 20 then hungerStatus = 'Пора подкрепиться' end
 
 	surface.SetDrawColor( 255, 255, 255, 255 ) -- Set the drawing color
 		surface.SetMaterial( Material( 'beyn/pulse.png' ) ) -- Use our cached material
@@ -147,6 +147,7 @@ local hideHUDElements = {
 	-- CHudCrosshair = true,
 	CHudHealth = true,
 	CHudBattery = true,
+	DarkRP_Hungermod = true,
 	CHudAmmo = true,
 	CHudSecondaryAmmo = true,
 }
