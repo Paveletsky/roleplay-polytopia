@@ -27,7 +27,9 @@ function n:DoClick()
         else m:Remove()
     end 
 end
+
 polyinv.open()
+
 function polyinv.open()
 
     if m then m:Remove() end 
