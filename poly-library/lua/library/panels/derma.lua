@@ -7,9 +7,9 @@ if CLIENT then
 	SKIN.PrintName = 'PolytopiaGM Skin'
 	SKIN.Author = 'Lasexille'
 
-	SKIN.fontFrame = 'library-hud.small'
-	SKIN.fontTab = 'library-hud.small'
-	SKIN.fontCategoryHeader = 'library-hud.small'
+	SKIN.fontFrame = ''
+	SKIN.fontTab = 'Trebuchet24'
+	SKIN.fontCategoryHeader = 'Trebuchet24'
 
 	SKIN.GwenTexture = Material('gwenskin/GModDefault.png')
 	SKIN.Shadow = GWEN.CreateTextureBorder(448, 0, 31, 31, 8, 8, 8, 8)
@@ -221,12 +221,12 @@ if CLIENT then
 		if pnl.Depressed then
 			draw.RoundedBox(4, w/2-8, h/2-7, 16, 16, Color(171, 0, 14, 255))
 			if pnl.Hovered then
-				draw.SimpleText( 'X', 'library-hud.small', w / 2, h / 2, Color(0,0,0, 120), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+				draw.SimpleText( 'X', 'Trebuchet24', w / 2, h / 2, Color(0,0,0, 120), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 			end
 		else
 			draw.RoundedBox(4, w / 4, h/2-9, 19, 18, Color(171, 0, 14, 255))
 			if pnl.Hovered then
-				draw.SimpleText( 'X', 'library-hud.small', w / 2 + 2.2, h / 2, Color(0,0,0, 120), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+				draw.SimpleText( 'X', 'Trebuchet24', w / 2 + 2.2, h / 2, Color(0,0,0, 120), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 			end
 		end
 
@@ -408,7 +408,7 @@ function SKIN:PaintMenuOption( pnl, w, h )
 	end
 
 	if pnl:GetChecked() then
-		draw.SimpleText(utf8.char(0xf00c), 'library-hud.small', 16, h/2, Color(255,255,255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText(utf8.char(0xf00c), 'Trebuchet24', 16, h/2, Color(255,255,255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		-- draw.RoundedBox(4, 0, 0, w, h, cols.o)
 	end
 

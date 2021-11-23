@@ -26,9 +26,8 @@ function ChatAddText(...)
 
 end
 
-function polychat.notify( typ, msg )
+function PLAYER:polychatNotify( typ, msg )
 
-	local to = player.GetAll()
-	netstream.Start( to, 'poly.sendNotify', typ, msg )
+	netstream.Start( self, 'poly.sendNotify', typ, msg )
 
 end
