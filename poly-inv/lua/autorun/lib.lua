@@ -1,6 +1,6 @@
 polyinv = polyinv or {}
 
-print '[~] LIB - Inventory Init.'
+print '[~] LIB - Inventory Init.' --
 
 include "inv/shared.lua"
 
