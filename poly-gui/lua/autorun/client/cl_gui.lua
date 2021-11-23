@@ -64,8 +64,8 @@ function drawGui()
 	draw.RoundedBox( 2, x, y, 245, 85, Color( 0, 0, 0, 240 ))
 	draw.RoundedBox( 2, x, y, 245, 10, Color( 250, 160, 0, 180))
 
-	draw.RoundedBox( 2, x + 1660, y, 245, 85, Color( 0, 0, 0, 240 ))
-	draw.RoundedBox( 2, x + 1660, y, 245, 10, Color( 250, 160, 0, 180))
+	-- draw.RoundedBox( 2, x, y, 245, 85, Color( 0, 0, 0, 240 ))
+	-- draw.RoundedBox( 2, x, y, 245, 10, Color( 250, 160, 0, 180))
 
 	local healthStatus
 	local hungerStatus
@@ -101,33 +101,24 @@ function drawGui()
 		xalign = TEXT_ALIGN_LEFT,
 		yalign = TEXT_ALIGN_LEFT,
 		color = Color( 255, 255, 255 ),
-	} draw.Text {
-		text = ply:GetNetVar( 'session_name' ),
-		font = 'lib.notify',
-		pos = { x + 1665, y + 15 },
-		xalign = TEXT_ALIGN_LEFT,
-		yalign = TEXT_ALIGN_LEFT,
-		color = Color( 255, 255, 255 ),
-	} 
+	}
 
 	if ply:IsAdmin() then
-
 		draw.Text {
 			font = "Trebuchet24",
 			text = "Ранг администратора",
-			pos = { left * 4.5, top * 4.3 },
-			xalign = TEXT_ALIGN_CENTER,
-			yalign = TEXT_ALIGN_CENTER,
+			pos = { ScrW() / 60 - 15, ScrH() / 1.068 },
+			xalign = TEXT_ALIGN_LEFT,
+			yalign = TEXT_ALIGN_LEFT,
 			color = Color(255, 255, 255, (math.sin(CurTime()) + 0.1) * 155)
 		} draw.Text {
 			font = "Trebuchet24",
 			text = "Не забывайте следить за сервером!",
-			pos = { left * 4.5, top * 4.41 },
-			xalign = TEXT_ALIGN_CENTER,
-			yalign = TEXT_ALIGN_CENTER,
+			pos = { ScrW() / 60 - 15, ScrH() / 1.04 },
+			xalign = TEXT_ALIGN_LEFT,
+			yalign = TEXT_ALIGN_LEFT,
 			color = Color(255, 255, 255, (math.sin(CurTime()) + 0.1) * 155)
 		}
-
 	end
 
 end

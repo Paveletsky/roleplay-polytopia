@@ -16,9 +16,11 @@ surface.CreateFont( 'ChatHudFont', {
 
 local PANEL = {}
 
+-- chat.Panel:Remove()
+
 function PANEL:Init()
-	self:SetSize(ScrW() * 0.25, ScrH() * 0.5)
-	self:SetPos( ScrW() * 0.745, ScrH() * 0.495)
+	self:SetSize( 500, ScrH() * 0.60)
+	self:SetPos( ScrW() / 1.65, ScrH() / 2.55 )
 	self:SetTitle(GetHostName())
 	self:SetSizable( true )
 	self:SetScreenLock(true)
@@ -49,7 +51,7 @@ function PANEL:Init()
 	end
 
 	function self.TextEntry:OnEnter()
-			RunConsoleCommand( 'say', self:GetValue() )
+			LocalPlayer():ConCommand( 'say ' .. self:GetValue() )
 		chat.Toggle()
 	end
 
@@ -190,7 +192,6 @@ function chat.AddText(...)
 
 	return oldChatAddText(...)
 end
-
 
 timer.Simple(0.3, function()
 	chat.Toggle()
