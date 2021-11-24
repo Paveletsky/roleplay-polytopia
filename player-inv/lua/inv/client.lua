@@ -147,6 +147,17 @@ function polyinv.open()
             m:AddOption("О предмете", function()
                 polyinv.info( data_inv )
             end):SetImage("icon16/user.png")
+
+            if data_inv.use then
+                m:AddOption("Использовать", function()
+
+                end):SetImage("icon16/user.png")
+            end
+
+            m:AddOption("Выкинуть", function()
+                --
+            end):SetImage("icon16/user.png")
+
             m:Open()
         end
 

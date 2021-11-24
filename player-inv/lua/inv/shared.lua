@@ -12,6 +12,7 @@ polyinv.registerItem({
     max = 2,
     logo = 'poly/cake.png',
     weight = 0.01,
+    use = true,
 })
 
 polyinv.registerItem({
@@ -19,6 +20,7 @@ polyinv.registerItem({
     class = 'lol',
     max = 100,
     weight = 0.07,
+    use = false,
 })
 
 -- Entity(1):giveItem( 'arrest_stick' )

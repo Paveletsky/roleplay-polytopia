@@ -20,6 +20,10 @@ function PL:giveItem( class )
     table.insert( self.cache_inv, class )
 end
 
+function PL:useItem()
+
+end
+
 function PL:getCount( class )
     local i = 0
     for k, v in pairs( self.cache_inv ) do
