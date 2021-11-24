@@ -28,7 +28,7 @@ function polyinv.open()
     if m then m:Remove() end 
 
     m = vgui.Create 'DFrame'
-    m:SetSize( 550, 300 )
+    m:SetSize( 900, 500 )
     m:Center()
     m:MakePopup()
     m:AlignTop( 70 )

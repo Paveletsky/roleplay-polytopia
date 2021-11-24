@@ -18,15 +18,10 @@ function PL:giveItem( class )
     table.insert( self.cache_inv, class )
 end
 
--- polyinv.registerItem({
---     class = 'lol',
---     max = 2,
--- })
-
 -- Entity(1):giveItem( 'arrest_stick' )
 
 -- Entity(1):initInventory()
-Entity(1):giveItem( 'lol' )
+-- Entity(1):giveItem( 'lol' )
 
 -- PrintTable( Entity(1).cache_inv )
 -- PrintTable( polyinv.List )
