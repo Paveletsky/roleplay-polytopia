@@ -25,7 +25,7 @@ n:SetMaterial( 'poly/fedora.png', 'smooth' )
 function polyinv.info( data )
     if inf then inf:Remove() end
     inf = vgui.Create 'DFrame'
-    inf:SetSize( 400, 150 )
+    inf:SetSize( 300, 150 )
     inf:MakePopup()
     inf:Center() 
     inf:AlignTop( 100 )
@@ -46,14 +46,20 @@ function polyinv.info( data )
     function logo:Paint(w, h)
         if data.logo then
             draw.RoundedBox( 8, 0, 0, w, h, Color( 240, 240, 240, 255 ))
-        	surface.SetDrawColor( 70, 70, 70, 100 )
-            surface.DrawOutlinedRect( 0, 0, w, h, 8 )
+        	surface.SetDrawColor( 70, 70, 70, 150 )
+            surface.DrawOutlinedRect( 0, 0, w, h, 5 )
 
-            surface.SetMaterial( Material( data.logo ) )
-            surface.SetDrawColor(255, 255, 255)
+            surface.SetMaterial( Material( data.logo, 'smooth' ) )
+            surface.SetDrawColor( 230, 230, 230, 255)
             surface.DrawTexturedRect(11, 11, w-20, h-20)
         else
-            draw.DrawText( 'data.name', 'polyfont.sm', 0, 0, color_white )
+            draw.RoundedBox( 8, 0, 0, w, h, Color( 240, 240, 240, 255 ))
+        	surface.SetDrawColor( 70, 70, 70, 150 )
+            surface.DrawOutlinedRect( 0, 0, w, h, 5 )
+
+            surface.SetMaterial( Material( 'poly/cart.png', 'smooth' ) )
+            surface.SetDrawColor(255, 255, 255)
+            surface.DrawTexturedRect(11, 11, w-20, h-20)
         end
     end
 
@@ -87,7 +93,16 @@ function polyinv.open()
     local mdl = md:Add 'DModelPanel'
     mdl:Dock(FILL)
     mdl:SetModel( LocalPlayer():GetModel() )
-    mdl:SetFOV( 60 )
+    mdl:SetFOV( 20 )
+    local headpos = mdl.Entity:GetBonePosition(mdl.Entity:LookupBone("ValveBiped.Bip01_Spine"))
+    mdl:SetCamPos( Vector( 50, 0, 80 ) )
+    mdl:SetLookAt(headpos - Vector( 0, -2, -15 ))
+
+    function mdl:LayoutEntity( ent )
+        ent:SetEyeTarget( Vector( gui.MouseY(), -gui.MouseY(), gui.MouseX() - 500 ) )
+        ent:SetSequence( ent:LookupSequence( 'pose_standing_01' ) )
+        mdl:RunAnimation()
+    end
 
     local pr = m:Add 'DProgress'
     pr:SetSize( 0, 15 )

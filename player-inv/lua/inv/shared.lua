@@ -12,7 +12,6 @@ polyinv.registerItem({
     max = 2,
     logo = 'poly/cake.png',
     weight = 0.05,
-    desc = 'Обычная палочка =)',
 })
 
 polyinv.registerItem({
