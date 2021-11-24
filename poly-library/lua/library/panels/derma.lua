@@ -328,10 +328,8 @@ function SKIN:PaintMenu( pnl, w, h )
 	surface.DisableClipping(true)
 	surface.DisableClipping(false)
 
-	draw.RoundedBox(10, 0, 0, w, h, Color(20, 20, 20, 255))
-	
-	surface.SetDrawColor( 40, 40, 40, 200 )
-	surface.DrawOutlinedRect( 0, 0, w, h )
+	draw.RoundedBox(2, 0, 0, w, h, Color(20, 20, 20, 255))
+	draw.RoundedBox(2, 0, -h + 1, w, h, Color(235, 130, 19, 255))
 
 end
 

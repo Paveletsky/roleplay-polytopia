@@ -18,6 +18,8 @@ function PL:giveItem( class )
     table.insert( self.cache_inv, class )
 end
 
+-- Entity(1):Spawn()
+
 -- Entity(1):giveItem( 'arrest_stick' )
 
 -- Entity(1):initInventory()
