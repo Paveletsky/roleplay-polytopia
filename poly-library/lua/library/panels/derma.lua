@@ -149,7 +149,7 @@ if CLIENT then
 		-- end
 
 		draw.RoundedBox(0, 0, 0, w, h, Color(25, 25, 25, 255))
-		draw.RoundedBoxEx(1, 0, 0, w, 24, Color(235, 130, 19, 120), true, true, false, false)
+		draw.RoundedBoxEx(1, 0, 0, w, 23, Color(250, 160, 0, 170), true, true, false, false)
 
 	end
 
@@ -213,6 +213,7 @@ if CLIENT then
 		end
 
 	end
+	
 
 	function SKIN:PaintWindowCloseButton(pnl, w, h)
 
@@ -245,6 +246,20 @@ function SKIN:PaintPropertySheet(pnl, w, h)
 
 	draw.RoundedBox(4, 0, 2, w, h-2, Color(25,25,25, 240))
 	draw.RoundedBoxEx(4, 0, 2, w, 18, Color(0,0,0, 240), true, true, false, false)
+
+end
+
+function SKIN:PaintProgress(pnl, w, h)
+
+	local y = h / 2 - 9
+	draw.RoundedBox(7, 0, y, w, 18, Color( 184, 53, 64, 20 ))
+	local fr = pnl:GetFraction()
+	if fr > 0 then
+		draw.RoundedBox(7, 1, y + 1, (w-18) * fr + 16, 16, Color(250, 160, 0, 170) )
+	end
+	if fr > 0.70 then
+		draw.RoundedBox(7, 1, y + 1, (w-18) * fr + 16, 16, Color(184, 53, 64, 240) )
+	end
 
 end
 

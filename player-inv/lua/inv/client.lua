@@ -7,11 +7,11 @@ surface.CreateFont( "polyfont.sm", {
 local sw, sh = ScrW(), ScrH()
 local ply = LocalPlayer()
 
-netstream.Hook( 'polyinv.initialize', function( ply ) 
+netstream.Hook( 'polyinv.initialize', function() 
     ply.cache_inv = {}
 end)
 
-netstream.Hook( 'polyinv.giveItem', function( ply, class )
+netstream.Hook( 'polyinv.giveItem', function( class )
     table.insert( ply.cache_inv, class )
 end)
 
@@ -21,16 +21,9 @@ n:Center()
 n:SetSize( 70, 70 )
 n:AlignTop( 10 )
 n:SetMaterial( 'poly/fedora.png', 'smooth' )
-function n:DoClick()
-    if !IsValid( m ) then
-        polyinv.open()
-        else m:Remove()
-    end 
-end
-
-polyinv.open()
 
 function polyinv.open()
+    local list_inv = ply.cache_inv
 
     if m then m:Remove() end 
 
@@ -52,7 +45,18 @@ function polyinv.open()
 
     local pr = m:Add 'DProgress'
     pr:SetSize( 0, 15 )
+    local fraq = 0
+    for k, v in pairs( ply.cache_inv ) do
+        local data_inv = polyinv.List[v].weight
+        fraq = fraq + data_inv
+    end
+
+    pr:SetFraction( fraq )
     pr:Dock(BOTTOM)
+
+    local tx = pr:Add 'DLabel'
+    tx:SetText( pr:GetFraction() )
+    tx:SetPos( 140, -2 )
 
     local scr = m:Add 'DScrollPanel'
     scr:Dock(FILL)
@@ -63,20 +67,25 @@ function polyinv.open()
     gr:SetCols( 4 )
     gr:SetRowHeight( 70 )
     gr:SetColWide( 70 )
-
-    for i = 1, 6 do
-        -- if i == 0 then
-        --     local nfy = m:Add 'DLabel'
-        --     nfy:SetText( '1' )
-        -- end
-
+    for k, class in pairs(list_inv) do
+        local data_inv = polyinv.List[class]
         local it = gr:Add 'DPanel'
         it:SetSize( 60, 60 )
         gr:AddItem( it )
         function it:Paint( w, h )
             draw.RoundedBox( 5, 0, 0, w, h, color_white )
-            draw.SimpleText( 'Item ' .. i, 'polyfont.sm', 1, 20, color_black, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+            draw.SimpleText( data_inv.name, 'polyfont.sm', 1, 20, color_black, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         end
     end
 
 end
+
+function n:DoClick()
+    if !IsValid( m ) then
+            polyinv.open()
+        else m:Remove()
+    end 
+end
+
+netstream.Hook( 'polyinv.openMenu', polyinv.open )
+-- PrintTable( polyinv.List )
