@@ -2,7 +2,13 @@ surface.CreateFont( "polyfont.sm", {
 	font = "Calibri", --  Use the font-name which is shown to you by your operating system Font Viewer, not the file name
 	extended = false,
 	size = 25,
-} )
+})
+
+surface.CreateFont( "polyfont.vsm", {
+	font = "Calibri", --  Use the font-name which is shown to you by your operating system Font Viewer, not the file name
+	extended = false,
+	size = 18,
+})
 
 local sw, sh = ScrW(), ScrH()
 local ply = LocalPlayer()
@@ -73,18 +79,17 @@ function polyinv.info( data )
     end
 end
 
--- polyinv.info( data )
-
 function polyinv.open()
     local list_inv = ply.cache_inv
     if m then m:Remove() end 
 
     m = vgui.Create 'DFrame'
     m:SetSize( 600, 400 )
-    m:Center()
     m:MakePopup()
-    m:AlignTop( 70 )
-    m:MoveTo( ScrW() / 2 - m:GetWide() / 2, 100, 0.4, 0, -1 )
+    m:SetTitle( 'Рюкзак' )
+    m:Center()
+    m:AlignLeft(0)
+    m:MoveTo( ScrW() / 2 - m:GetWide() - 300, ScrH() / 2 - m:GetTall() / 2, 0.4, 0, -1 )
 
     local md = m:Add 'DPanel'
     md:Dock( RIGHT )
@@ -116,8 +121,11 @@ function polyinv.open()
     pr:Dock(BOTTOM)
 
     local tx = pr:Add 'DLabel'
-    tx:SetText( pr:GetFraction() )
-    tx:SetPos( 140, -2 )
+    tx:SetText( '' )
+    tx:Dock(FILL)
+    function tx:Paint( w, h )
+        draw.SimpleText( pr:GetFraction() * 30 .. 'л', "polyfont.vsm", pr:GetSize() / 2, 6, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    end
 
     local scr = m:Add 'DScrollPanel'
     scr:Dock(FILL)

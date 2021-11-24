@@ -11,13 +11,13 @@ polyinv.registerItem({
     class = 'arrest_stick',
     max = 2,
     logo = 'poly/cake.png',
-    weight = 0.05,
+    weight = 0.01,
 })
 
 polyinv.registerItem({
     name = 'Тест',
     class = 'lol',
-    max = 1,
+    max = 100,
     weight = 0.07,
 })
 
