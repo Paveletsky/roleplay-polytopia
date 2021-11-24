@@ -250,7 +250,6 @@ function SKIN:PaintPropertySheet(pnl, w, h)
 end
 
 function SKIN:PaintProgress(pnl, w, h)
-
 	local y = h / 2 - 9
 	draw.RoundedBox(7, 0, y, w, 18, Color( 184, 53, 64, 20 ))
 	local fr = pnl:GetFraction()
@@ -260,7 +259,6 @@ function SKIN:PaintProgress(pnl, w, h)
 	if fr > 0.70 then
 		draw.RoundedBox(7, 1, y + 1, (w-18) * fr + 16, 16, Color(184, 53, 64, 240) )
 	end
-
 end
 
 function SKIN:PaintTooltip( pnl, w, h )

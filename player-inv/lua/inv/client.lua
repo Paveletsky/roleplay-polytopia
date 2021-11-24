@@ -124,7 +124,7 @@ function polyinv.open()
     tx:SetText( '' )
     tx:Dock(FILL)
     function tx:Paint( w, h )
-        draw.SimpleText( pr:GetFraction() * 30 .. 'л', "polyfont.vsm", pr:GetSize() / 2, 6, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText( pr:GetFraction() * 32 .. 'л', "polyfont.vsm", pr:GetSize() / 2, 6, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
 
     local scr = m:Add 'DScrollPanel'
