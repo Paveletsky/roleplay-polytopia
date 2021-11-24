@@ -251,13 +251,13 @@ end
 
 function SKIN:PaintProgress(pnl, w, h)
 	local y = h / 2 - 9
-	draw.RoundedBox(7, 0, y, w, 18, Color( 184, 53, 64, 20 ))
+	draw.RoundedBox(6, 0, y, w - 4, 18, Color( 184, 53, 64, 20 ))
 	local fr = pnl:GetFraction()
 	if fr > 0 then
-		draw.RoundedBox(7, 1, y + 1, (w-18) * fr + 16, 16, Color(250, 160, 0, 170) )
+		draw.RoundedBox(6, 1, y + 1, (w-18) * fr + 12, 16, Color(250, 160, 0, 170) )
 	end
 	if fr > 0.70 then
-		draw.RoundedBox(7, 1, y + 1, (w-18) * fr + 16, 16, Color(184, 53, 64, 240) )
+		draw.RoundedBox(6, 1, y + 1, (w-18) * fr + 12, 16, Color(184, 53, 64, 240) )
 	end
 end
 

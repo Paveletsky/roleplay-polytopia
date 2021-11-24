@@ -82,7 +82,7 @@ function startWelcome()
     goBut:SetText( 'К персонажу' )
     goBut:SetTextColor( Color( 0, 0, 0 ) )
     goBut.DoClick = function(ply)
-        RunConsoleCommand( 'polychars.OpenMenu' )
+        -- RunConsoleCommand( 'polychars.OpenMenu' )
         goMen:Remove()
     end
 

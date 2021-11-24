@@ -1,7 +1,7 @@
 surface.CreateFont( "polyfont.sm", {
 	font = "Calibri", --  Use the font-name which is shown to you by your operating system Font Viewer, not the file name
 	extended = false,
-	size = 25,
+	size = 24,
 })
 
 surface.CreateFont( "polyfont.vsm", {
@@ -79,8 +79,7 @@ function polyinv.info( data )
     end
 end
 
-function polyinv.open()
-    local list_inv = ply.cache_inv
+netstream.Hook( 'polyinv.open', function( owner, data )
     if m then m:Remove() end 
 
     m = vgui.Create 'DFrame'
@@ -124,7 +123,7 @@ function polyinv.open()
     tx:SetText( '' )
     tx:Dock(FILL)
     function tx:Paint( w, h )
-        draw.SimpleText( pr:GetFraction() * 32 .. 'л', "polyfont.vsm", pr:GetSize() / 2, 6, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText( pr:GetFraction() * 32 .. 'л', "polyfont.vsm", pr:GetSize() / 2 - 4, 6, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
 
     local scr = m:Add 'DScrollPanel'
@@ -146,17 +145,17 @@ function polyinv.open()
             local m = DermaMenu()
             m:AddOption("О предмете", function()
                 polyinv.info( data_inv )
-            end):SetImage("icon16/user.png")
+            end):SetImage("icon16/lightbulb.png")
 
-            if data_inv.use then
+            if data_inv.canUse then
                 m:AddOption("Использовать", function()
 
-                end):SetImage("icon16/user.png")
+                end):SetImage("icon16/briefcase.png")
             end
 
             m:AddOption("Выкинуть", function()
                 --
-            end):SetImage("icon16/user.png")
+            end):SetImage("icon16/bin.png")
 
             m:Open()
         end
@@ -166,11 +165,11 @@ function polyinv.open()
         	surface.SetDrawColor( 70, 70, 70, 100 )
             surface.DrawOutlinedRect( 0, 0, w, h, 3 )
             
-            draw.SimpleText( data_inv.name, 'polyfont.sm', 2, 20, color_black, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+            draw.SimpleText( data_inv.name, 'polyfont.sm', it:GetSize() / 2 - 1, 25, color_black, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            draw.SimpleText( data_inv.weight * 32 .. 'л.', 'polyfont.vsm', it:GetSize() / 2 - 2, 40, color_black, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         end
     end
-
-end
+end)
 
 function n:DoClick()
     if !IsValid( m ) then

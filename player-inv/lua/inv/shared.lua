@@ -1,6 +1,10 @@
 --
 polyinv.List = {}
 
+if CLIENT then
+    netstream.Start( 'polylib.query' )
+end
+
 function polyinv.registerItem( data )
     local class = data.class
     polyinv.List[class] = data
@@ -11,16 +15,16 @@ polyinv.registerItem({
     class = 'arrest_stick',
     max = 2,
     logo = 'poly/cake.png',
-    weight = 0.01,
-    use = true,
+    weight = 0.04,
+    canUse = false,
 })
 
 polyinv.registerItem({
     name = 'Тест',
     class = 'lol',
-    max = 100,
-    weight = 0.07,
-    use = false,
+    max = 3,
+    weight = 0.05,
+    canUse = false,
 })
 
 -- Entity(1):giveItem( 'arrest_stick' )

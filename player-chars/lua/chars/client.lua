@@ -6,7 +6,7 @@ hook.Add( 'Think', 'init-lib', function()
     -- hook.Run( 'library.hook-flyover' )
         -- hook.Remove( 'CalcView', 'lib-flycam' )
 
-    function library.openMenu()
+    function library.openMenu( owner, chars )
 
         hook.Remove( 'HUDPaint', 'library-hud')
         hook.Add( 'CalcView', 'lib-flycam', flycam )
@@ -19,7 +19,7 @@ hook.Add( 'Think', 'init-lib', function()
 
         mainFr:SetSize( 500, 700 )
         mainFr:Center()
-        mainFr:ShowCloseButton( false )
+        mainFr:ShowCloseButton( true  )
         mainFr:MakePopup()
         mainFr:SetDraggable( false )
         mainFr:SetTitle('Меню персонажей')
@@ -49,9 +49,8 @@ hook.Add( 'Think', 'init-lib', function()
 
         local y = 15
         
-        local cache = pl:GetNetVar( 'os_characters' )
         -- if cache != '' then
-            for k, v in pairs( cache ) do
+            for k, v in pairs( chars ) do
                 local charList = pon.decode( v.chars )
                 local glList = pon.decode( v.chars )
 
@@ -280,6 +279,8 @@ hook.Add( 'Think', 'init-lib', function()
 
     end
 
-    concommand.Add( 'polychars.OpenMenu', library.openMenu )
+    concommand.Add( 'polychars.Open1enu', library.openMenu )
+
+    netstream.Hook( 'polychars.open', library.openMenu )
 
 end)

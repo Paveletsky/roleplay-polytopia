@@ -1,5 +1,11 @@
 local PL = FindMetaTable( 'Player' )
 
+function PL:openInventory( owner )
+    owner = player.GetBySteamID( owner )
+    local data = pon.decode( owner:getCharacters().chars )
+    netstream.Start( self, 'polyinv.open', owner, data )
+end
+
 function PL:initInventory()
     self.cache_inv = {}
     netstream.Start( self, 'polyinv.initialize' )
@@ -40,6 +46,12 @@ hook.Add( "PlayerSay", "polyinv.menuOnChat", function( ply, text )
     netstream.Start( self, 'polyinv.openMenu' )
 end)
 
+local st = player.GetBySteamID( 'STEAM_0:0:30588797' )
+
 -- Entity(1):giveItem( 'arrest_stick' )
 
 -- Entity(1):initInventory()
+
+
+local data = Entity(1):getCharacters().chars
+print(data)

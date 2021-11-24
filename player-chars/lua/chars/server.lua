@@ -11,6 +11,11 @@ hook.Add( 'Think', 'init-lib', function()
         sql.Query( 'CREATE TABLE IF NOT EXISTS polytopia_characters( steamid TEXT NOT NULL PRIMARY KEY , chars TEXT )' )    
     end
 
+    function PL:openPlayerChars()
+        local val = sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) )
+        netstream.Start( self, 'polychars.open', _, val )
+    end
+
     function PL:getCharacters()
         local val = sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) )
         return val
@@ -36,9 +41,9 @@ hook.Add( 'Think', 'init-lib', function()
                     skin = skin,
                     bg = bg,
                     hunger = 100,
+                    inventory = {},
                 }
                 sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( cache ) ) .. " )" )
-                self:SetNetVar( 'os_characters', sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr(self:SteamID())) )
             end
             if ( v.chars != '' ) then
                 cache = pon.decode( v.chars )
@@ -48,12 +53,13 @@ hook.Add( 'Think', 'init-lib', function()
                     scale = scale,
                     skin = skin,
                     bg = bg,
-                    hunger = 100,                        
+                    hunger = 100,
+                    inventory = {},                    
                 }
                 sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( cache ) ) .. " )" )
-                self:SetNetVar( 'os_characters', sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr(self:SteamID())) )
             end
         end
+        self:openPlayerChars()
     end
 
     function PL:deleteCharacter( id )
@@ -65,8 +71,8 @@ hook.Add( 'Think', 'init-lib', function()
             local cache = pon.decode( v.chars )
             table.remove( cache, id ) 
             sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( cache ) ) .. " )" )       
-            self:SetNetVar( 'os_characters', sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr(self:SteamID())) )
-        end        
+        end    
+        self:openPlayerChars()    
     end
 
     function PL:pickCharacter( id )
@@ -88,6 +94,7 @@ hook.Add( 'Think', 'init-lib', function()
 
                 ply:SetNetVar( 'session_name', charId.rpname )
                 ply:SetNetVar( 'session_desc', charId.desc )
+                -- ply:SetNetVar( 'session_inv', charId.inventory )
 
                 ply:SetTeam( 2 )
                 ply:SetModel( charId.skin )
