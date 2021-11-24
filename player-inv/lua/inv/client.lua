@@ -79,7 +79,7 @@ function polyinv.info( data )
     end
 end
 
-netstream.Hook( 'polyinv.open', function( owner, data )
+netstream.Hook( 'polyinv.open', function( data )
     if m then m:Remove() end 
 
     m = vgui.Create 'DFrame'
@@ -111,9 +111,11 @@ netstream.Hook( 'polyinv.open', function( owner, data )
     local pr = m:Add 'DProgress'
     pr:SetSize( 0, 15 )
     local fraq = 0
-    for k, v in pairs( ply.cache_inv ) do
-        local data_inv = polyinv.List[v].weight
-        fraq = fraq + data_inv
+    if data.inventory != nil then
+        for k, v in pairs( data ) do
+            local data_inv = polyinv.List[v].weight
+            fraq = fraq + data_inv
+        end
     end
 
     pr:SetFraction( fraq )
@@ -135,38 +137,40 @@ netstream.Hook( 'polyinv.open', function( owner, data )
     gr:SetCols( 4 )
     gr:SetRowHeight( 70 )
     gr:SetColWide( 70 )
-    for k, class in pairs(list_inv) do
-        local data_inv = polyinv.List[class]
-        local it = gr:Add 'DImageButton'
-        it:SetSize( 60, 60 )
-        gr:AddItem( it )
+    if data.inventory != nil then
+        for k, class in pairs( data ) do
+            local data_inv = polyinv.List[class]
+            local it = gr:Add 'DImageButton'
+            it:SetSize( 60, 60 )
+            gr:AddItem( it )
 
-        function it:DoClick()
-            local m = DermaMenu()
-            m:AddOption("О предмете", function()
-                polyinv.info( data_inv )
-            end):SetImage("icon16/lightbulb.png")
+            function it:DoClick()
+                local m = DermaMenu()
+                m:AddOption("О предмете", function()
+                    polyinv.info( data_inv )
+                end):SetImage("icon16/lightbulb.png")
 
-            if data_inv.canUse then
-                m:AddOption("Использовать", function()
+                if data_inv.canUse then
+                    m:AddOption("Использовать", function()
 
-                end):SetImage("icon16/briefcase.png")
+                    end):SetImage("icon16/briefcase.png")
+                end
+
+                m:AddOption("Выкинуть", function()
+                    --
+                end):SetImage("icon16/bin.png")
+
+                m:Open()
             end
 
-            m:AddOption("Выкинуть", function()
-                --
-            end):SetImage("icon16/bin.png")
-
-            m:Open()
-        end
-
-        function it:Paint( w, h )
-            draw.RoundedBox( 7, 0, 0, w, h, Color( 240, 240, 240, 255 ))
-        	surface.SetDrawColor( 70, 70, 70, 100 )
-            surface.DrawOutlinedRect( 0, 0, w, h, 3 )
-            
-            draw.SimpleText( data_inv.name, 'polyfont.sm', it:GetSize() / 2 - 1, 25, color_black, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-            draw.SimpleText( data_inv.weight * 32 .. 'л.', 'polyfont.vsm', it:GetSize() / 2 - 2, 40, color_black, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            function it:Paint( w, h )
+                draw.RoundedBox( 7, 0, 0, w, h, Color( 240, 240, 240, 255 ))
+                surface.SetDrawColor( 70, 70, 70, 100 )
+                surface.DrawOutlinedRect( 0, 0, w, h, 3 )
+                
+                draw.SimpleText( data_inv.name, 'polyfont.sm', it:GetSize() / 2 - 1, 25, color_black, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                draw.SimpleText( data_inv.weight * 32 .. 'л.', 'polyfont.vsm', it:GetSize() / 2 - 2, 40, color_black, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            end
         end
     end
 end)

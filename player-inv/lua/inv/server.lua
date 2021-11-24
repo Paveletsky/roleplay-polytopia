@@ -1,10 +1,24 @@
 local PL = FindMetaTable( 'Player' )
 
+if ( !sql.TableExists( "polytopia_inventory" ) ) then
+    sql.Query( 'CREATE TABLE IF NOT EXISTS polytopia_inventory( steamid TEXT NOT NULL PRIMARY KEY , inventory TEXT )' )    
+end
+
+function PL:getInventory(  )
+    local val = sql.Query("SELECT chars FROM polytopia_inventory WHERE steamid = " .. SQLStr( self:SteamID() ) )
+    return val
+end
+
 function PL:openInventory( owner )
     owner = player.GetBySteamID( owner )
-    local data = pon.decode( owner:getCharacters().chars )
-    netstream.Start( self, 'polyinv.open', owner, data )
+    local data = sql.Query( "SELECT * FROM polytopia_inventory WHERE steamid = " .. sql.SQLStr( owner:SteamID() ) .. ";")
+    if data == nil then 
+        sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( owner:SteamID() ) .. ", " .. SQLStr( "" ) .. " )" )
+    end
+    netstream.Start( self, 'polyinv.open', data )
 end
+
+Entity(1):openInventory( 'STEAM_0:0:30588797' )
 
 function PL:initInventory()
     self.cache_inv = {}
@@ -51,7 +65,3 @@ local st = player.GetBySteamID( 'STEAM_0:0:30588797' )
 -- Entity(1):giveItem( 'arrest_stick' )
 
 -- Entity(1):initInventory()
-
-
-local data = Entity(1):getCharacters().chars
-print(data)

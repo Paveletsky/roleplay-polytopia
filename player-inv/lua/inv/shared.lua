@@ -1,10 +1,6 @@
 --
 polyinv.List = {}
 
-if CLIENT then
-    netstream.Start( 'polylib.query' )
-end
-
 function polyinv.registerItem( data )
     local class = data.class
     polyinv.List[class] = data
