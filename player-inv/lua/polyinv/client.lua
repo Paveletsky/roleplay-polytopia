@@ -1,3 +1,11 @@
+function library.font( name, size, font )
+    surface.CreateFont( name, {
+        font = font or 'Roboto',
+        size = size or 14,
+    })
+    return name
+end
+
 surface.CreateFont( "polyfont.sm", {
 	font = "Calibri", --  Use the font-name which is shown to you by your operating system Font Viewer, not the file name
 	extended = false,
@@ -19,8 +27,8 @@ function polyinv.info( data )
     inf:SetSize( 300, 150 )
     inf:MakePopup()
     inf:Center() 
-    inf:AlignTop( 100 )
-    inf:AlignRight( 100 )
+    inf:SetTitle( 'Описание предмета' )
+    inf:AlignLeft( 670 )
 
     local logo = inf:Add("DPanel")
     logo:Dock(RIGHT)
@@ -64,7 +72,7 @@ function polyinv.info( data )
     end
 end
 
-netstream.Hook( 'polyinv.open', function( data, items )
+netstream.Hook( 'polyinv.open', function( data, items, ch )
     if m then m:Remove() end 
 
     m = vgui.Create 'DFrame'
@@ -72,6 +80,7 @@ netstream.Hook( 'polyinv.open', function( data, items )
     m:MakePopup()
     m:SetTitle( 'Рюкзак' )
     m:Center()
+    m:SetScreenLock( true )
     m:AlignLeft(0)
     m:MoveTo( ScrW() / 2 - m:GetWide() - 300, ScrH() / 2 - m:GetTall() / 2, 0.4, 0, -1 )
 
@@ -79,21 +88,59 @@ netstream.Hook( 'polyinv.open', function( data, items )
     md:Dock( RIGHT )
     md:SetSize( 250 )
 
+    local sd1 = m:Add 'DPanel'
+    sd1:Dock( TOP )
+    sd1:SetTall(65)
+
+    local sd2 = m:Add 'DPanel'
+    sd2:Dock( BOTTOM )
+    sd2:SetTall(65)
+
+    local chInfo = pon.decode( ch[1].chars )
+    local chName = sd1:Add 'RichText'
+    chName:Dock(FILL)
+    chName:AppendText( 'Имя: ' .. chInfo[1].rpname .. '\n' )
+    chName:AppendText( 'Деятельность: nil' )
+
+    local sdInfo = sd2:Add 'RichText'
+    sdInfo:Dock(FILL)
+    sdInfo:AppendText( 'Тип хранения: средний рюкзак \n' )
+
+    function sdInfo:Paint( w, h )
+        local font = library.font( 'char.infoFont', 18, 'Trebuchet24' )
+        self:SetFontInternal( font )
+        self:SetFGColor( Color( 255, 255, 255 ) )
+    end
+
+
+    function chName:Paint( w, h )
+        local font = library.font( 'char.nameFont', 22, 'Trebuchet24' )
+        self:SetFontInternal( font )
+        self:SetFGColor( Color( 255, 255, 255 ) )
+    end
+
     local mdl = md:Add 'DModelPanel'
     mdl:Dock(FILL)
     mdl:SetModel( LocalPlayer():GetModel() )
-    mdl:SetFOV( 20 )
+    mdl:SetFOV( 23 )
     local headpos = mdl.Entity:GetBonePosition(mdl.Entity:LookupBone("ValveBiped.Bip01_Spine"))
     mdl:SetCamPos( Vector( 50, 0, 80 ) )
     mdl:SetLookAt(headpos - Vector( 0, -2, -15 ))
 
+    local i = 0
+    for k, v in pairs( chInfo[1].bg ) do
+        mdl.Entity:SetBodygroup( i, v )
+        i = i + 1
+    end
+
+    local i = 0
     function mdl:LayoutEntity( ent )
         ent:SetEyeTarget( Vector( gui.MouseY(), -gui.MouseY(), gui.MouseX() - 500 ) )
         ent:SetSequence( ent:LookupSequence( 'pose_standing_01' ) )
         mdl:RunAnimation()
     end
 
-    local pr = m:Add 'DProgress'
+    local pr = sd2:Add 'DProgress'
     pr:SetSize( 0, 15 )
 
     local fraq = 0
@@ -121,10 +168,10 @@ netstream.Hook( 'polyinv.open', function( data, items )
 
     local gr = vgui.Create( "DGrid", scr )
     gr:Dock( TOP )
-    -- gr:SetPos( 10, 30 )
-    gr:SetCols( 4 )
+    gr:DockMargin(2.5, 15, 0, 0)
+    gr:SetCols( 5 )
     gr:SetRowHeight( 70 )
-    gr:SetColWide( 70 )
+    gr:SetColWide( 66 )
     if data[1].inventory != '[}' then
         for k, class in pairs( inv_data ) do
             local data_inv = items[class]
@@ -161,14 +208,6 @@ netstream.Hook( 'polyinv.open', function( data, items )
             end
         end
     end
-    
 end)
-
-function n:DoClick()
-    if !IsValid( m ) then
-            polyinv.open()
-        else m:Remove()
-    end 
-end
 
 netstream.Hook( 'polyinv.openMenu', polyinv.open )

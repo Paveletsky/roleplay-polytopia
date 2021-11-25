@@ -65,44 +65,44 @@ hook.Add( 'Think', 'init-lib', function()
     end
 
     function PL:pickCharacter( id )
-        ply:SetPos( library.randSpawn() )
+        self:SetPos( library.randSpawn() )
         timer.Create( 'lib-charPick', 0.2, 1, function()
             timer.Remove( 'lib-charPick' )
-            for k, v in pairs( ply:getCharacters() ) do
+            for k, v in pairs( self:getCharacters() ) do
                 local charTmp = pon.decode( v.chars )
                 local charId = pon.decode( v.chars )[id]
                 local a = 1
 
                 if not id or not charId then
-                    ply:ChatPrint("Такого персонажа не существует.")
+                    self:ChatPrint("Такого персонажа не существует.")
                     return
                 end
 
-                ply:UnlockPlayer()
+                self:UnlockPlayer()
 
-                ply:SetNetVar( 'session_name', charId.rpname )
-                ply:SetNetVar( 'session_desc', charId.desc )
+                self:SetNetVar( 'session_name', charId.rpname )
+                self:SetNetVar( 'session_desc', charId.desc )
 
-                ply:SetTeam( 2 )
-                ply:SetModel( charId.skin )
-                ply:SetModelScale( charId.scale )
+                self:SetTeam( 2 )
+                self:SetModel( charId.skin )
+                self:SetModelScale( charId.scale )
 
-                ply:setDarkRPVar( 'Energy', charId.hunger )
+                self:setDarkRPVar( 'Energy', charId.hunger )
 
-                ply:SetWalkSpeed( 100 )
-                ply:SetRunSpeed( 180 )
+                self:SetWalkSpeed( 100 )
+                self:SetRunSpeed( 180 )
 
-                for k, v in pairs( ply:getJobTable()['weapons'] ) do
-                    ply:Give( v )
+                for k, v in pairs( self:getJobTable()['weapons'] ) do
+                    self:Give( v )
                 end
                 
-                for l, p in pairs( ply:GetBodyGroups() ) do
-                    ply:SetBodygroup( p['id'], tonumber( charId.bg[a] ) )
+                for l, p in pairs( self:GetBodyGroups() ) do
+                    self:SetBodygroup( p['id'], tonumber( charId.bg[a] ) )
                     a = a + 1
                 end
 
                 local time = os.date( "%H:%M:%S" , os.time() )
-                ply:ChatPrint( 'Вы проснулись. На часах ' .. time .. '.' .. ' На улице шумно.'  )
+                self:ChatPrint( 'Вы проснулись. На часах ' .. time .. '.' .. ' На улице шумно.'  )
             end
         end)
     end

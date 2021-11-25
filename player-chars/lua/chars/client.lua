@@ -84,7 +84,15 @@ hook.Add( 'Think', 'init-lib', function()
                 mdl:SetFOV( 10 )
                 mdl:SetLookAt( Vector( 0, -2, 67 ) )
                 mdl:SetModel( v.skin )
-                    y = y + mdl:GetTall()
+                
+                local i = 0
+                for k, v in pairs( v.bg ) do
+                    mdl.Entity:SetBodygroup( i, v )
+                    i = i + 1
+                end
+
+                y = y + mdl:GetTall()
+                
                 lst:AddLine( '', v.rpname, v.desc )
                 lst:SetDataHeight( 50 )
                 lst.Columns[1]:SetFixedWidth( 50 )
@@ -127,6 +135,7 @@ hook.Add( 'Think', 'init-lib', function()
 
     end
 
+netstream.Start( 'polychars.Open' )
 
     function library.charMenu()
 
@@ -134,6 +143,7 @@ hook.Add( 'Think', 'init-lib', function()
         
         charFr = vgui.Create 'DFrame'
         charFr:SetSize( 600, 650)
+        charFr:SetTitle( 'Создать персонажа' )
         charFr:Center()
         charFr:MakePopup()
 

@@ -236,10 +236,8 @@ if CLIENT then
 function SKIN:PaintPanel(pnl, w, h)
 
 	if not pnl.m_bBackground then return end
-
-	draw.RoundedBox(9, 0, 0, w, h, Color(0,0,0, 255))
-	draw.RoundedBox(9, 1, 1, w-2, h-2, Color(20,20,20, 255))
-
+	
+	draw.RoundedBox(5, 0, 0, w + 2, h, Color( 10, 10, 10, 255))
 end
 
 function SKIN:PaintPropertySheet(pnl, w, h)

@@ -8,7 +8,7 @@ end
 polyinv.registerItem({
     name = 'Палка',
     class = 'arrest_stick',
-    max = 5,
+    max = 55,
     logo = 'poly/cake.png',
     weight = 0.04,
     canUse = false,
@@ -21,3 +21,5 @@ polyinv.registerItem({
     weight = 0.05,
     canUse = false,
 })
+
+-- PrintTable( Entity(1):GetBodyGroups() )
