@@ -222,7 +222,6 @@ netstream.Start( 'polychars.Open' )
         mdlSkin:SetMax( i )
         mdlSkin:SetMin( 1 )
         mdlSkin:SetDecimals( 0 )    
-        mdlSkin:SetValue(getIndex(LocalPlayer():GetNetVar('mdl_skin'),LocalPlayer():getJobTable()['model']))
         
         mdlSkin.OnValueChanged = function( self, value )
         

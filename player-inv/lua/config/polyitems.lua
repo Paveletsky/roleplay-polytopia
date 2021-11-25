@@ -22,4 +22,6 @@ polyinv.registerItem({
     canUse = false,
 })
 
+-- Entity(1):giveItem( 'lol' )
+
 -- PrintTable( Entity(1):GetBodyGroups() )

@@ -65,47 +65,50 @@ hook.Add( 'Think', 'init-lib', function()
     end
 
     function PL:pickCharacter( id )
-        self:SetPos( library.randSpawn() )
-        timer.Create( 'lib-charPick', 0.2, 1, function()
-            timer.Remove( 'lib-charPick' )
-            for k, v in pairs( self:getCharacters() ) do
-                local charTmp = pon.decode( v.chars )
-                local charId = pon.decode( v.chars )[id]
-                local a = 1
+        local charInfo = sql.Query( "SELECT * FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) .. ";")
+        local chInfo = pon.decode( charInfo[1].chars )
+        -- self:SetPos( library.randSpawn() )
+        for k, v in pairs( self:getCharacters() ) do
+            local charTmp = pon.decode( v.chars )
+            local charId = pon.decode( v.chars )[id]
+            local a = 1
 
-                if not id or not charId then
-                    self:ChatPrint("Такого персонажа не существует.")
-                    return
-                end
-
-                self:UnlockPlayer()
-
-                self:SetNetVar( 'session_name', charId.rpname )
-                self:SetNetVar( 'session_desc', charId.desc )
-
-                self:SetTeam( 2 )
-                self:SetModel( charId.skin )
-                self:SetModelScale( charId.scale )
-
-                self:setDarkRPVar( 'Energy', charId.hunger )
-
-                self:SetWalkSpeed( 100 )
-                self:SetRunSpeed( 180 )
-
-                for k, v in pairs( self:getJobTable()['weapons'] ) do
-                    self:Give( v )
-                end
-                
-                for l, p in pairs( self:GetBodyGroups() ) do
-                    self:SetBodygroup( p['id'], tonumber( charId.bg[a] ) )
-                    a = a + 1
-                end
-
-                local time = os.date( "%H:%M:%S" , os.time() )
-                self:ChatPrint( 'Вы проснулись. На часах ' .. time .. '.' .. ' На улице шумно.'  )
+            if not id or not charId then
+                self:ChatPrint("Такого персонажа не существует.")
+                return
             end
-        end)
+
+            self:UnlockPlayer()
+
+            self:SetTeam( 2 )
+            self:SetModel( charId.skin )
+            self:SetModelScale( charId.scale )
+
+            self:setDarkRPVar( 'Energy', charId.hunger )
+
+            self:SetWalkSpeed( 100 )
+            self:SetRunSpeed( 180 )
+
+            for k, v in pairs( self:getJobTable()['weapons'] ) do
+                self:Give( v )
+            end
+
+            local time = os.date( "%H:%M:%S" , os.time() )
+            self:ChatPrint( 'Вы проснулись. На часах ' .. time .. '.' .. ' На улице шумно.'  )
+        end
+
+        local i = 0
+        if chInfo[1].bg == '' then return end
+        for k, v in pairs( chInfo[1].bg ) do
+            self:SetBodygroup( i, v )
+            i = i + 1
+        end
+
     end
+
+    -- Entity(1):openPlayerChars()
+
+    -- Entity(1):pickCharacter( 2 )
 
     netstream.Hook( 'polychars.Pick', function( ply, id ) 
         ply:pickCharacter( id )
@@ -124,3 +127,5 @@ hook.Add( 'Think', 'init-lib', function()
     end)
 
 end)
+
+-- Entity(1):openPlayerChars()

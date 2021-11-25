@@ -1,11 +1,3 @@
-function library.font( name, size, font )
-    surface.CreateFont( name, {
-        font = font or 'Roboto',
-        size = size or 14,
-    })
-    return name
-end
-
 surface.CreateFont( "polyfont.sm", {
 	font = "Calibri", --  Use the font-name which is shown to you by your operating system Font Viewer, not the file name
 	extended = false,
@@ -62,10 +54,10 @@ function polyinv.info( data )
         end
     end
 
-    function desc:PerformLayout()
-        self:SetFontInternal( "DermaDefault" )
-        self:SetFGColor( Color( 255, 255, 255 ) )
-    end
+    -- function desc:PerformLayout()
+    --     self:SetFontInternal( "DermaDefault" )
+    --     self:SetFGColor( Color( 255, 255, 255 ) )
+    -- end
 
     function name:Paint( w, h )
         draw.DrawText( data.name, 'polyfont.sm', 0, 0, color_white )
@@ -107,15 +99,12 @@ netstream.Hook( 'polyinv.open', function( data, items, ch )
     sdInfo:AppendText( 'Тип хранения: средний рюкзак \n' )
 
     function sdInfo:Paint( w, h )
-        local font = library.font( 'char.infoFont', 18, 'Trebuchet24' )
-        self:SetFontInternal( font )
+        self:SetFontInternal( 'Trebuchet24' )
         self:SetFGColor( Color( 255, 255, 255 ) )
     end
 
-
     function chName:Paint( w, h )
-        local font = library.font( 'char.nameFont', 22, 'Trebuchet24' )
-        self:SetFontInternal( font )
+        self:SetFontInternal( 'Trebuchet24' )
         self:SetFGColor( Color( 255, 255, 255 ) )
     end
 
@@ -135,7 +124,6 @@ netstream.Hook( 'polyinv.open', function( data, items, ch )
 
     local i = 0
     function mdl:LayoutEntity( ent )
-        ent:SetEyeTarget( Vector( gui.MouseY(), -gui.MouseY(), gui.MouseX() - 500 ) )
         ent:SetSequence( ent:LookupSequence( 'pose_standing_01' ) )
         mdl:RunAnimation()
     end
@@ -192,7 +180,7 @@ netstream.Hook( 'polyinv.open', function( data, items, ch )
                 end
 
                 m:AddOption("Выкинуть", function()
-                    --
+                    netstream.Start( 'polyinv.sv-deleteItem', k )
                 end):SetImage("icon16/bin.png")
 
                 m:Open()
@@ -210,4 +198,5 @@ netstream.Hook( 'polyinv.open', function( data, items, ch )
     end
 end)
 
+netstream.Start 'polyinv.sv-open'
 netstream.Hook( 'polyinv.openMenu', polyinv.open )

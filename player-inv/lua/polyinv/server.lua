@@ -4,6 +4,12 @@ if ( !sql.TableExists( "polytopia_inventory" ) ) then
     sql.Query( 'CREATE TABLE IF NOT EXISTS polytopia_inventory( steamid TEXT NOT NULL PRIMARY KEY , inventory TEXT )' )    
 end
 
+function PL:getInventory_2()
+    local encoded = sql.Query( "SELECT inventory FROM polytopia_inventory WHERE steamid = " .. sql.SQLStr( self:SteamID() ) .. ";")
+    local data = pon.decode( encoded[1].inventory )    
+    return data
+end
+
 function PL:getInventory(  )
     local val = sql.Query("SELECT chars FROM polytopia_inventory WHERE steamid = " .. SQLStr( self:SteamID() ) )
     return val
@@ -45,6 +51,18 @@ function PL:giveItem( class )
     sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( data ) ) .. " )" )
 end
 
+function PL:hasItem( id )
+    return self:getInventory_2()[id]
+end
+
+function PL:deleteItem( id )
+    if self:hasItem( id ) then
+        local notDel = self:getInventory_2()
+            notDel[id] = nil 
+        sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( notDel ) ) .. " )" )
+    end
+end
+
 function PL:getCount( class )
     local encoded = sql.Query( "SELECT inventory FROM polytopia_inventory WHERE steamid = " .. sql.SQLStr( self:SteamID() ) .. ";")
     local data = pon.decode( encoded[1].inventory )
@@ -56,6 +74,10 @@ function PL:getCount( class )
     end
     return i
 end
+
+netstream.Hook( 'polyinv.sv-deleteItem', function( ply, id ) 
+    ply:deleteItem( id )
+end)
 
 netstream.Hook( 'polyinv.sv-open', function( ply ) 
     ply:openInventory( ply:SteamID() )
