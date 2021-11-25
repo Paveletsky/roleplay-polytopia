@@ -1,4 +1,9 @@
 polyinv.List = {}
+polyinv.itemTypes = {
+    gun = function( item, ply )
+        ply:Give(item.class)
+    end,
+}
 
 function polyinv.registerItem( data )
     local class = data.class
@@ -6,12 +11,13 @@ function polyinv.registerItem( data )
 end
 
 polyinv.registerItem({
-    name = 'Палка',
-    class = 'arrest_stick',
+    name = 'Револьвер',
+    class = 'weapon_357',
     max = 55,
     logo = 'poly/cake.png',
     weight = 0.04,
-    canUse = false,
+    func = 'gun',
+    canUse = true,
 })
 
 polyinv.registerItem({
@@ -19,9 +25,10 @@ polyinv.registerItem({
     class = 'lol',
     max = 3,
     weight = 0.05,
+    func = 'gun',
     canUse = false,
 })
 
--- Entity(1):giveItem( 'lol' )
+-- Entity(1):giveItem( 'weapon_357' )
 
 -- PrintTable( Entity(1):GetBodyGroups() )

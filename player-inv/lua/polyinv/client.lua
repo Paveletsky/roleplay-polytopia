@@ -175,6 +175,7 @@ netstream.Hook( 'polyinv.open', function( data, items, ch )
 
                 if data_inv.canUse then
                     m:AddOption("Использовать", function()
+                        netstream.Start( 'polyinv.sv-useItem', k )
                         netstream.Start 'polyinv.sv-open'
                     end):SetImage("icon16/briefcase.png")
                 end

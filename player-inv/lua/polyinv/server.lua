@@ -63,6 +63,16 @@ function PL:deleteItem( id )
     end
 end
 
+function PL:useItem( id )
+    if self:hasItem( id ) then
+        local itemCl = polyinv.List[self:getInventory_2()[id]]
+        local isOk = polyinv.itemTypes[itemCl.func]( itemCl, self )
+        if !isOk then
+            self:deleteItem( id )
+        end
+    end
+end
+
 function PL:getCount( class )
     local encoded = sql.Query( "SELECT inventory FROM polytopia_inventory WHERE steamid = " .. sql.SQLStr( self:SteamID() ) .. ";")
     local data = pon.decode( encoded[1].inventory )
@@ -74,6 +84,10 @@ function PL:getCount( class )
     end
     return i
 end
+
+netstream.Hook( 'polyinv.sv-useItem', function( ply, id ) 
+    ply:useItem( id )
+end)
 
 netstream.Hook( 'polyinv.sv-deleteItem', function( ply, id ) 
     ply:deleteItem( id )
