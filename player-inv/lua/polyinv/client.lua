@@ -175,12 +175,13 @@ netstream.Hook( 'polyinv.open', function( data, items, ch )
 
                 if data_inv.canUse then
                     m:AddOption("Использовать", function()
-
+                        netstream.Start 'polyinv.sv-open'
                     end):SetImage("icon16/briefcase.png")
                 end
 
                 m:AddOption("Выкинуть", function()
                     netstream.Start( 'polyinv.sv-deleteItem', k )
+                    netstream.Start 'polyinv.sv-open'
                 end):SetImage("icon16/bin.png")
 
                 m:Open()
@@ -198,5 +199,4 @@ netstream.Hook( 'polyinv.open', function( data, items, ch )
     end
 end)
 
-netstream.Start 'polyinv.sv-open'
 netstream.Hook( 'polyinv.openMenu', polyinv.open )
