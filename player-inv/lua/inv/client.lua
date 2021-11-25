@@ -79,7 +79,7 @@ function polyinv.info( data )
     end
 end
 
-netstream.Hook( 'polyinv.open', function( data )
+netstream.Hook( 'polyinv.open', function( data, items )
     if m then m:Remove() end 
 
     m = vgui.Create 'DFrame'
@@ -113,7 +113,7 @@ netstream.Hook( 'polyinv.open', function( data )
     local fraq = 0
     if data.inventory != nil then
         for k, v in pairs( data ) do
-            local data_inv = polyinv.List[v].weight
+            local data_inv = items[v].weight
             fraq = fraq + data_inv
         end
     end
@@ -139,7 +139,7 @@ netstream.Hook( 'polyinv.open', function( data )
     gr:SetColWide( 70 )
     if data.inventory != nil then
         for k, class in pairs( data ) do
-            local data_inv = polyinv.List[class]
+            local data_inv = items[class]
             local it = gr:Add 'DImageButton'
             it:SetSize( 60, 60 )
             gr:AddItem( it )

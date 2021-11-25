@@ -6,8 +6,7 @@ hook.Add( 'Think', 'init-lib', function()
     -- hook.Run( 'library.hook-flyover' )
         -- hook.Remove( 'CalcView', 'lib-flycam' )
 
-    function library.openMenu( owner, chars )
-
+    function library.openMenu( owner, data )
         hook.Remove( 'HUDPaint', 'library-hud')
         hook.Add( 'CalcView', 'lib-flycam', flycam )
         netstream.Start( 'lib-lockplayer' )
@@ -48,76 +47,74 @@ hook.Add( 'Think', 'init-lib', function()
         lst:AddColumn( 'Описание' )
 
         local y = 15
-        
-        -- if cache != '' then
-            for k, v in pairs( chars ) do
-                local charList = pon.decode( v.chars )
-                local glList = pon.decode( v.chars )
 
-                if #charList == 3 then
-                    but2:SetDisabled( true )
-                end
-
-                if #charList == 0 then
-                    lst:SetVisible( false )
-                    
-                    local lore = [[
+        local lore = [[
 Вы можете создать всего три персонажа, основные 
 данные должны соответствовать нашему лору и сет-
 тингу. Настоятельно рекомендуем прочесть его, а
 также правила сервера. Надеюсь, вам понравится
 у нас. Зови друзей чтобы было веселей. Удачи =)
-                    ]]
+        ]]
 
-                    local goText = vgui.Create( 'DLabel', bar )
-                    goText:Dock( TOP )
-                    goText:SetText( lore )
-                    goText:SetSize( 0, 210 )
-                    goText:DockMargin( 15, -20, 0, 0 )
-                    goText:SetFont( 'lib.notify' )
-                end
+        local goText = vgui.Create( 'DLabel', bar )
+        goText:Dock( TOP )
+        goText:SetText( lore )
+        goText:SetSize( 0, 210 )
+        goText:SetVisible( false )
+        goText:DockMargin( 15, -20, 0, 0 )
+        goText:SetFont( 'lib.notify' )
 
-                for k, v in pairs( charList ) do
-                
-                    mdl = lst:Add 'DModelPanel'
-                    mdl:SetSize( 50, 50 )
-                    mdl:SetPos( 0, y )
-                    mdl:SetFOV( 10 )
-                    mdl:SetLookAt( Vector( 0, -2, 67 ) )
-                    mdl:SetModel( v.skin )
-                        y = y + mdl:GetTall()
-                    lst:AddLine( '', v.rpname, v.desc )
-                    lst:SetDataHeight( 50 )
-                    lst.Columns[1]:SetFixedWidth( 50 )
-                    lst.Columns[1]:SetFixedWidth( 50 )
-                    lst.OnRowRightClick = function( lineID, line )
-                        local m = DermaMenu()
-                        m:AddOption("Взять персонажа", function()
-                            netstream.Start( 'polychars.Pick', line )
-                            netstream.Start( 'lib-unlockplayer' )
-                                hook.Remove( 'CalcView', 'lib-flycam' )
-                                hook.Add('HUDPaint', 'library-hud', function()
-                                    drawPlrs()
-                                    drawGui()
-                                end)                            
-                            mainFr:Remove()
-                        end):SetImage("icon16/user.png")
-                        
-                        m:AddOption("Удалить", function()
-                            Derma_Query( 'Вы уверены, что хотите удалить этого персонажа? Восстановить ничего уже не получится!', 'Подтвердить удаление', 'Подтвердить', function()          
-                                    netstream.Start( 'polychars.Delete', line )
-                                    timer.Simple( 0.3, function()
-                                        RunConsoleCommand( 'polychars.OpenMenu' )
-                                    end)
-                                end, 'Отменить' )
-                        end):SetImage("icon16/user_delete.png")
-                        m:Open()
-                    end
+        for k, v in pairs( data ) do
+            local charList = pon.decode( v.chars )
+            local glList = pon.decode( v.chars )
+
+            if #charList == 1 then
+                but2:SetDisabled( true )
+            end
+
+            if #charList == 0 then
+                goText:SetVisible( true  )
+                lst:SetVisible( false )         
+            end
+
+            for k, v in pairs( charList ) do
+                mdl = lst:Add 'DModelPanel'
+                mdl:SetSize( 50, 50 )
+                mdl:SetPos( 0, y )
+                mdl:SetFOV( 10 )
+                mdl:SetLookAt( Vector( 0, -2, 67 ) )
+                mdl:SetModel( v.skin )
+                    y = y + mdl:GetTall()
+                lst:AddLine( '', v.rpname, v.desc )
+                lst:SetDataHeight( 50 )
+                lst.Columns[1]:SetFixedWidth( 50 )
+                lst.Columns[1]:SetFixedWidth( 50 )
+                lst.OnRowRightClick = function( lineID, line )
+                    local m = DermaMenu()
+                    m:AddOption("Взять персонажа", function()
+                        netstream.Start( 'polychars.Pick', line )
+                        netstream.Start( 'lib-unlockplayer' )
+                            hook.Remove( 'CalcView', 'lib-flycam' )
+                            hook.Add('HUDPaint', 'library-hud', function()
+                                drawPlrs()
+                                drawGui()
+                            end)                            
+                        mainFr:Remove()
+                    end):SetImage("icon16/user.png")
                     
+                    m:AddOption("Удалить", function()
+                        Derma_Query( 'Вы уверены, что хотите удалить этого персонажа? Восстановить ничего уже не получится!', 'Подтвердить удаление', 'Подтвердить', function()          
+                                netstream.Start( 'polychars.Delete', line )
+                                timer.Simple( 0.3, function()
+                                    RunConsoleCommand( 'polychars.OpenMenu' )
+                                end)
+                            end, 'Отменить' )
+                    end):SetImage("icon16/user_delete.png")
+                    m:Open()
                 end
-            end      
-        -- end
-        
+            end
+        end      
+                
         bar:AddSheet( "Персонаж", set, "icon16/cog.png", false, false, "Для вашего комфорта <3")
 
         function but2:DoClick()
@@ -125,7 +122,7 @@ hook.Add( 'Think', 'init-lib', function()
         end
 
         function but1:DoClick()
-            RunConsoleCommand( 'polychars.OpenMenu' )
+            netstream.Start( 'polychars.Open' )
         end
 
     end

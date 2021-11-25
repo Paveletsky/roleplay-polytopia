@@ -12,11 +12,15 @@ hook.Add( 'Think', 'init-lib', function()
     end
 
     function PL:openPlayerChars()
+        local data = sql.Query( "SELECT * FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) .. ";")
+        if data == nil then 
+            sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( "[}" ) .. " )" )
+        end
         local val = sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) )
         netstream.Start( self, 'polychars.open', _, val )
     end
 
-    -- Entity(1):openPlayerChars()
+    Entity(1):openPlayerChars()
 
     function PL:getCharacters()
         local val = sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) )
@@ -26,7 +30,7 @@ hook.Add( 'Think', 'init-lib', function()
     function PL:createCharacter( rpname, desc, scale, skin, bg )
         local cache = {}
         for k, v in pairs( self:getCharacters() ) do
-            if ( v.chars != '' and #pon.decode(v.chars) == 3 ) then
+            if ( v.chars != '' and #pon.decode(v.chars) == 1 ) then
                     self:ChatPrint( 'Так-то у тебя не может быть больше трех персонажей 0_o' )
                 return
             end
@@ -34,32 +38,17 @@ hook.Add( 'Think', 'init-lib', function()
                 self:ChatPrint( 'Некорректные значения.' ) 
                 return 
             end
-
-            if ( v.chars == '' ) then
-                cache[#cache+1] = {
-                    rpname = rpname,
-                    desc = desc,
-                    scale = scale,
-                    skin = skin,
-                    bg = bg,
-                    hunger = 100,
-                    inventory = {},
-                }
-                sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( cache ) ) .. " )" )
-            end
-            if ( v.chars != '' ) then
-                cache = pon.decode( v.chars )
-                cache[#cache+1] = {
-                    rpname = rpname,
-                    desc = desc,
-                    scale = scale,
-                    skin = skin,
-                    bg = bg,
-                    hunger = 100,
-                    inventory = {},                    
-                }
-                sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( cache ) ) .. " )" )
-            end
+            cache = pon.decode( v.chars )
+            cache[#cache+1] = {
+                rpname = rpname,
+                desc = desc,
+                scale = scale,
+                skin = skin,
+                bg = bg,
+                hunger = 100,
+                inventory = {},                    
+            }
+            sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( cache ) ) .. " )" )
         end
         self:openPlayerChars()
     end
@@ -78,7 +67,6 @@ hook.Add( 'Think', 'init-lib', function()
     end
 
     function PL:pickCharacter( id )
-        ply = self
         ply:SetPos( library.randSpawn() )
         timer.Create( 'lib-charPick', 0.2, 1, function()
             timer.Remove( 'lib-charPick' )
@@ -96,7 +84,6 @@ hook.Add( 'Think', 'init-lib', function()
 
                 ply:SetNetVar( 'session_name', charId.rpname )
                 ply:SetNetVar( 'session_desc', charId.desc )
-                -- ply:SetNetVar( 'session_inv', charId.inventory )
 
                 ply:SetTeam( 2 )
                 ply:SetModel( charId.skin )
@@ -123,46 +110,7 @@ hook.Add( 'Think', 'init-lib', function()
     end
 
     netstream.Hook( 'polychars.Pick', function( ply, id ) 
-        ply:SetPos( library.randSpawn() )
-        timer.Create( 'lib-charPick', 0.2, 1, function()
-            timer.Remove( 'lib-charPick' )
-            for k, v in pairs( ply:getCharacters() ) do
-                local charTmp = pon.decode( v.chars )
-                local charId = pon.decode( v.chars )[id]
-                local a = 1
-
-                if not id or not charId then
-                    ply:ChatPrint("Такого персонажа не существует.")
-                    return
-                end
-
-                ply:UnlockPlayer()
-
-                ply:SetNetVar( 'session_name', charId.rpname )
-                ply:SetNetVar( 'session_desc', charId.desc )
-
-                ply:SetTeam( 2 )
-                ply:SetModel( charId.skin )
-                ply:SetModelScale( charId.scale )
-
-                ply:setDarkRPVar( 'Energy', charId.hunger )
-
-                ply:SetWalkSpeed( 100 )
-                ply:SetRunSpeed( 180 )
-
-                for k, v in pairs( ply:getJobTable()['weapons'] ) do
-                    ply:Give( v )
-                end
-                
-                for l, p in pairs( ply:GetBodyGroups() ) do
-                    ply:SetBodygroup( p['id'], tonumber( charId.bg[a] ) )
-                    a = a + 1
-                end
-
-                local time = os.date( "%H:%M:%S" , os.time() )
-                ply:ChatPrint( 'Вы проснулись. На часах ' .. time .. '.' .. ' На улице шумно.'  )
-            end
-        end)
+        ply:pickCharacter( id )
     end)
 
     netstream.Hook( 'polychars.Create', function( ply, rpname, desc, scale, skin, bg, hunger ) 
@@ -171,6 +119,10 @@ hook.Add( 'Think', 'init-lib', function()
 
     netstream.Hook( 'polychars.Delete', function( ply, id ) 
         ply:deleteCharacter( id )
+    end)
+
+    netstream.Hook( 'polychars.Open', function( ply ) 
+        ply:openPlayerChars()
     end)
 
 end)
