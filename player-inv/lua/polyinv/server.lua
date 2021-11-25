@@ -44,10 +44,6 @@ function PL:giveItem( class )
     sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( data ) ) .. " )" )
 end
 
-function PL:useItem()
-
-end
-
 function PL:getCount( class )
     local encoded = sql.Query( "SELECT inventory FROM polytopia_inventory WHERE steamid = " .. sql.SQLStr( self:SteamID() ) .. ";")
     local data = pon.decode( encoded[1].inventory )
