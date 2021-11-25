@@ -2,12 +2,10 @@ polyinv = polyinv or {}
 
 print '[~] LIB - Inventory Init.'
 
-include "inv/shared.lua"
-
 if SERVER then
-    AddCSLuaFile "inv/client.lua"
-    AddCSLuaFile "inv/shared.lua"
-    include "inv/server.lua"
+    AddCSLuaFile "polyinv/client.lua"
+    include "polyinv/server.lua"
+    include "config/polyitems.lua"
 else
-    include "inv/client.lua"
+    include "polyinv/client.lua"
 end

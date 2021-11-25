@@ -13,21 +13,6 @@ surface.CreateFont( "polyfont.vsm", {
 local sw, sh = ScrW(), ScrH()
 local ply = LocalPlayer()
 
-netstream.Hook( 'polyinv.initialize', function() 
-    ply.cache_inv = {}
-end)
-
-netstream.Hook( 'polyinv.giveItem', function( class )
-    table.insert( ply.cache_inv, class )
-end)
-
-if n then n:Remove() end
-n = vgui.Create 'DImageButton'
-n:Center()
-n:SetSize( 70, 70 )
-n:AlignTop( 10 )
-n:SetMaterial( 'poly/fedora.png', 'smooth' )
-
 function polyinv.info( data )
     if inf then inf:Remove() end
     inf = vgui.Create 'DFrame'
@@ -110,11 +95,14 @@ netstream.Hook( 'polyinv.open', function( data, items )
 
     local pr = m:Add 'DProgress'
     pr:SetSize( 0, 15 )
+
     local fraq = 0
-    if data.inventory != nil then
-        for k, v in pairs( data ) do
-            local data_inv = items[v].weight
-            fraq = fraq + data_inv
+    local inv_data = pon.decode( data[1].inventory )
+
+    if inv_data != '[}' then
+        for k, v in pairs( inv_data ) do
+            local ind = items[v].weight
+            fraq = fraq + ind
         end
     end
 
@@ -137,8 +125,8 @@ netstream.Hook( 'polyinv.open', function( data, items )
     gr:SetCols( 4 )
     gr:SetRowHeight( 70 )
     gr:SetColWide( 70 )
-    if data.inventory != nil then
-        for k, class in pairs( data ) do
+    if data[1].inventory != '[}' then
+        for k, class in pairs( inv_data ) do
             local data_inv = items[class]
             local it = gr:Add 'DImageButton'
             it:SetSize( 60, 60 )
@@ -173,6 +161,7 @@ netstream.Hook( 'polyinv.open', function( data, items )
             end
         end
     end
+    
 end)
 
 function n:DoClick()
