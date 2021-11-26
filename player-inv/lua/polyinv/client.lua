@@ -12,8 +12,6 @@ local ply = LocalPlayer()
 function polyinv.note( data )
     if nt then nt:Remove() end    
 
-    PrintTable(data)
-
     nt = vgui.Create 'DFrame'
     nt:SetSize( 700, 400 )
     nt:Center()
