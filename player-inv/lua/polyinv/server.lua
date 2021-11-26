@@ -25,7 +25,7 @@ function PL:openInventory( owner )
         sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( steam:SteamID() ) .. ", " .. SQLStr( "[}" ) .. " )" )
     end
     local newData = sql.Query( "SELECT inventory FROM polytopia_inventory WHERE steamid = " .. sql.SQLStr( steam:SteamID() ) .. ";")
-    netstream.Start( self, 'polyinv.open', newData, polyinv.List, charInfo )
+    netstream.Start( self, 'polyinv.open', newData, polyinv.List, charInfo, polyinv.customCache )
 end
 
 function PL:giveItem( class )
@@ -45,11 +45,25 @@ function PL:giveItem( class )
     end
 
     if not polyinv.List[class] then self:polychatNotify( 1, 'Такого предмета не существует.' ) return end
+
     if fraq > 1.01 or fraq + polyinv.List[class].weight > 1.01 then self:polychatNotify( 1, 'Нет места.' ) return end
 
     table.insert( data, class )
     sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( data ) ) .. " )" )
 end
+
+Entity(1):giveItem( 'Несучка2' )
+
+-- polyinv.createCustomItem({
+--     name = 'Пушка 1',
+--     class = 'Несучка2',
+--     max = 3,
+--     weight = 0.05,
+--     func = 'gun',
+--     canUse = false,
+-- })   
+
+PrintTable( polyinv.List )
 
 function PL:hasItem( id )
     return self:getInventory_2()[id]
@@ -85,16 +99,18 @@ function PL:getCount( class )
     return i
 end
 
-netstream.Hook( 'polyinv.sv-useItem', function( ply, id ) 
-    ply:useItem( id )
-end)
+hook.Add( "InitPostEntity", "some_unique_name", function()
+    netstream.Hook( 'polyinv.sv-useItem', function( ply, id ) 
+        ply:useItem( id )
+    end)
 
-netstream.Hook( 'polyinv.sv-deleteItem', function( ply, id ) 
-    ply:deleteItem( id )
-end)
+    netstream.Hook( 'polyinv.sv-deleteItem', function( ply, id ) 
+        ply:deleteItem( id )
+    end)
 
-netstream.Hook( 'polyinv.sv-open', function( ply ) 
-    ply:openInventory( ply:SteamID() )
+    netstream.Hook( 'polyinv.sv-open', function( ply ) 
+        ply:openInventory( ply:SteamID() )
+    end)
 end)
 
 hook.Add( 'PlayerSay', 'polychars.openOnSay', function( ply, text )

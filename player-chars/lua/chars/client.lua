@@ -1,10 +1,6 @@
-hook.Add( 'Think', 'init-lib', function()
-    hook.Remove( 'Think', 'init-lib' )
-        
-    local pl = LocalPlayer()
+hook.Add( "InitPostEntity", "some_unique_name", function()
 
-    -- hook.Run( 'library.hook-flyover' )
-        -- hook.Remove( 'CalcView', 'lib-flycam' )
+    local pl = LocalPlayer()
 
     function library.openMenu( owner, data )
         hook.Remove( 'HUDPaint', 'library-hud')
@@ -49,11 +45,11 @@ hook.Add( 'Think', 'init-lib', function()
         local y = 15
 
         local lore = [[
-Вы можете создать всего три персонажа, основные 
-данные должны соответствовать нашему лору и сет-
-тингу. Настоятельно рекомендуем прочесть его, а
-также правила сервера. Надеюсь, вам понравится
-у нас. Зови друзей чтобы было веселей. Удачи =)
+    Вы можете создать всего три персонажа, основные 
+    данные должны соответствовать нашему лору и сет-
+    тингу. Настоятельно рекомендуем прочесть его, а
+    также правила сервера. Надеюсь, вам понравится
+    у нас. Зови друзей чтобы было веселей. Удачи =)
         ]]
 
         local goText = vgui.Create( 'DLabel', bar )
@@ -113,9 +109,7 @@ hook.Add( 'Think', 'init-lib', function()
                     m:AddOption("Удалить", function()
                         Derma_Query( 'Вы уверены, что хотите удалить этого персонажа? Восстановить ничего уже не получится!', 'Подтвердить удаление', 'Подтвердить', function()          
                                 netstream.Start( 'polychars.Delete', line )
-                                timer.Simple( 0.3, function()
-                                    RunConsoleCommand( 'polychars.OpenMenu' )
-                                end)
+                                netstream.Start 'polychars.open'
                             end, 'Отменить' )
                     end):SetImage("icon16/user_delete.png")
                     m:Open()
@@ -134,8 +128,6 @@ hook.Add( 'Think', 'init-lib', function()
         end
 
     end
-
-netstream.Start( 'polychars.Open' )
 
     function library.charMenu()
 
@@ -285,8 +277,6 @@ netstream.Start( 'polychars.Open' )
 
     end
 
-    concommand.Add( 'polychars.Open1enu', library.openMenu )
-
-    netstream.Hook( 'polychars.open', library.openMenu )
+        netstream.Hook( 'polychars.open', library.openMenu )
 
 end)

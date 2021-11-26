@@ -1,4 +1,5 @@
 polyinv.List = {}
+
 polyinv.itemTypes = {
     gun = function( item, ply )
         ply:Give(item.class)
@@ -6,6 +7,12 @@ polyinv.itemTypes = {
 }
 
 function polyinv.registerItem( data )
+    local class = data.class
+    polyinv.List[class] = data
+end
+
+
+function polyinv.registerCustomItem( data )
     local class = data.class
     polyinv.List[class] = data
 end

@@ -106,10 +106,6 @@ hook.Add( 'Think', 'init-lib', function()
 
     end
 
-    -- Entity(1):openPlayerChars()
-
-    -- Entity(1):pickCharacter( 2 )
-
     netstream.Hook( 'polychars.Pick', function( ply, id ) 
         ply:pickCharacter( id )
     end)
@@ -127,5 +123,3 @@ hook.Add( 'Think', 'init-lib', function()
     end)
 
 end)
-
--- Entity(1):openPlayerChars()
