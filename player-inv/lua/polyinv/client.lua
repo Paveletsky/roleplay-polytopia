@@ -1,17 +1,10 @@
 hook.Add( "Think", "lib.load", function()
     hook.Remove( 'Think', 'lib.load' )
 
-    surface.CreateFont( "polyfont.sm", {
-        font = "Calibri", --  Use the font-name which is shown to you by your operating system Font Viewer, not the file name
-        extended = false,
-        size = 24,
-    })
-
-    surface.CreateFont( "polyfont.vsm", {
-        font = "Calibri", --  Use the font-name which is shown to you by your operating system Font Viewer, not the file name
-        extended = false,
-        size = 18,
-    })
+    library.createFont( 'polyfont.sm', 'Calibri', 15 )
+    library.createFont( 'polyfont.vsm', 'Calibri', 15 )
+    library.createFont( 'polyfont.rich', 'Calibri', 14 )
+    library.createFont( 'polyfont.rich2', 'Calibri', 24 )
 
     local sw, sh = ScrW(), ScrH()
     local ply = LocalPlayer()
@@ -30,8 +23,9 @@ hook.Add( "Think", "lib.load", function()
         logo:SetWide(100)
         logo:DockMargin(2, 2, 2, 2)
 
-        local name = inf:Add("DPanel")
+        local name = inf:Add 'RichText'
         name:Dock(TOP)
+        name:AppendText( data.name or "Без имени" )
 
         local desc = inf:Add 'RichText'
         desc:Dock(FILL)
@@ -57,13 +51,14 @@ hook.Add( "Think", "lib.load", function()
             end
         end
 
-        -- function desc:PerformLayout()
-        --     self:SetFontInternal( "DermaDefault" )
-        --     self:SetFGColor( Color( 255, 255, 255 ) )
-        -- end
+        function name:PerformLayout()
+            self:SetFontInternal( "polyfont.rich2" )
+            self:SetFGColor( Color( 255, 255, 255 ) )            
+        end
 
-        function name:Paint( w, h )
-            draw.DrawText( data.name, 'polyfont.sm', 0, 0, color_white )
+        function desc:PerformLayout()
+            self:SetFontInternal( "polyfont.rich" )
+            self:SetFGColor( Color( 255, 255, 255 ) )            
         end
     end
 
@@ -77,7 +72,7 @@ hook.Add( "Think", "lib.load", function()
         m:Center()
         m:SetScreenLock( true )
         m:AlignLeft(0)
-        m:MoveTo( ScrW() / 2 - m:GetWide() - 300, ScrH() / 2 - m:GetTall() / 2, 0.4, 0, -1 )
+        m:MoveTo( ScrW() / 25, ScrH() / 2 - m:GetTall() / 2, 0.4, 0, -1 )
 
         local md = m:Add 'DPanel'
         md:Dock( RIGHT )
@@ -202,6 +197,8 @@ hook.Add( "Think", "lib.load", function()
             end
         end
     end)
+
+    netstream.Start 'polyinv.sv-open'
 
     netstream.Hook( 'polyinv.openMenu', polyinv.open )
 

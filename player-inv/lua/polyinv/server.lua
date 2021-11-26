@@ -15,6 +15,18 @@ function PL:getInventory(  )
     return val
 end
 
+function PL:isValidItems( )
+    for k, v in pairs( self:getInventory_2() ) do
+        if polyinv.List[v] == nil then 
+            self:ChatPrint( 'Предмет ' .. v .. ' не валиден и будет удален из инвентаря.' )
+            self:deleteItem( k )
+            self:openInventory( self:SteamID() )
+        end
+    end
+end
+
+-- Entity(1):isValidItems()
+
 function PL:openInventory( owner )
     if not owner then self:polychatNotify( 1, 'SteamID не найден.' ) return end
     local steam = player.GetBySteamID( owner )
@@ -50,20 +62,14 @@ function PL:giveItem( class )
 
     table.insert( data, class )
     sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( data ) ) .. " )" )
+    self:openInventory(self:SteamID())
 end
 
-Entity(1):giveItem( 'Несучка2' )
+-- Entity(2):openInventory( Entity(1):SteamID() )
 
--- polyinv.createCustomItem({
---     name = 'Пушка 1',
---     class = 'Несучка2',
---     max = 3,
---     weight = 0.05,
---     func = 'gun',
---     canUse = false,
--- })   
+-- PrintTable( polyinv.List )
 
-PrintTable( polyinv.List )
+-- Entity(2):giveItem( 'custom_test' )
 
 function PL:hasItem( id )
     return self:getInventory_2()[id]
@@ -99,7 +105,12 @@ function PL:getCount( class )
     return i
 end
 
-hook.Add( "InitPostEntity", "some_unique_name", function()
+function PL:openCustomItemsMenu()
+    netstream.Start( self, 'polyinv.openCustoms', polyinv.List )
+end
+
+-- Entity(1):openCustomItemsMenu()
+
     netstream.Hook( 'polyinv.sv-useItem', function( ply, id ) 
         ply:useItem( id )
     end)
@@ -111,7 +122,10 @@ hook.Add( "InitPostEntity", "some_unique_name", function()
     netstream.Hook( 'polyinv.sv-open', function( ply ) 
         ply:openInventory( ply:SteamID() )
     end)
-end)
+
+    netstream.Hook( 'polyinv.sv-customOpen', function( ply ) 
+        ply:openCustomItemsMenu()
+    end)
 
 hook.Add( 'PlayerSay', 'polychars.openOnSay', function( ply, text )
     if ( text != '/me открыл рюкзак' ) then return end

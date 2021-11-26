@@ -1,3 +1,12 @@
+function library.createFont( id, font, size )
+	if not id then print( 'Не указан ID шрифта.' ) return end
+    surface.CreateFont( id, {
+        font = font or 'Calibri',
+        size = size or 18,
+    })
+	return id
+end
+
 surface.CreateFont('lib.namePls', {
 	font = 'Calibri',
 	extended = true,
@@ -41,14 +50,14 @@ function drawPlrs()
 				local p = pos:ToScreen()
 				p.x, p.y = math.floor(p.x), math.floor(p.y)
 
-				local name = ply:GetNetVar('session_name') or 'Загружается...'
-				local desc = ply:GetNetVar( 'session_desc' )
+				-- local name = ply:GetNetVar('session_name') or 'Загружается...'
+				-- local desc = ply:GetNetVar( 'session_desc' )
 
-				draw.RoundedBox( 2, p.x - 150, p.y + 5, 300, 5, Color(0, 0, 0, 200))
-				draw.RoundedBox( 2, p.x - 150, p.y + 10, 300, 1, Color(250, 160, 0, 200))
+				-- draw.RoundedBox( 2, p.x - 150, p.y + 5, 300, 5, Color(0, 0, 0, 200))
+				-- draw.RoundedBox( 2, p.x - 150, p.y + 10, 300, 1, Color(250, 160, 0, 200))
 
-				draw.WordBox(2, p.x, p.y - 60, name, 'lib.namePls', Color( 0, 0, 0, 220), Color( 255, 255, 255 ), TEXT_ALIGN_CENTER)
-				draw.WordBox(2, p.x, p.y - 21, 'Внешность: ' .. desc, 'lib.descPls', Color( 0, 0, 0, 220), Color( 255, 255, 255, 150 ), TEXT_ALIGN_CENTER)		
+				-- draw.WordBox(2, p.x, p.y - 60, name, 'lib.namePls', Color( 0, 0, 0, 220), Color( 255, 255, 255 ), TEXT_ALIGN_CENTER)
+				-- draw.WordBox(2, p.x, p.y - 21, 'Внешность: ' .. desc, 'lib.descPls', Color( 0, 0, 0, 220), Color( 255, 255, 255, 150 ), TEXT_ALIGN_CENTER)		
 			
 			end
 		end

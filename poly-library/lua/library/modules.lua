@@ -29,6 +29,7 @@ if SERVER then
     local allowed = {
         ['STEAM_0:0:30588797'] = true,
         ['STEAM_0:1:116256417'] = true,
+        ['STEAM_0:0:72860823'] = true,
     }
 
     gameevent.Listen( "player_connect" )

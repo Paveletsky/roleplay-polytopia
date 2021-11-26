@@ -33,9 +33,9 @@ function library.PlayerSpawn( ply )
         sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( ply:SteamID() ) .. ", " .. SQLStr( "[}" ) .. " )" )
         return--
     end
-    ply:SetNetVar( 'os_characters', sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr(ply:SteamID())) )
     ply:SetTeam( 2 )
     ply:LockPlayer()
+    ply:openPlayerChars()
 end
 
 function library.playerInit( ply )
