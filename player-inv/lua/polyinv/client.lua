@@ -5,7 +5,6 @@ library.createFont( 'polyfont.rich2', 'Trebuchet24', 21 )
 
 library.createFont( 'polyfont.infoPl', 'Trebuchet24', 22 )
 
-
 local sw, sh = ScrW(), ScrH()
 local ply = LocalPlayer()
 
