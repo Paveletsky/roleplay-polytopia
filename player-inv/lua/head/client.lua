@@ -7,6 +7,7 @@ function polyinv.openCustoms( itemList )
     if mn then mn:Remove() end
     mn = vgui.Create 'DFrame'
     mn:SetSize( 700, 500 )
+    mn:SetTitle( 'Создание предметов' )
     mn:Center()
     mn:MakePopup()
     

@@ -114,6 +114,10 @@ hook.Add( 'Think', 'init-lib', function()
         ply:createCharacter( rpname, desc, scale, skin, bg, hunger )
     end)
 
+    netstream.Hook( 'polyinv.noteOpen', function(ply) 
+        ply:notesOpen()
+    end)
+
     netstream.Hook( 'polychars.Delete', function( ply, id ) 
         ply:deleteCharacter( id )
     end)
