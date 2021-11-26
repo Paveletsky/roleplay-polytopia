@@ -88,7 +88,7 @@ function drawGui()
 	if ply:getDarkRPVar( 'Energy' ) <= 70 then hungerStatus = 'Умеренно голоден' end
 	if ply:getDarkRPVar( 'Energy' ) <= 20 then hungerStatus = 'Пора подкрепиться' end
 
-	surface.SetDrawColor( 255, 255, 255, 255 ) -- Set the drawing color
+	surface.SetDrawColor( 250, 160, 0, 255 ) -- Set the drawing color
 		surface.SetMaterial( Material( 'beyn/pulse.png' ) ) -- Use our cached material
 	surface.DrawTexturedRect(x + 193, y + 18, 45, 25 ) -- Actually draw the rectangle
 

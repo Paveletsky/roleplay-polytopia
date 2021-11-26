@@ -21,7 +21,7 @@ polyinv.registerItem({
     name = 'Револьвер',
     class = 'weapon_357',
     max = 3,
-    logo = 'poly/cake.png',
+    logo = 'poly/gun.png',
     weight = 0.04,
     func = 'gun',
     canUse = true,
@@ -40,12 +40,12 @@ polyinv.registerCustomItem({
     name = 'Медаль Шона Эдисона',
     class = 'poly_custom_tester',
     desc = 'Посвещено первому человеку, который открыл этот рюкзак.',
-    logo = 'poly/goldmedal.png',
+    logo = 'poly/prize.png',
     max = 1,
     weight = 0.01,
     canUse = false,
 })   
 
-Entity(2):giveItem( 'poly_custom_tester' )
+Entity(1):giveItem( 'poly_custom_tester' )
 
 -- PrintTable( Entity(1):GetBodyGroups() )

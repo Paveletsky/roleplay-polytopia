@@ -43,6 +43,6 @@ if SERVER then
 
 	resource.AddWorkshop( '822313622' ) -- rp isolation
 
-	resource.AddWorkshop('2651123345') -- [~] Polytopia Assets - Icons
+	resource.AddWorkshop('2664787711') -- [~] Polytopia Assets - Icons
 
 end

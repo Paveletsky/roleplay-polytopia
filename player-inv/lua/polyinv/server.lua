@@ -28,7 +28,8 @@ end
 -- Entity(1):isValidItems()
 
 function PL:openInventory( owner )
-    if not owner then self:polychatNotify( 1, 'SteamID не найден.' ) return end
+    self:isValidItems()
+        if not owner then self:polychatNotify( 1, 'SteamID не найден.' ) return end
     local steam = player.GetBySteamID( owner )
     local charInfo = sql.Query( "SELECT * FROM polytopia_characters WHERE steamid = " .. SQLStr( steam:SteamID() ) .. ";")
     local data = sql.Query( "SELECT * FROM polytopia_inventory WHERE steamid = " .. sql.SQLStr( steam:SteamID() ) .. ";")
@@ -50,13 +51,12 @@ function PL:giveItem( class )
     local data = pon.decode( encoded[1].inventory )
     local fraq = 0
 
+    if !polyinv.List[class] then self:polychatNotify( 1, 'Я не могу взять то, чего не существует :D' ) return end
     if self:getCount( class ) >= polyinv.List[class].max then self:polychatNotify( 1, 'У вас максимальное кол-во "' .. polyinv.List[class].name .. '"' ) return end
     for k, v in pairs( data ) do
         local data_inv = polyinv.List[v].weight
         fraq = fraq + data_inv
     end
-
-    if not polyinv.List[class] then self:polychatNotify( 1, 'Такого предмета не существует.' ) return end
 
     if fraq > 1.01 or fraq + polyinv.List[class].weight > 1.01 then self:polychatNotify( 1, 'Нет места.' ) return end
 
@@ -109,7 +109,8 @@ function PL:openCustomItemsMenu()
     netstream.Start( self, 'polyinv.openCustoms', polyinv.List )
 end
 
--- Entity(1):openCustomItemsMenu()
+hook.Add( "Think", "lib.load", function()
+    hook.Remove( 'Think', 'lib.load' )
 
     netstream.Hook( 'polyinv.sv-useItem', function( ply, id ) 
         ply:useItem( id )
@@ -126,6 +127,7 @@ end
     netstream.Hook( 'polyinv.sv-customOpen', function( ply ) 
         ply:openCustomItemsMenu()
     end)
+end)
 
 hook.Add( 'PlayerSay', 'polychars.openOnSay', function( ply, text )
     if ( text != '/me открыл рюкзак' ) then return end
