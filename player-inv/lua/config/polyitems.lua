@@ -41,7 +41,6 @@ polyinv.registerCustomItem({
     class = 'poly_custom_tester',
     desc = 'Посвящено первому человеку, который открыл этот рюкзак.',
     logo = 'poly/prize.png',
-    model = 'models/props_lab/huladoll.mdl',
     max = 1,
     weight = 0.01,
     canUse = false,

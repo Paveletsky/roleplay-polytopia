@@ -30,9 +30,6 @@ function library.module(path)
 	if file.Exists(path .. '/client.lua', 'LUA') then library.client(path .. '/client') end
 end
 
-library.shared('library/modules')
-
-
 if SERVER then
 
 	resource.AddWorkshop( '1363659220' ) -- survivor citizens
@@ -46,3 +43,5 @@ if SERVER then
 	resource.AddWorkshop('2664787711') -- [~] Polytopia Assets - Icons
 
 end
+
+library.shared('library/modules')

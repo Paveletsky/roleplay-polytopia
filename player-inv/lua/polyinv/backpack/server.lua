@@ -105,27 +105,6 @@ function PL:getCount( class )
     return i
 end
 
-function PL:DropItem( ID )
-
-    if not self:hasItem( ID ) then self:ChatPrint( 'У тебя нет этого.' ) return end
-
-    local I = ents.Create 'polyinv_base_item' 
-    local itemInfo = polyinv.List[self:getInventory_2()[ID]] 
-    local trace = util.TraceLine({
-        start = self:EyePos(),
-        endpos = self:EyePos() + self:EyeAngles():Forward() * 50,
-        filter = self,
-    })
-
-    I:SetPos( trace.HitPos )
-    I:SetAngles( Angle(0, 0, 0) )
-    I:Register( itemInfo )
-    I:Spawn()
-
-end
-
--- Entity(1):DropItem( 1 )
-
 function PL:openCustomItemsMenu()
     netstream.Start( self, 'polyinv.openCustoms', polyinv.List )
 end
