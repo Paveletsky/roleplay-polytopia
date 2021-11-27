@@ -63,7 +63,6 @@ function polyinv.info( data )
     if inf then inf:Remove() end
 
     inf = vgui.Create 'DFrame'
-    inf:MakePopup()
     inf:SetSize( 0, 350 )
     inf:ShowCloseButton( false )
     inf:Center() 
@@ -229,6 +228,7 @@ netstream.Hook( 'polyinv.open', function( data, items, ch, customs )
     gr:SetCols( 2 )
     gr:SetRowHeight( 60)
     gr:SetColWide( 155 )
+
     if data[1].inventory != '[}' then
         for k, class in pairs( inv_data ) do
             local data_inv = items[class]
@@ -264,10 +264,12 @@ netstream.Hook( 'polyinv.open', function( data, items, ch, customs )
             end
 
             function it:OnCursorEntered()
-                if !derm:IsValid() then netstream.Start( 'polyinv.sv-infoOpen', data_inv.class ) end
+                -- if !IsValid(derma) then return end
+                netstream.Start( 'polyinv.sv-infoOpen', data_inv.class )
             end
 
             function it:OnCursorExited()
+                if not IsValid(inf) then return end
                 inf:AlphaTo( 0, 0.2, 0, function() 
                     inf:Remove()
                 end)
@@ -275,6 +277,14 @@ netstream.Hook( 'polyinv.open', function( data, items, ch, customs )
 
         end
     end
+
+    function m:OnClose()
+        if not IsValid(inf) then return end
+        inf:AlphaTo( 0, 0.2, 0, function() 
+            inf:Remove()
+        end)   
+    end
+
 end)
 
 hook.Add( "Think", "lib.load", function()

@@ -1,4 +1,5 @@
 polyinv = polyinv or {}
+polyinv.Core = polyinv.Core or {}
 
 print '[~] LIB - Inventory Init.'
 
