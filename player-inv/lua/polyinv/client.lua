@@ -274,7 +274,6 @@ netstream.Hook( 'polyinv.open', function( data, items, ch, customs )
                     inf:Remove()
                 end)
             end
-
         end
     end
 
