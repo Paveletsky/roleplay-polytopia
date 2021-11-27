@@ -22,6 +22,7 @@ polyinv.registerItem({
     class = 'weapon_357',
     max = 3,
     logo = 'poly/gun.png',
+    model = 'models/weapons/w_357.mdl',
     weight = 0.04,
     func = 'gun',
     canUse = true,
@@ -30,7 +31,7 @@ polyinv.registerItem({
 polyinv.registerItem({
     name = 'Тест',
     class = 'poly_item_test',
-    max = 3,
+    max = 55,
     weight = 0.05,
     func = 'gun',
     canUse = false,
@@ -47,6 +48,6 @@ polyinv.registerCustomItem({
     isCustom = true,
 })   
 
--- Entity(1):giveItem( 'poly_custom_tester' )
+Entity(1):giveItem( 'poly_custom_tester' )
 
 -- PrintTable( Entity(1):GetBodyGroups() )

@@ -1,4 +1,5 @@
-hook.Add( 'polylib.init', 'men', function()
+hook.Add( 'Think', 'men', function()
+    hook.Remove( 'Think', 'men')
 
     library.createFont( 'polyfont.sm', 'Calibri', 15 )
     library.createFont( 'polyfont.vsm', 'Calibri', 14 )
@@ -212,7 +213,7 @@ hook.Add( 'polylib.init', 'men', function()
         end
 
         local fraq = 0
-        local inv_data = pon.decode( data[1].inventory )
+        local inv_data = data
 
         if inv_data != '[}' then
             for k, v in pairs( inv_data ) do
@@ -241,7 +242,7 @@ hook.Add( 'polylib.init', 'men', function()
         gr:SetRowHeight( 60)
         gr:SetColWide( 155 )
 
-        if data[1].inventory != '[}' then
+        if data != '[}' then
             for k, class in pairs( inv_data ) do
                 local data_inv = items[class]
                 local it = gr:Add 'DImageButton'
@@ -259,7 +260,7 @@ hook.Add( 'polylib.init', 'men', function()
                     end
 
                     derm:AddOption("Выкинуть", function()
-                        netstream.Start( 'polyinv.sv-deleteItem', k )
+                        netstream.Start( 'polyinv.sv-dropItem', k )
                         netstream.Start 'polyinv.sv-open'
                     end):SetImage("icon16/bin.png")
 
@@ -286,6 +287,14 @@ hook.Add( 'polylib.init', 'men', function()
                         inf:Remove()
                     end)
                 end
+
+                function m:OnCursorExited()
+                    if not IsValid(inf) then return end
+                    inf:AlphaTo( 0, 0.2, 0, function() 
+                        inf:Remove()
+                    end)
+                end
+
             end
         end
 
@@ -299,6 +308,8 @@ hook.Add( 'polylib.init', 'men', function()
         return m
     end
 
+    
+    netstream.Start 'polyinv.sv-open'
 
     netstream.Hook( 'polyinv.open', open )
 
