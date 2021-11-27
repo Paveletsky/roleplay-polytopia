@@ -1,18 +1,11 @@
 polyinv = polyinv or {}
-polyinv.Core = polyinv.Core or {}
 
 print '[~] LIB - Inventory Init.'
 
-if SERVER then
-    AddCSLuaFile "polyinv/client.lua"
-    AddCSLuaFile "head/client.lua"
+library.server 'config/polyitems'
 
-    include "polyinv/server.lua"
-    include "head/server.lua"
+library.server 'polyinv/server'
+library.server 'polyinv/head/server'
 
-    include "config/polyitems.lua"
-else
-    include "polyinv/client.lua"
-    include "head/client.lua"
-
-end
+library.client 'polyinv/client'
+library.client 'polyinv/head/client'
