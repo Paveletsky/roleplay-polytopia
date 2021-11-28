@@ -260,7 +260,7 @@ local mdlBgroups = {}
         end                            
         netstream.Start( 'polychars.Create', namName:GetValue(), namDesc:GetValue(), mdl.Entity:GetModelScale(), mdl.Entity:GetModel(), bGrps )
         timer.Simple( 0.3, function()
-            RunConsoleCommand( 'polychars.OpenMenu' )
+            netstream.Start 'polychars.Open'
         end)
         charFr:Remove()
     end
@@ -272,6 +272,5 @@ local mdlBgroups = {}
 
 end
 
-netstream.Start 'polychars.Open'
 netstream.Hook( 'polychars.open', library.openMenu )
 

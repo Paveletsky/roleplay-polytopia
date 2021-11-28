@@ -86,6 +86,8 @@ hook.Add( 'Think', 'init-lib', function()
 
             self:setDarkRPVar( 'Energy', charId.hunger )
 
+            self:SetNetVar( 'char.name', charId.rpname )
+
             self:SetWalkSpeed( 100 )
             self:SetRunSpeed( 180 )
 

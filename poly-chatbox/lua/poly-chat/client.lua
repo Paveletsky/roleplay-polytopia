@@ -14,6 +14,8 @@ surface.CreateFont( 'ChatHudFont', {
 	shadow = true
 })
 
+library.createFont( 'lol', 'Calibri', 24 )
+
 local PANEL = {}
 
 -- chat.Panel:Remove()
@@ -39,25 +41,81 @@ function PANEL:Init()
 	self.TextEntry:DockMargin(1,1,1,1)
 	self.TextEntry:SetTall(22)
 	self.TextEntry:SetPaintBackground(false)
+    self.TextEntry:SetFont( 'lol' )
 	self.TextEntry:SetTextColor(Color(255,255,255))
 	self.TextEntry:SetHighlightColor(Color(255,120,0))
 	self.TextEntry:SetCursorColor(Color(255,120,0))
 	self.TextEntry:RequestFocus()
-
-	function self.TextEntry:PaintOver(w,h)
-		if self:GetText():Trim() == "" then
-			draw.SimpleText( "Сообщение...", "DermaDefault", 5, h/2, color_white, 0, 1 )
-		end
-	end
+    self.TextEntry:SetHistoryEnabled( true )
 
 	function self.TextEntry:OnEnter()
-			LocalPlayer():ConCommand( 'say ' .. self:GetValue() )
-		chat.Toggle()
-	end
 
-	function self.TextEntry:OnValueChanged()
-		hook.Run( "ChatTextChanged", self:GetValue() )
-	end
+        local text = self:GetText()       
+        
+        if self:GetText():Trim() == '' then
+            chat.Toggle()
+        end
+
+        LocalPlayer():ConCommand( 'say '..text )
+        chat.Toggle()
+        self:RequestFocus()
+        self:AddHistory( text )
+		self:SetText("")    
+
+	end	
+
+    self.TextEntry.OnTextChanged = function(t, noMenuRemoval)
+
+        local txt = t:GetText()
+        gamemode.Call("ChatTextChanged", txt)
+		t:OnValueChange(txt)
+
+    	if IsValid(t.Menu) and not noMenuRemoval then
+    		t.Menu:Remove()
+    	end
+
+        t:OnChange()
+        if t.usingHistory then t.usingHistory = nil return end
+
+        local words = string.Explode(' ', txt)
+        if not words and #words == 0 then return end
+
+        local ac = {}
+        local fl = words[1]:sub(1,1)
+        if #words == 1 then
+            if fl == '!' or fl == '~' then
+                local rankData = serverguard.ranks:GetRank(serverguard.player:GetRank(LocalPlayer()))
+                local commands = serverguard.command:GetTable()
+                for unique, data in pairs(commands) do
+                    if (data.command and (not data.permissions or serverguard.player:HasPermission(LocalPlayer(), data.permissions)))
+                    and data.command:lower():find(words[1]:sub(2):lower(), 1, true) then
+                        table.insert(ac, fl .. data.command .. ' ')
+                    end
+                end
+            elseif fl == '/' and DarkRP then
+                for unique, data in pairs(DarkRP.getChatCommands()) do
+                    if data.command:lower():find(words[1]:sub(2):lower(), 1, true) then
+                        table.insert(ac, fl .. data.command .. ' ')
+                    end
+                end
+            end
+        end
+
+        if #ac > 0 then
+            t.Menu = DermaMenu(t)
+        	for k, v in pairs(ac) do
+        		t.Menu:AddOption(v, function() t:SetText(v) t:SetCaretPos(utf8.len(v)) t:RequestFocus() end)
+        	end
+
+            local x, y = t:LocalToScreen(0, 0)
+            t.Menu:SetMinimumWidth(t:GetWide())
+            t.Menu:Open(x, y - t.Menu:GetTall(), true, t)
+            t.Menu:SetMaxHeight(self:GetTall() - 35)
+            t.Menu:SetPos(x, y - math.min(t.Menu:GetTall(), self:GetTall() - 35))
+        end
+
+    end
+
 
 	self.Chatbox = self:Add("RichText")
 	self.Chatbox:Dock(FILL)
@@ -78,15 +136,16 @@ end
 
 function PANEL:PaintOver(w,h)
 	if input.IsKeyDown( KEY_ESCAPE ) and self:IsVisible() then
+    	gui.HideGameUI()
 		chat.Toggle()
-		gui.HideGameUI()
 	end
 end
 
 function PANEL:Toggle()
 	self:SetVisible(!self:IsVisible())
+    -- self.Chatbox:SetVisible( self:IsVisible() )
+
 	if self:IsVisible() then
-		self.TextEntry:SetText("")
 		self.TextEntry:RequestFocus()
 		hook.Run("StartChat")
 	else
@@ -102,6 +161,7 @@ function chat.Toggle()
 		return
 	end
 	chat.Panel:Toggle()
+
 end
 
 function chat.GetChatBoxPos()
@@ -183,8 +243,8 @@ function chat.AddText(...)
 			elseif type(v) == "string" then
 				chat.InsertText(v)
 			elseif v:IsPlayer() then
-				chat.InsertColor( Color( 255,99,71 ) ) -- Make their name that color
-				chat.InsertText( '[' .. team.GetName( v:Team() ) .. '] ' .. v:Nick() )
+				chat.InsertColor( Color( 250, 160, 0 ) ) -- Make their name that color
+				chat.InsertText( v:GetNetVar( 'char.name' ) .. ' говорит:' )
 			end
 		end
 		chat.InsertText("\n")
@@ -198,39 +258,40 @@ timer.Simple(0.3, function()
 	chat.Panel:SetVisible(false)
 end)
 
-local icon = Material("poly/roll.png", 'smooth' )
-local function iconfunc()
 
-	draw.Text {
-		text = 'Говорите...',
-		font = 'lib.namePls',
-		pos = { ScrW() / 2 + 875, ScrH() / 15 - 45 },
-		xalign = TEXT_ALIGN_RIGHT,
-		yalign = TEXT_ALIGN_RIGHT,
-		color = Color( 255, 255, 255 ),
-	}
+-- local icon = Material("poly/roll.png", 'smooth' )
+-- local function iconfunc()
 
-	surface.SetDrawColor(255, 255, 255 )
-	surface.SetMaterial(icon)
-	surface.DrawTexturedRect( ScrW() / 2 + 880, ScrH() / 15 - 50, 60, 50)
+-- 	draw.Text {
+-- 		text = 'Говорите...',
+-- 		font = 'lib.namePls',
+-- 		pos = { ScrW() / 2 + 875, ScrH() / 15 - 45 },
+-- 		xalign = TEXT_ALIGN_RIGHT,
+-- 		yalign = TEXT_ALIGN_RIGHT,
+-- 		color = Color( 255, 255, 255 ),
+-- 	}
 
-end
+-- 	surface.SetDrawColor(255, 255, 255 )
+-- 	surface.SetMaterial(icon)
+-- 	surface.DrawTexturedRect( ScrW() / 2 + 880, ScrH() / 15 - 50, 60, 50)
 
-hook.Add("PlayerStartVoice", "ImageOnVoice", function( ply )
-	if ply:Team() != TEAM_JUDGE then
-		return false
-	else		
-			hook.Add("HUDPaint", "ImageOnVoice", iconfunc)
-		return true
-	end
-end)
+-- end
 
-hook.Add("PlayerEndVoice", "ImageOnVoice", function()
-	hook.Remove("HUDPaint", "ImageOnVoice")
-end)
+-- hook.Add("PlayerStartVoice", "ImageOnVoice", function( ply )
+-- 	if ply:Team() != TEAM_JUDGE then
+-- 		return false
+-- 	else		
+-- 			hook.Add("HUDPaint", "ImageOnVoice", iconfunc)
+-- 		return true
+-- 	end
+-- end)
 
-hook.Add( "PlayerBindPress", "PlayerBindPressExample", function( ply, bind, pressed )
-	if ( string.find( bind, "+voicerecord" ) ) and ply:Team() != TEAM_JUDGE then
-		return true
-	end
-end )
+-- hook.Add("PlayerEndVoice", "ImageOnVoice", function()
+-- 	hook.Remove("HUDPaint", "ImageOnVoice")
+-- end)
+
+-- hook.Add( "PlayerBindPress", "PlayerBindPressExample", function( ply, bind, pressed )
+-- 	if ( string.find( bind, "+voicerecord" ) ) and ply:Team() != TEAM_JUDGE then
+-- 		return true
+-- 	end
+-- end )
