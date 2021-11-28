@@ -28,6 +28,6 @@ netstream.Hook( 'poly.sendNotify', function( t, txt )
 
 end)
 
-    polychat.polyMsg(1, 'Мать жива?')
+    -- polychat.polyMsg(1, 'Мать жива?')
 
 DarkRP.removeChatCommand( 'me' )
