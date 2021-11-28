@@ -17,9 +17,10 @@ surface.CreateFont( 'ChatHudFont', {
 library.createFont( 'lol', 'Calibri', 24 )
 
 local PANEL = {}
+local Message
+
 
 -- chat.Panel:Remove()
-
 function PANEL:Init()
 	self:SetSize( 500, ScrH() * 0.60)
 	self:SetPos( ScrW() / 1.65, ScrH() / 2.55 )
@@ -57,6 +58,7 @@ function PANEL:Init()
         end
 
         LocalPlayer():ConCommand( 'say '..text )
+		Message = text
         chat.Toggle()
         self:RequestFocus()
         self:AddHistory( text )
@@ -253,11 +255,29 @@ function chat.AddText(...)
 	return oldChatAddText(...)
 end
 
+hook.Add("OnPlayerChat", "aChatHandle", function(ply, msg, team, dead, prefixText, col1, col2)
+
+    if chat.Panel then
+	
+        if string.find(string.lower(GAMEMODE.FolderName), "rp") then
+            if prefixText then
+                prefixText = prefixText .. ": "
+                prefixText = string.Replace(prefixText, ply:Nick() .. ": ", " ")
+                chat.AddText(ply, col1, prefixText, col2, Message)
+            else --Most likely a server 'say' message
+                chat.AddText(Color(143, 218, 230), Message)
+            end
+        	return true
+		end
+
+    end
+
+end)
+
 timer.Simple(0.3, function()
 	chat.Toggle()
 	chat.Panel:SetVisible(false)
 end)
-
 
 -- local icon = Material("poly/roll.png", 'smooth' )
 -- local function iconfunc()
