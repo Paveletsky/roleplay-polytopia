@@ -70,8 +70,8 @@ function drawGui()
 	local ply = LocalPlayer()
     local top, left = ScrH() - 840, 40	
 
-	draw.RoundedBox( 2, x, y, 245, 85, Color( 0, 0, 0, 240 ))
-	draw.RoundedBox( 2, x, y, 245, 10, Color( 250, 160, 0, 180))
+	draw.RoundedBox( 2, x, y, 245, 100, Color( 0, 0, 0, 240 ))
+	draw.RoundedBox( 2, x, y, 245, 5, Color( 250, 160, 0, 180))
 
 	-- draw.RoundedBox( 2, x, y, 245, 85, Color( 0, 0, 0, 240 ))
 	-- draw.RoundedBox( 2, x, y, 245, 10, Color( 250, 160, 0, 180))
@@ -88,13 +88,13 @@ function drawGui()
 	if ply:getDarkRPVar( 'Energy' ) <= 70 then hungerStatus = 'Умеренно голоден' end
 	if ply:getDarkRPVar( 'Energy' ) <= 20 then hungerStatus = 'Пора подкрепиться' end
 
-	surface.SetDrawColor( 250, 160, 0, 255 ) -- Set the drawing color
-		surface.SetMaterial( Material( 'beyn/pulse.png' ) ) -- Use our cached material
-	surface.DrawTexturedRect(x + 193, y + 18, 45, 25 ) -- Actually draw the rectangle
-
 	surface.SetDrawColor( 255, 255, 255, 255 ) -- Set the drawing color
-		surface.SetMaterial( Material( 'beyn/tin_can.png' ) ) -- Use our cached material
-	surface.DrawTexturedRect( x + 193, y + 46, 45, 35 ) -- Actually draw the rectangle
+
+		surface.SetMaterial( Material( 'poly/heart-monitor.png', 'noclamp smooth' ) ) -- Use our cached material
+	surface.DrawTexturedRect(x + 193, y + 5, 50, 50 ) -- Actually draw the rectangle
+
+		surface.SetMaterial( Material( 'poly/dining-room.png', 'noclamp smooth' ) ) -- Use our cached material
+	surface.DrawTexturedRect( x + 193, y + 50, 50, 50 ) -- Actually draw the rectangle
 
 	draw.Text {
 		text = healthStatus,
@@ -106,7 +106,7 @@ function drawGui()
 	} draw.Text {
 		text = hungerStatus,
 		font = 'lib.notify',
-		pos = { x + 5, y + 50 },
+		pos = { x + 5, y + 55 },
 		xalign = TEXT_ALIGN_LEFT,
 		yalign = TEXT_ALIGN_LEFT,
 		color = Color( 255, 255, 255 ),

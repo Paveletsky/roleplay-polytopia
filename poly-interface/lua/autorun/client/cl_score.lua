@@ -375,7 +375,7 @@ function Scoreboard:Init()
 		local x = w / 2
 
 
-		surface.SetMaterial( Material( 'beyn/logo.png', 'smooth' ) )
+		surface.SetMaterial( Material( 'poly/logo.png', 'smooth' ) )
 
 		surface.SetDrawColor( 255,255,255, 255 )
 

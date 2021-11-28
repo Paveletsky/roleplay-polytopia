@@ -89,11 +89,13 @@ hook.Add( 'Think', 'men', function()
         pName = inf:Add 'RichText'
         pName:Dock(FILL)
         pName:AppendText( data.name or "Без имени" )
+		pName:SetVerticalScrollbarEnabled(false)    
 
         pDesc = inf:Add 'RichText'
         pDesc:Dock(FILL)
         pDesc:DockMargin( 0, #data.name + 3, 0, 0 )
         pDesc:AppendText( data.desc or "" )
+        pDesc:SetVerticalScrollbarEnabled(false)
 
         function logo:Paint(w, h)
             if data.logo then
@@ -163,6 +165,7 @@ hook.Add( 'Think', 'men', function()
         chName:Dock(FILL)
         chName:AppendText( 'Имя: ' .. chInfo[1].rpname .. '\n' )
         chName:AppendText( 'Деятельность: nil' )
+        chName:ResetAllFades(false, true, 0)
 
         local sdInfo = sd2:Add 'RichText'
         sdInfo:Dock(FILL)
