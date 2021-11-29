@@ -1,184 +1,187 @@
-local PL = FindMetaTable( 'Player' )
-
-if ( !sql.TableExists( "polytopia_inventory" ) ) then
-    sql.Query( 'CREATE TABLE IF NOT EXISTS polytopia_inventory( steamid TEXT NOT NULL PRIMARY KEY , inventory TEXT )' )    
-end
-
-function PL:GetInventory()
-
-    local encoded = sql.Query( "SELECT inventory FROM polytopia_inventory WHERE steamid = " .. sql.SQLStr( self:SteamID() ) .. ";")
-        if encoded == nil then
-            sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( "[}" ) .. " )" )
-        end
-
-        local okDB = sql.Query( "SELECT inventory FROM polytopia_inventory WHERE steamid = " .. sql.SQLStr( self:SteamID() ) .. ";") 
-        local data = pon.decode( encoded[1].inventory )    
-
-    return data
-
-end
-
--- PrintTable( Entity(1):GetInventory() )
-
-function PL:isValidItems( )
-
-    for k, v in pairs( self:GetInventory() ) do
-        if polyinv.List[v] == nil then 
-            self:ChatPrint( 'Предмет ' .. v .. ' не валиден и будет удален из инвентаря.' )
-            self:deleteItem( k )
-            self:openInventory( self:SteamID() )
-        end
-    end
-
-end
-
--- Entity(1):GetInventory()
--- Entity(1):isValidItems()
-
-function PL:openInventory( owner )
-
-    local steam = player.GetBySteamID( owner )
-    local charInfo = sql.Query( "SELECT * FROM polytopia_characters WHERE steamid = " .. SQLStr( steam:SteamID() ) .. ";")
+hook.Add( 'Think', 'svbackpack', function()
+    hook.Remove( 'Think', 'svbackpack' )
     
-    if not owner then self:polychatNotify( 1, 'SteamID не найден.' ) return end
-    
-    local data = steam:GetInventory() 
-    netstream.Start( self, 'polyinv.open', data, polyinv.List, charInfo, polyinv.customCache )
+    local PL = FindMetaTable( 'Player' )
 
-end
-
-function PL:giveItem( class )
-
-    local data = self:GetInventory()
-    local fraq = 0
-
-    if !polyinv.List[class] then self:polychatNotify( 1, 'Я не могу взять то, чего не существует :D' ) return end
-    if self:getCount( class ) >= polyinv.List[class].max then self:polychatNotify( 1, 'У вас максимальное кол-во "' .. polyinv.List[class].name .. '"' ) return end
-    for k, v in pairs( data ) do
-        local data_inv = polyinv.List[v].weight
-        fraq = fraq + data_inv
+    if ( !sql.TableExists( "polytopia_inventory" ) ) then
+        sql.Query( 'CREATE TABLE IF NOT EXISTS polytopia_inventory( steamid TEXT NOT NULL PRIMARY KEY , inventory TEXT )' )    
     end
 
-    if fraq > 1.01 or fraq + polyinv.List[class].weight > 1.01 then self:polychatNotify( 1, 'Нет места.' ) return end
+    function PL:GetInventory()
 
-    table.insert( data, class )
-    sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( data ) ) .. " )" )
-    -- self:openInventory(self:SteamID())
+        local encoded = sql.Query( "SELECT inventory FROM polytopia_inventory WHERE steamid = " .. sql.SQLStr( self:SteamID() ) .. ";")
+            if encoded == nil then
+                sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( "[}" ) .. " )" )
+            end
 
-end
+            local okDB = sql.Query( "SELECT inventory FROM polytopia_inventory WHERE steamid = " .. sql.SQLStr( self:SteamID() ) .. ";") 
+            local data = pon.decode( encoded[1].inventory )    
 
--- Entity(2):openInventory( Entity(1):SteamID() )
+        return data
 
--- PrintTable( polyinv.List )
-
-function PL:hasItem( id )
-
-    return self:GetInventory()[id]
-
-end
-
-function PL:deleteItem( id )
-
-    if self:hasItem( id ) then
-        local notDel = self:GetInventory()
-            notDel[id] = nil 
-        sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( notDel ) ) .. " )" )
     end
 
-end
+    -- PrintTable( Entity(1):GetInventory() )
 
-function PL:useItem( id )
+    function PL:isValidItems( )
 
-    if self:hasItem( id ) then
-        local itemCl = polyinv.List[self:GetInventory()[id]]
-        local isOk = polyinv.itemTypes[itemCl.func]( itemCl, self )
-        if !isOk then
-            self:deleteItem( id )
+        for k, v in pairs( self:GetInventory() ) do
+            if polyinv.List[v] == nil then 
+                self:ChatPrint( 'Предмет ' .. v .. ' не валиден и будет удален из инвентаря.' )
+                self:deleteItem( k )
+                self:openInventory( self:SteamID() )
+            end
         end
+
     end
 
-end
+    -- Entity(1):GetInventory()
+    -- Entity(1):isValidItems()
 
-function PL:getCount( class )
+    function PL:openInventory( owner )
 
-    local data = self:GetInventory()
-    local i = 0
-
-    for k, v in pairs( data ) do
-        if v == class then
-            i = i + 1
-        end
-    end
-    return i
-
-end
-
-function PL:DropItem( ID )
-
-    if self:hasItem( ID ) then
+        local steam = player.GetBySteamID( owner )
+        local charInfo = sql.Query( "SELECT * FROM polytopia_characters WHERE steamid = " .. SQLStr( steam:SteamID() ) .. ";")
         
-        local I = ents.Create 'polystore_item'
-        local itemData = polyinv.List[self:GetInventory()[ID]]
-        local trace = util.TraceLine({
-            start = self:EyePos(),
-            endpos = self:EyePos() + self:EyeAngles():Forward() * 50,
-            filter = self,
-        })
-        I:SetPos( trace.HitPos )
-        I:SetAngles( Angle( 0, 0, 0 ) )
-        I:Register( itemData )
-        I:Spawn()
-
-        self:deleteItem( ID )
+        if not owner then self:polychatNotify( 1, 'SteamID не найден.' ) return end
+        
+        local data = steam:GetInventory() 
+        netstream.Start( self, 'polyinv.open', data, polyinv.List, charInfo, polyinv.customCache )
 
     end
 
-end
+    function PL:giveItem( class )
 
-Entity(1):DropItem( 2 )
+        local data = self:GetInventory()
+        local fraq = 0
 
-function PL:openCustomItemsMenu()
+        if !polyinv.List[class] then self:polychatNotify( 1, 'Я не могу взять то, чего не существует :D' ) return end
+        if self:getCount( class ) >= polyinv.List[class].max then self:polychatNotify( 1, 'У вас максимальное кол-во "' .. polyinv.List[class].name .. '"' ) return end
+        for k, v in pairs( data ) do
+            local data_inv = polyinv.List[v].weight
+            fraq = fraq + data_inv
+        end
 
-    netstream.Start( self, 'polyinv.openCustoms', polyinv.List )
+        if fraq > 1.01 or fraq + polyinv.List[class].weight > 1.01 then self:polychatNotify( 1, 'Нет места.' ) return end
 
-end
+        table.insert( data, class )
+        sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( data ) ) .. " )" )
+        -- self:openInventory(self:SteamID())
 
-netstream.Hook( 'polyinv.sv-useItem', function( ply, id ) 
+    end
 
-    ply:useItem( id )
+    -- Entity(2):openInventory( Entity(1):SteamID() )
 
-end)
+    -- PrintTable( polyinv.List )
 
-netstream.Hook( 'polyinv.sv-deleteItem', function( ply, id ) 
+    function PL:hasItem( id )
 
-    ply:deleteItem( id )
+        return self:GetInventory()[id]
 
-end)
+    end
 
-netstream.Hook( 'polyinv.sv-dropItem', function( ply, id ) 
+    function PL:deleteItem( id )
 
-    ply:DropItem( id )
+        if self:hasItem( id ) then
+            local notDel = self:GetInventory()
+                notDel[id] = nil 
+            sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( notDel ) ) .. " )" )
+        end
 
-end)
+    end
 
-netstream.Hook( 'polyinv.sv-open', function( ply ) 
-    
-    ply:GetInventory()
-    ply:isValidItems()
+    function PL:useItem( id )
 
-    ply:openInventory( ply:SteamID() )
+        if self:hasItem( id ) then
+            local itemCl = polyinv.List[self:GetInventory()[id]]
+            local isOk = polyinv.itemTypes[itemCl.func]( itemCl, self )
+            if !isOk then
+                self:deleteItem( id )
+            end
+        end
 
-end)
+    end
 
-netstream.Hook( 'polyinv.sv-customOpen', function( ply ) 
+    function PL:getCount( class )
 
-    ply:openCustomItemsMenu()
+        local data = self:GetInventory()
+        local i = 0
 
-end)
+        for k, v in pairs( data ) do
+            if v == class then
+                i = i + 1
+            end
+        end
+        return i
 
-hook.Add( 'PlayerSay', 'polychars.openOnSay', function( ply, text )
+    end
 
-    if ( text != '/me открыл рюкзак' ) then return end
-    ply:openInventory( ply:SteamID() )
+    function PL:DropItem( ID )
+
+        if self:hasItem( ID ) then
+            
+            local I = ents.Create 'polystore_item'
+            local itemData = polyinv.List[self:GetInventory()[ID]]
+            local trace = util.TraceLine({
+                start = self:EyePos(),
+                endpos = self:EyePos() + self:EyeAngles():Forward() * 50,
+                filter = self,
+            })
+            I:SetPos( trace.HitPos )
+            I:SetAngles( Angle( 0, 0, 0 ) )
+            I:Register( itemData )
+            I:Spawn()
+
+            self:deleteItem( ID )
+
+        end
+
+    end
+
+    function PL:openCustomItemsMenu()
+
+        netstream.Start( self, 'polyinv.openCustoms', polyinv.List )
+
+    end
+
+    netstream.Hook( 'polyinv.sv-useItem', function( ply, id ) 
+
+        ply:useItem( id )
+
+    end)
+
+    netstream.Hook( 'polyinv.sv-deleteItem', function( ply, id ) 
+
+        ply:deleteItem( id )
+
+    end)
+
+    netstream.Hook( 'polyinv.sv-dropItem', function( ply, id ) 
+
+        ply:DropItem( id )
+
+    end)
+
+    netstream.Hook( 'polyinv.sv-open', function( ply ) 
+        
+        ply:GetInventory()
+        ply:isValidItems()
+
+        ply:openInventory( ply:SteamID() )
+
+    end)
+
+    netstream.Hook( 'polyinv.sv-customOpen', function( ply ) 
+
+        ply:openCustomItemsMenu()
+
+    end)
+
+    hook.Add( 'PlayerSay', 'polychars.openOnSay', function( ply, text )
+
+        if ( text != '/me открыл рюкзак' ) then return end
+        ply:openInventory( ply:SteamID() )
+
+    end)
 
 end)

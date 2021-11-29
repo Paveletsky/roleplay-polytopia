@@ -21,3 +21,16 @@ netstream.Hook( 'poly.sendNotify', function( t, txt )
     polychat.polyMsg( t, txt )
 
 end)
+
+netstream.Hook( 'poly.sendEmote', function( t, txt ) 
+
+    polychat.polyMsg( t, txt )
+
+end)
+
+
+netstream.Hook('polychat.sendEmote', function(author, msg) 
+
+    chat.AddText( Color(245, 125, 126), author, Color(245, 125, 126), msg ) 
+
+end)

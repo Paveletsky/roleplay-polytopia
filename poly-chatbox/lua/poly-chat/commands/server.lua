@@ -1,20 +1,16 @@
-local function ME(ply, args)
-    if args == "" then
-            ply:polychatNotify( 5, 'Уточни что ты делаешь =)' )
-        return ""
-    end
+function polychat.registerCommand( data )
 
-    local DoSay = function(text)
-        if text == "" then
-                ply:polychatNotify( 5, 'Уточни что ты делаешь =)' )
-            return
-        end
-
-        -- ply:Emote(  )
-        
-    end
-    return args, DoSay
+    local cmd = data.cmd
+    polychat.Commands[cmd] = data
+    
 end
-DarkRP.defineChatCommand("todo", ME, true, 1.5)
 
-Entity(1):Emote( 'lol' )
+polychat.registerCommand({
+    cmd = '/it',
+    range = 300,
+    result = function( v, ply )
+        netstream.Start( v, 'polychat.sendEmote', ply, ' ебат собаку')
+    end,
+})
+
+-- print('lol')

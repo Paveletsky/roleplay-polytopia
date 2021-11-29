@@ -1,4 +1,5 @@
-hook.Add( 'polylib.init', 'chatinit', function()
+hook.Add( 'Think', 'chatinit', function()
+	hook.Remove( 'Think', 'chatinit' )
 
 	surface.CreateFont( 'ChatBoxFont', {
 		font = 'Roboto',
@@ -290,6 +291,8 @@ hook.Add( 'polylib.init', 'chatinit', function()
 		end
 
 	end)
+
+	-- hook.Remove( 'OnPlayerChat', 'aChatHandle' )
 
 	chat.Toggle()
 	chat.Panel:SetVisible(false)
