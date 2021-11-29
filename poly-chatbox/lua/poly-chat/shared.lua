@@ -16,18 +16,8 @@ function polychat.polyMsg(_type, text)
 
 end
 
-function notification.AddLegacy(text, _type, _)
-
-    polychat.polyMsg(_type, text)
-
-end
-
 netstream.Hook( 'poly.sendNotify', function( t, txt ) 
 
     polychat.polyMsg( t, txt )
 
 end)
-
-    -- polychat.polyMsg(1, 'Мать жива?')
-
-DarkRP.removeChatCommand( 'me' )

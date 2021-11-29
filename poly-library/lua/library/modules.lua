@@ -48,7 +48,7 @@ if CLIENT then
 end
 
 hook.Add('Think', 'init', function()
-    hook.Remove('Think', 'init')
 
     hook.Run('polylib.init')
+    hook.Remove('Think', 'init')
 end)

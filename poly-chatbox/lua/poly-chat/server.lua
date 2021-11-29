@@ -1,33 +1,13 @@
-util.AddNetworkString( 'clib.addText' )
+local PL = FindMetaTable("Player")
 
-util.AddNetworkString( 'clib.sendMsg' )
-
-util.AddNetworkString( 'NotificationChat' )
-
-local PLAYER = FindMetaTable("Player")
-
-function PLAYER:ChatAddText(...)
-
-	net.Start('clib.addText')
-
-		net.WriteTable({...})
-
-	net.Send(self)
-
-end
-
-function ChatAddText(...)
-
-	net.Start('clib.addText')
-
-		net.WriteTable({...})
-
-	net.Broadcast()
-
-end
-
-function PLAYER:polychatNotify( typ, msg )
+function PL:polychatNotify( typ, msg )
 
 	netstream.Start( self, 'poly.sendNotify', typ, msg )
+
+end
+
+function PL:Emote( txt )
+
+	return netstream.Start( self, 'polychat.Emote', txt )
 
 end

@@ -21,6 +21,8 @@ hook.Add( 'polylib.init', 'chatinit', function()
 	local PANEL = {}
 	local Message
 
+    -- chat.Panel:Remove()
+
 	function PANEL:Init()
 		self:SetSize( 650, 400 )
 		self:SetPos( ScrW() / 1.52, ScrH() / 1.60 )
@@ -161,12 +163,12 @@ hook.Add( 'polylib.init', 'chatinit', function()
 		end
 	end
 
-	vgui.Register( "AlexChatBox", PANEL, "DFrame")
+	vgui.Register( "polychat.frame", PANEL, "DFrame")
 
 	function chat.Toggle()
 
 		if !IsValid(chat.Panel) then
-			chat.Panel = vgui.Create("AlexChatBox")
+			chat.Panel = vgui.Create("polychat.frame")
 			return
 		end
 		chat.Panel:Toggle()
@@ -328,5 +330,9 @@ hook.Add( 'polylib.init', 'chatinit', function()
 			return true
 		end
 	end )
+
+	netstream.Hook( 'polychat.Emote', function( txt )
+		chat.AddText( txt )
+	end)
 
 end)
