@@ -20,7 +20,6 @@ hook.Add( 'Think', 'chatinit', function()
 	library.createFont( 'lol', 'Calibri', 24 )
 
 	local PANEL = {}
-	local Message
 
     -- chat.Panel:Remove()
 
@@ -271,7 +270,7 @@ hook.Add( 'Think', 'chatinit', function()
 	hook.Add("OnPlayerChat", "aChatHandle", function(ply, msg, team, dead, prefixText, col1, col2)
 
 		if chat.Panel then
-		
+
 			if string.find(string.lower(GAMEMODE.FolderName), "rp") then
 
 				if prefixText and Message != nil then

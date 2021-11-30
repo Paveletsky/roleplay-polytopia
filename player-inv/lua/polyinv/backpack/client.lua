@@ -311,9 +311,6 @@ hook.Add( 'Think', 'men', function()
         return m
     end
 
-    
-    netstream.Start 'polyinv.sv-open'
-
     netstream.Hook( 'polyinv.open', open )
 
     netstream.Hook( 'polyinv.info', polyinv.info )

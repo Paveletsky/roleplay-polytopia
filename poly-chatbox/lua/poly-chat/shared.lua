@@ -31,6 +31,6 @@ end)
 
 netstream.Hook('polychat.sendEmote', function(author, msg) 
 
-    chat.AddText( Color(245, 125, 126), author, Color(245, 125, 126), msg ) 
+    chat.AddText( Color(250, 160, 0 ), author, Color(250, 160, 0 ), msg ) 
 
 end)

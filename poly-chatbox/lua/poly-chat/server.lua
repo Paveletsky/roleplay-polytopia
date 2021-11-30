@@ -10,7 +10,6 @@ local function who_can_hear( performer_pos, range )
         diffz = math.abs(performer_pos.z - plpos.z)
         if diffx <= range and diffy <= range and diffz <= range then who_can_hear_table[#who_can_hear_table + 1] = v end
     end
-	PrintTable( who_can_hear_table )
     return who_can_hear_table
 end
 
@@ -24,12 +23,14 @@ local function check_emote_com( sender, text, teamChat )
 
 	for _, f in pairs( cmdTbl ) do
 		
-		if argument == f.cmd then
+		if argument == '/'..f.cmd then
 
 			local text = table.concat(args, " ", 2, #args)
 
+			if text == '' then return '' end
+
 			for k, v in ipairs( who_can_hear(sender:GetPos(), f.range )) do
-				f.result( v, sender:GetNetVar( 'char.name' ) )
+				f.result( v, sender:GetNetVar( 'char.name' ), sender:GetNetVar( 'tempSay' ) )
 			end
 		
 			return ""
@@ -40,3 +41,5 @@ local function check_emote_com( sender, text, teamChat )
 end
 
 hook.Add("PlayerSay", "EmotePerforming", check_emote_com)
+
+print( Entity(1):GetNetVar( 'tempSay' ) )

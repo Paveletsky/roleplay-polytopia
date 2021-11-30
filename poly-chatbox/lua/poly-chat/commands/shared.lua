@@ -1,32 +1,49 @@
--- hook.Add( 'polylib.init', 'chatinit', function()
+hook.Add( 'polylib.init', 'init.cmds', function()
 
---     DarkRP.removeChatCommand( 'me' )
+    polychat.Commands = polychat.Commands or {}
 
--- end)
+    --
+    --  remove default drp commands
+    --
 
---
---  remove default drp commands
---
+    DarkRP.removeChatCommand( 'me' )
+    DarkRP.removeChatCommand( 'w' )
+    DarkRP.removeChatCommand( 'y' )
+    DarkRP.removeChatCommand( '//' )
+    DarkRP.removeChatCommand( '/' )
+    DarkRP.removeChatCommand( 'ooc' )
+    DarkRP.removeChatCommand( 'a' )
+    DarkRP.removeChatCommand( 'broadcast' )
+    DarkRP.removeChatCommand( 'channel' )
+    DarkRP.removeChatCommand( 'radio' )
+    DarkRP.removeChatCommand( 'group' )
+    DarkRP.removeChatCommand( 'credits' )
 
--- DarkRP.removeChatCommand( 'me' )
--- DarkRP.removeChatCommand( 'w' )
--- DarkRP.removeChatCommand( 'y' )
--- DarkRP.removeChatCommand( '//' )
--- DarkRP.removeChatCommand( '/' )
--- DarkRP.removeChatCommand( 'ooc' )
--- DarkRP.removeChatCommand( 'a' )
--- DarkRP.removeChatCommand( 'broadcast' )
--- DarkRP.removeChatCommand( 'channel' )
--- DarkRP.removeChatCommand( 'radio' )
--- DarkRP.removeChatCommand( 'group' )
--- DarkRP.removeChatCommand( 'credits' )
+    --
+    --  register custom commands
+    --
 
---
---  register custom commands
---
+    function polychat.registerCommand( data )
 
-DarkRP.declareChatCommand{
-    command = "todo",
-    description = "Круто",
-    delay = 1.5
-}
+        local cmd = data.cmd
+        polychat.Commands[cmd] = data
+        
+    end
+
+    polychat.registerCommand({
+        cmd = 'doit',
+        range = 300,
+        result = function( v, ply, txt )
+            netstream.Start( v, 'polychat.sendEmote', 'Окружение могло наблюдать ' .. txt .. ' (' .. ply .. ')' )
+        end,
+    })
+
+    polychat.registerCommand({
+        cmd = 'me',
+        range = 300,
+        result = function( v, ply, txt )
+            netstream.Start( v, 'polychat.sendEmote', ply, ' ' .. txt )
+        end,
+    })
+
+end)

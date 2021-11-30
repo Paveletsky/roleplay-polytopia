@@ -35,7 +35,6 @@ function library.PlayerSpawn( ply )
     end
     ply:SetTeam( 2 )
     ply:LockPlayer()
-    ply:openPlayerChars()
 end
 
 function library.playerInit( ply )
