@@ -20,7 +20,6 @@ hook.Add( 'Think', 'chatinit', function()
 	library.createFont( 'lol', 'Calibri', 24 )
 
 	local PANEL = {}
-
     -- chat.Panel:Remove()
 
 	function PANEL:Init()
