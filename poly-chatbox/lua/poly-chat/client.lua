@@ -27,6 +27,7 @@ function polychat.Core.build()
 
 end
 
+
 polychat.Core.build()
 
 -- netstream.Hook( 'polychat.Emote', function( txt )
