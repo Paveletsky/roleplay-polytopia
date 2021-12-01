@@ -18,7 +18,7 @@ surface.CreateFont( "LIB.FontLarge", {
 
 surface.CreateFont( "LIB.FontSmall", {
 
-	font = "Calibri",
+	font = "Roboto",
 
 	size = 22,
 
@@ -307,7 +307,7 @@ function PANEL:Think()
 		local plteam = ply:Team()
 
 
-		self.PlayerName  = ply:GetName()
+		self.PlayerName  = ply:GetNetVar( 'char.name' ) or 'Безымянный'
 
 		self.PlayerTeam  = team.GetName(plteam)
 

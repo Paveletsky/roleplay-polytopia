@@ -7,13 +7,6 @@ polychat.Core = polychat.Core or {}
 hook.Add('Think', 'polychat.build', function()
     hook.Remove('Think', 'polychat.build')
     
-    surface.CreateFont('polyfont.sm', {
-        font = 'Roboto Regular',
-        extended = true,
-        size = 20,
-        weight = 10,
-        shadow = true,
-    })
     polychat.Core.build()
 
 end)

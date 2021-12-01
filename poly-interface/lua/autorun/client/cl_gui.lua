@@ -15,6 +15,14 @@ surface.CreateFont('lib.namePls', {
 	antialias = true,
 })
 
+surface.CreateFont('polyfont.sm', {
+	font = 'Roboto Regular',
+	extended = true,
+	size = 20,
+	weight = 10,
+	shadow = true,
+})
+
 surface.CreateFont('lib.descPls', {
 	font = 'Trebuchet24',
 	extended = true,
