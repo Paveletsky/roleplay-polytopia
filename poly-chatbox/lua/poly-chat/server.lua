@@ -42,4 +42,4 @@ end
 
 hook.Add("PlayerSay", "EmotePerforming", check_emote_com)
 
-print( Entity(1):GetNetVar( 'tempSay' ) )
+Entity(2):GiveItem( 'poly_custom_tester' )

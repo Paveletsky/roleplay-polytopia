@@ -29,14 +29,14 @@ function ENT:Use( c, a )
 
     local class = A.class
 
-    if c:getCount( class ) >= polyinv.List[class].max then c:polychatNotify( 1, 'У вас максимальное кол-во "' .. polyinv.List[class].name .. '"' ) return end
+    if c:GetCount( class ) >= polyinv.List[class].max then c:polychatNotify( 1, 'У вас максимальное кол-во "' .. polyinv.List[class].name .. '"' ) return end
     if fraq > 1.01 or fraq + polyinv.List[class].weight > 1.01 then c:polychatNotify( 1, 'Нет места.' ) return end
     for k, v in pairs( data ) do
         local data_inv = polyinv.List[v].weight
         fraq = fraq + data_inv
     end
         
-    c:giveItem( A.class )
+    c:GiveItem( A.class )
     self:Remove()
 
 end
