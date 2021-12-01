@@ -28,7 +28,7 @@ function ENT:Draw()
     if dist < 15000 then
         local baseAl = (15000 - dist) / 8000
 
-        local pos = self:GetPos():ToScreen()
+		local pos = self:GetPos():ToScreen()
         local x, y = math.floor(pos.x), math.floor(pos.y)
 
         cam.Start2D()

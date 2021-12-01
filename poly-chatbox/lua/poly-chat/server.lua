@@ -1,4 +1,4 @@
-local function who_can_hear( performer_pos, range )
+function who_can_hear( performer_pos, range )
 
     local who_can_hear_table = {}
     local range = range or 100
@@ -15,10 +15,8 @@ end
 
 netstream.Hook( 'polychat.sendMessage', function( ply, text, team )
 	
-	for k, v in ipairs( who_can_hear(ply:GetPos(), 900 )) do
-		hook.Run( "PlayerSay", v, text, team )
-	end
-
+	hook.Run( "PlayerSay", ply, text, team )
+    
 end)
 
 -- Entity(2):GiveItem( 'poly_custom_tester' )

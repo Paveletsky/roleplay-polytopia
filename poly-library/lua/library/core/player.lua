@@ -33,8 +33,7 @@ function library.PlayerSpawn( ply )
         sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( ply:SteamID() ) .. ", " .. SQLStr( "[}" ) .. " )" )
         return--
     end
-    ply:SetTeam( 2 )
-    ply:LockPlayer()
+    -- ply:LockPlayer()
 end
 
 function library.playerInit( ply )
@@ -47,7 +46,6 @@ end
 function GM:PlayerHurt( ply )
     ply:ScreenFade( SCREENFADE.IN, Color( 0, 0, 0, 253 ), 0.1, 0.1 )
 end
--- Entity(1):SetTeam( 2 )
 
 netstream.Hook( 'lib-lockplayer', LockPlayer )
 netstream.Hook( 'lib-unlockplayer', UnlockPlayer )
@@ -60,3 +58,6 @@ hook.Add( 'Think', 'init-player', function()
     hook.Add( 'PlayerDisconnected', 'pl-disconnect', library.playerDisconnect )
     
 end)
+
+
+-- PrintTable( Entity(1).getJobTable() )

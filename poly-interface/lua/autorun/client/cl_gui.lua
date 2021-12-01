@@ -23,6 +23,44 @@ surface.CreateFont('lib.descPls', {
 	antialias = true,
 })
 
+netstream.Hook( 'polygui.drawAction', function( ent, text, time )
+
+	local ply = ent
+
+	hook.Add('HUDPaint', 'library-hudAction', function()
+
+		local dist = EyePos():DistToSqr( ply:GetPos() )
+		if dist < 35000 then
+			local baseAl = (35000 - 1) / 8000
+
+			local head = ply:LookupBone('ValveBiped.Bip01_Head1')
+			local headPos = ply:GetBonePosition(head)
+
+			local pos = headPos:ToScreen()
+			local x, y = math.floor(pos.x), math.floor(pos.y)
+
+			cam.Start2D()
+				local tAl = math.Clamp(350 * baseAl - Vector(x,y,0):DistToSqr(Vector(ScrW()/2, ScrH()/2, 0)) / 100, 0, 150)
+				draw.Text {
+					text = text or 'Не ясно что он делает...',
+					font = 'info',
+					pos = { x, y + 50 },
+					color = Color( 255,255,255, tAl ),
+					xalign = TEXT_ALIGN_CENTER,
+					yalign = TEXT_ALIGN_TOP,
+				}
+			
+			cam.End2D()
+		end
+
+	end)
+
+	timer.Simple( time, function()
+		hook.Remove( 'HUDPaint', 'library-hudAction' )
+	end)
+
+end)
+
 local offsetA, offsetB = Vector(15,0,0), Angle()
 function drawPlrs()
   local pos, ang = EyePos(), EyeAngles()

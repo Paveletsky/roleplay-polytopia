@@ -1,20 +1,22 @@
 polychat.Core = polychat.Core or {}
 
 --
---  fonts
---
-
-surface.CreateFont('polyfont.sm', {
-    font = 'Roboto Regular',
-    extended = true,
-    size = 20,
-    weight = 10,
-    shadow = true,
-})
-
---
 -- core
 --
+
+hook.Add('Think', 'polychat.build', function()
+    hook.Remove('Think', 'polychat.build')
+    
+    surface.CreateFont('polyfont.sm', {
+        font = 'Roboto Regular',
+        extended = true,
+        size = 20,
+        weight = 10,
+        shadow = true,
+    })
+    polychat.Core.build()
+
+end)
 
 hook.Add('HUDShouldDraw', 'clearDefaultChat', function(name)
 
@@ -225,13 +227,6 @@ function polychat.Core.open()
     polychat.isOpen = true
 
 end
-
-hook.Add('Think', 'polychat.build', function()
-    hook.Remove('Think', 'polychat.build')
-
-    polychat.Core.build()
-
-end)
 
 -- netstream.Hook( 'polychat.Emote', function( txt )
 -- 	chat.AddText( txt )
