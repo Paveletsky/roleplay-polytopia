@@ -42,4 +42,13 @@ end
 
 hook.Add("PlayerSay", "EmotePerforming", check_emote_com)
 
-Entity(2):GiveItem( 'poly_custom_tester' )
+
+netstream.Hook( 'chat', function( ply, text, team )
+	
+	for k, v in ipairs( who_can_hear(ply:GetPos(), 900 )) do
+		hook.Run( "PlayerSay", v, text, team )
+	end
+
+end)
+
+-- Entity(2):GiveItem( 'poly_custom_tester' )

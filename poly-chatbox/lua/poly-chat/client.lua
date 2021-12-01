@@ -4,7 +4,7 @@ polychat.Core = polychat.Core or {}
 --  fonts
 --
 
-	library.createFont( 'polyfont.sm', 'Roboto', 21 )
+	library.createFont( 'polyfont.sm', 'Calibri', 21 )
 
 --
 -- core
@@ -16,20 +16,33 @@ hook.Add('HUDShouldDraw', 'clearDefaultChat', function(name)
 
 end)
 
-hook.Add( "PlayerBindPress", "overrideChatbind", function( ply, bind, pressed )
-    local bTeam = false
-    if bind == "messagemode" then
+hook.Add('PlayerBindPress', 'octochat', function(ply, bind, press)
+
+    if bind == 'messagemode' or bind == 'messagemode2' then
+        if not IsValid(polychat.Core.pnl) then polychat.Core.build() end
         polychat.Core.open()
-    elseif bind == "messagemode2" then
-        bTeam = true
-    else
-        return
+        polychat.team = bind == 'messagemode2'
+
+        local text, now = hook.Run('octochat.chatOpenText', bind), polychat.Core.pnl.entry:GetText()
+        if isstring(text) and now:sub(1, text:len()) ~= text then
+            local new = text .. now
+            polychat.Core.pnl.entry:SetText(new)
+            polychat.Core.pnl.entry:SetCaretPos(utf8.len(new))
+        end
+
+        return true
     end
 
-    polychat.Core.open( bTeam )
+end)
 
-    return true
-end )
+hook.Add('OnPlayerChat', 'octochat', function(ply, msg, team, dead, prefixText, col1, col2)
+
+    if IsValid(polychat.Core.pnl) then
+        chat.AddText(col1, (prefixText or IsValid(ply) and ply:Name() or 'Кто-то говорит') .. ': ', col2, msg)
+        return true
+    end
+
+end)
 
 function chat.GetChatBoxPos()
 
@@ -53,34 +66,13 @@ function chat.GetChatBoxSize()
 
 end
 
-function chat.AddText( ... )
+function chat.AddText(...)
 
-	local args = {...}
-
-	for _, obj in ipairs( args ) do
-		if type( obj ) == "table" then -- We were passed a color object
-			polychat.Core.pnl.chat:InsertColorChange( obj.r, obj.g, obj.b, 255 )
-		elseif type( obj ) == "string"  then -- This is just a string
-			polychat.Core.pnl.chat:AppendText( obj )
-		elseif obj:IsPlayer() then
-			local col = GAMEMODE:GetTeamColor( obj ) -- Get the player's team color
-			polychat.Core.pnl.chat:InsertColorChange( col.r, col.g, col.b, 255 ) -- Make their name that color
-			polychat.Core.pnl.chat:AppendText( obj:Nick() )
-		end
-	end
-
-	polychat.Core.pnl.chat:AppendText( "\n" )
+    if not IsValid(polychat.Core.pnl) then polychat.build() end
+    polychat.msg(...)
 
 end
-
--- hook.Add('OnPlayerChat', 'polyHandler', function(ply, msg, team, dead, prefixText, col1, col2)
-
---     if IsValid(chat.Panel) then
---         chat.AddText(col1, (prefixText or IsValid(ply) and ply:Name() or 'Голос из ниоткуда') .. ': ', col2, msg)
---         return true
---     end
-
--- end)
+chat.AddNonParsedText = chat.AddText
 
 function polychat.Core.build()
 
@@ -130,13 +122,16 @@ function polychat.Core.build()
         end
 
         if input.IsKeyDown(KEY_ESCAPE) then
+            if not pnl.entry:IsVisible() then return end
 			polychat.Core.close()
 			gui.HideGameUI()
+
 		end
 	end
 
     hst.OnEnter = function(self)
-		polychat.Core.close()
+		polychat.send()
+        polychat.Core.close()
     end
 
     polychat.Core.pnl.chat = pnl:Add 'RichText'
@@ -146,16 +141,66 @@ function polychat.Core.build()
 		self:SetFontInternal('polyfont.sm')
 	end
 
+    pnl.chat:AppendText('\n')
+	pnl.chat:InsertFade(5, 2)
+    polychat.Core.close()
+
+end
+
+function polychat.send()
+
+    local pnl = polychat.Core.pnl
+    local text = pnl.entry:GetText()
+    if string.Trim(text) == '' then
+        pnl.entry:SetText('')
+        pnl.entry:RequestFocus()
+        polychat.Core.close()
+        return
+    end
+
+	pnl.entry:AddHistory(text)
+    pnl.entry:SetText('')
+    pnl.entry:RequestFocus()
+    polychat.Core.close() 
+
+    netstream.Start( 'chat', text, false )
+
+end
+
+function polychat.msg(...)
+
+    if not IsValid(polychat.Core.pnl) then polychat.build() end
+
+	local pnl = polychat.Core.pnl.chat
+	local args = { ... }
+
+	if type(args[1]) ~= 'table' then
+		table.insert(args, 1, Color(235,235,235))
+	end
+
+	for _, arg in pairs(args) do
+		if type(arg) == 'table' then
+			pnl:InsertColorChange(arg.r, arg.g, arg.b, 255)
+		elseif type(arg) == 'string' then
+			pnl:AppendText(arg)
+			pnl:InsertFade(5, 1)
+		end
+	end
+
+	pnl:AppendText('\n')
+    chat.PlaySound()
+
 end
 
 function polychat.Core.close()
 
     local pnl = polychat.Core.pnl
-
+    
 	pnl:SetKeyboardInputEnabled(false)
 	pnl:SetMouseInputEnabled(false)
 	pnl.chat:SetVerticalScrollbarEnabled(false)
 	pnl.chat:ResetAllFades(false, true, 0)
+    pnl.entry:SetVisible(false)
 
 	hook.Run( "FinishChat" )
     polychat.isOpen = false
@@ -169,7 +214,10 @@ function polychat.Core.open()
     local pnl = polychat.Core.pnl
 
 	pnl:SetKeyboardInputEnabled(true )
-	pnl:SetMouseInputEnabled(false)
+	pnl:SetMouseInputEnabled(true )
+    pnl.entry:SetVisible(true)
+	pnl.chat:SetVerticalScrollbarEnabled(true)
+	pnl.chat:ResetAllFades(true, true, -1)
 
     gamemode.Call('ChatTextChanged', '') 
     polychat.Core.pnl:SetVisible( true )
