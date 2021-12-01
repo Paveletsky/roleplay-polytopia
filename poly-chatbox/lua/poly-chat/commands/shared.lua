@@ -1,8 +1,6 @@
 hook.Add( 'Think', 'init.cmds', function()
     hook.Remove('Think', 'init.cmds')
 
-    polychat.Commands = polychat.Commands or {}
-
     --
     --  remove default drp commands
     --
@@ -24,30 +22,6 @@ hook.Add( 'Think', 'init.cmds', function()
     --  register custom commands
     --
 
-    function polychat.registerCommand( data )
 
-        local cmd = data.cmd
-        polychat.Commands[cmd] = data
-        
-    end
-    
-    -- polychat.Commands = {}
-
-
-    polychat.registerCommand({
-        cmd = 'doit',
-        range = 300,
-        result = function( v, ply, txt )
-            netstream.Start( v, 'polychat.sendEmote', 'Окружение могло наблюдать ' .. txt .. ' (' .. ply .. ')' )
-        end,
-    })
-
-    -- polychat.registerCommand({
-    --     cmd = 'me',
-    --     range = 300,
-    --     result = function( v, ply, txt )
-    --         netstream.Start( v, 'polychat.sendEmote', ply, ' ' .. txt )
-    --     end,
-    -- })
 
 end)
