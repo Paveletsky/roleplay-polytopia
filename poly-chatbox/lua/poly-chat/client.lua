@@ -4,7 +4,13 @@ polychat.Core = polychat.Core or {}
 --  fonts
 --
 
-	library.createFont( 'polyfont.sm', 'Calibri', 21 )
+surface.CreateFont('polyfont.sm', {
+    font = 'Roboto Regular',
+    extended = true,
+    size = 20,
+    weight = 10,
+    shadow = true,
+})
 
 --
 -- core
@@ -16,29 +22,20 @@ hook.Add('HUDShouldDraw', 'clearDefaultChat', function(name)
 
 end)
 
-hook.Add('PlayerBindPress', 'octochat', function(ply, bind, press)
+hook.Add('PlayerBindPress', 'polychat', function(ply, bind, press)
 
     if bind == 'messagemode' or bind == 'messagemode2' then
         if not IsValid(polychat.Core.pnl) then polychat.Core.build() end
         polychat.Core.open()
-        polychat.team = bind == 'messagemode2'
-
-        local text, now = hook.Run('octochat.chatOpenText', bind), polychat.Core.pnl.entry:GetText()
-        if isstring(text) and now:sub(1, text:len()) ~= text then
-            local new = text .. now
-            polychat.Core.pnl.entry:SetText(new)
-            polychat.Core.pnl.entry:SetCaretPos(utf8.len(new))
-        end
-
         return true
     end
 
 end)
 
-hook.Add('OnPlayerChat', 'octochat', function(ply, msg, team, dead, prefixText, col1, col2)
+hook.Add('OnPlayerChat', 'polychat', function(ply, msg, team, dead, prefixText, col1, col2)
 
     if IsValid(polychat.Core.pnl) then
-        chat.AddText(col1, (prefixText or IsValid(ply) and ply:Name() or 'Кто-то говорит') .. ': ', col2, msg)
+        chat.AddText(Color( 250, 160, 0 ), ( IsValid(ply) and ply:GetNetVar( 'char.name' ) or 'Неизвестный' ) .. ' говорит: ', Color( 255, 255, 255 ), msg)
         return true
     end
 
@@ -163,7 +160,7 @@ function polychat.send()
     pnl.entry:RequestFocus()
     polychat.Core.close() 
 
-    netstream.Start( 'chat', text, false )
+    netstream.Start( 'polychat.sendMessage', text, false )
 
 end
 
@@ -229,7 +226,12 @@ function polychat.Core.open()
 
 end
 
-polychat.Core.build()
+hook.Add('Think', 'polychat.build', function()
+    hook.Remove('Think', 'polychat.build')
+
+    polychat.Core.build()
+
+end)
 
 -- netstream.Hook( 'polychat.Emote', function( txt )
 -- 	chat.AddText( txt )

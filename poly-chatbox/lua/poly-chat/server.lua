@@ -43,7 +43,7 @@ end
 hook.Add("PlayerSay", "EmotePerforming", check_emote_com)
 
 
-netstream.Hook( 'chat', function( ply, text, team )
+netstream.Hook( 'polychat.sendMessage', function( ply, text, team )
 	
 	for k, v in ipairs( who_can_hear(ply:GetPos(), 900 )) do
 		hook.Run( "PlayerSay", v, text, team )

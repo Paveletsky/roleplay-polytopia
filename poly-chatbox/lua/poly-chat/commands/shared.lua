@@ -1,4 +1,5 @@
-hook.Add( 'polylib.init', 'init.cmds', function()
+hook.Add( 'Think', 'init.cmds', function()
+    hook.Remove('Think', 'init.cmds')
 
     polychat.Commands = polychat.Commands or {}
 
@@ -6,7 +7,7 @@ hook.Add( 'polylib.init', 'init.cmds', function()
     --  remove default drp commands
     --
 
-    DarkRP.removeChatCommand( 'me' )
+    -- DarkRP.removeChatCommand( 'me' )
     DarkRP.removeChatCommand( 'w' )
     DarkRP.removeChatCommand( 'y' )
     DarkRP.removeChatCommand( '//' )
@@ -18,7 +19,7 @@ hook.Add( 'polylib.init', 'init.cmds', function()
     DarkRP.removeChatCommand( 'radio' )
     DarkRP.removeChatCommand( 'group' )
     DarkRP.removeChatCommand( 'credits' )
-
+    
     --
     --  register custom commands
     --
@@ -29,6 +30,9 @@ hook.Add( 'polylib.init', 'init.cmds', function()
         polychat.Commands[cmd] = data
         
     end
+    
+    -- polychat.Commands = {}
+
 
     polychat.registerCommand({
         cmd = 'doit',
@@ -38,12 +42,12 @@ hook.Add( 'polylib.init', 'init.cmds', function()
         end,
     })
 
-    polychat.registerCommand({
-        cmd = 'me',
-        range = 300,
-        result = function( v, ply, txt )
-            netstream.Start( v, 'polychat.sendEmote', ply, ' ' .. txt )
-        end,
-    })
+    -- polychat.registerCommand({
+    --     cmd = 'me',
+    --     range = 300,
+    --     result = function( v, ply, txt )
+    --         netstream.Start( v, 'polychat.sendEmote', ply, ' ' .. txt )
+    --     end,
+    -- })
 
 end)
