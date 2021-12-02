@@ -71,9 +71,7 @@ hook.Add( 'Think', 'svbackpack', function()
     end
 
     function PL:HasItem( id )
-
         return self:CurrentCharInventory()[id]
-
     end
 
     function PL:RemoveItem( id )
