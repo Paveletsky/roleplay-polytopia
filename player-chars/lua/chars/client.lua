@@ -59,7 +59,7 @@ function library.openMenu( owner, data )
         local charList = pon.decode( v.chars )
         local glList = pon.decode( v.chars )
 
-        if #charList == 1 then
+        if #charList == 3 then
             but2:SetDisabled( true )
         end
 

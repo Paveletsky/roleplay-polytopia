@@ -35,7 +35,7 @@ function ENT:Draw()
             draw.RoundedBox(9, x - 35, y - 45, 70, 70, Color(22, 22, 22, baseAl * 230))
             draw.RoundedBox(9, x - 35, y - 45, 70, 2.5, Color(250, 160, 0, baseAl * 230))
             surface.SetDrawColor(255,255,255, baseAl * 255)
-            surface.SetMaterial(Material( A.logo, 'smooth' ))
+            surface.SetMaterial(Material( A.logo or 'poly/button.png', 'smooth' ) )
             surface.DrawTexturedRect(x - 30, y - 40, 60, 60)
 
 			local tAl = math.Clamp(350 * baseAl - Vector(x,y,0):DistToSqr(Vector(ScrW()/2, ScrH()/2, 0)) / 100, 0, 255)

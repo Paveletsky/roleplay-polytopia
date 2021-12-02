@@ -28,7 +28,7 @@ hook.Add( 'Think', 'init-lib', function()
     function PL:createCharacter( rpname, desc, scale, skin, bg )
         local cache = {}
         for k, v in pairs( self:getCharacters() ) do
-            if ( v.chars != '' and #pon.decode(v.chars) == 1 ) then
+            if ( v.chars != '' and #pon.decode(v.chars) == 3 ) then
                     self:ChatPrint( 'Так-то у тебя не может быть больше трех персонажей 0_o' )
                 return
             end
@@ -94,9 +94,7 @@ hook.Add( 'Think', 'init-lib', function()
             for k, v in pairs( self:getJobTable()['weapons'] ) do
                 self:Give( v )
             end
-
-            local time = os.date( "%H:%M:%S" , os.time() )
-            self:ChatPrint( 'Вы проснулись. На часах ' .. time .. '.' .. ' На улице шумно.'  )
+            
         end
 
         local i = 0
@@ -109,7 +107,13 @@ hook.Add( 'Think', 'init-lib', function()
     end
 
     netstream.Hook( 'polychars.Pick', function( ply, id ) 
+
+        ply:SetNetVar( 'char.id', id )
         ply:pickCharacter( id )
+
+        local time = os.date( "%H:%M:%S" , os.time() )
+        ply:ChatPrint( 'Вы проснулись. На часах ' .. time .. '.' .. ' На улице шумно.'  )
+
     end)
 
     netstream.Hook( 'polychars.Create', function( ply, rpname, desc, scale, skin, bg, hunger ) 

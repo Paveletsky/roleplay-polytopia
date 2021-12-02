@@ -7,25 +7,25 @@ hook.Add( 'Think', 'svbackpack', function()
         sql.Query( 'CREATE TABLE IF NOT EXISTS polytopia_inventory( steamid TEXT NOT NULL PRIMARY KEY , inventory TEXT )' )    
     end
 
-    function PL:GetInventory()
+    function PL:GetCharInventory(ID)
 
-        local encoded = sql.Query( "SELECT inventory FROM polytopia_inventory WHERE steamid = " .. sql.SQLStr( self:SteamID() ) .. ";")
-            if encoded == nil then
-                sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( "[}" ) .. " )" )
-            end
+        local val = sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) )
+        local encoded = pon.decode( val[1].chars )
 
-            local okDB = sql.Query( "SELECT inventory FROM polytopia_inventory WHERE steamid = " .. sql.SQLStr( self:SteamID() ) .. ";") 
-            local data = pon.decode( encoded[1].inventory )    
-
-        return data
-
+        return encoded
     end
 
-    -- PrintTable( Entity(1):GetInventory() )
+    function PL:CurrentCharInventory()
+
+        local val = sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) )
+        local encoded = pon.decode( val[1].chars )[self:GetNetVar('char.id')].inventory
+
+        return encoded
+    end
 
     function PL:isValidItems( )
 
-        for k, v in pairs( self:GetInventory() ) do
+        for k, v in pairs( self:CurrentCharInventory() ) do
             if polyinv.List[v] == nil then 
                 self:ChatPrint( 'Предмет ' .. v .. ' не валиден и будет удален из инвентаря.' )
                 self:RemoveItem( k )
@@ -35,8 +35,8 @@ hook.Add( 'Think', 'svbackpack', function()
 
     end
 
-    -- Entity(1):GetInventory()
-    -- Entity(1):isValidItems()
+    PrintTable(Entity(1):GetCharInventory())
+    -- Entity(1):openPlayerChars()
 
     function PL:OpenInventory( owner )
 
@@ -45,55 +45,65 @@ hook.Add( 'Think', 'svbackpack', function()
         
         if not owner then self:polychatNotify( 1, 'SteamID не найден.' ) return end
         
-        local data = steam:GetInventory() 
+        local data = steam:CurrentCharInventory() 
         netstream.Start( self, 'polyinv.open', data, polyinv.List, charInfo, polyinv.customCache )
 
     end
 
     function PL:GiveItem( class )
 
-        local data = self:GetInventory()
+        local val = sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) )
+        local encoded = pon.decode( val[1].chars )
+        local data = pon.decode( val[1].chars )
+
+        local charId = self:GetNetVar( 'char.id' )
+
         local fraq = 0
 
-        if !polyinv.List[class] then self:polychatNotify( 1, 'Я не могу взять то, чего не существует :D' ) return end
-        if self:GetItemCount( class ) >= polyinv.List[class].max then self:ChatPrint( 'У вас максимальное кол-во "' .. polyinv.List[class].name .. '"' ) return end
-        for k, v in pairs( data ) do
+        if !polyinv.List[class] then return end
+        if self:GetItemCount( class ) >= polyinv.List[class].max then return end
+        for k, v in pairs( data[charId].inventory ) do
             local data_inv = polyinv.List[v].weight
             fraq = fraq + data_inv
         end
 
-        if fraq > 1.01 or fraq + polyinv.List[class].weight > 1.01 then self:polychatNotify( 1, 'Нет места.' ) return end
+        if fraq > 1.01 or fraq + polyinv.List[class].weight > 1.01 then  return end
 
-        table.insert( data, class )
-        sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( data ) ) .. " )" )
-        -- self:OpenInventory(self:SteamID())
+        table.insert( data[charId].inventory, class )
+        sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( data ) ) .. " )" )
 
     end
 
-    -- Entity(2):OpenInventory( Entity(1):SteamID() )
-
-    -- PrintTable( polyinv.List )
-
     function PL:HasItem( id )
 
-        return self:GetInventory()[id]
+        return self:CurrentCharInventory()[id]
 
     end
 
     function PL:RemoveItem( id )
 
+        local val = sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) )
+        local encoded = pon.decode( val[1].chars )
+        local data = pon.decode( val[1].chars )
+
+        local charId = self:GetNetVar( 'char.id' )
+
         if self:HasItem( id ) then
-            local notDel = self:GetInventory()
+            local notDel = data[charId].inventory
                 notDel[id] = nil 
-            sql.Query( "REPLACE INTO polytopia_inventory ( steamid, inventory ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( notDel ) ) .. " )" )
+            sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( data ) ) .. " )" )
         end
 
     end
 
+    -- PrintTable( Entity(1):CurrentCharInventory() )
+    -- Entity(1):RemoveItem(1)
+    -- Entity(1):openPlayerChars()
+
     function PL:UseItem( id )
 
         if self:HasItem( id ) then
-            local itemCl = polyinv.List[self:GetInventory()[id]]
+            local itemCl = polyinv.List[self:CurrentCharInventory()[id]]
             local isOk = polyinv.itemTypes[itemCl.func]( itemCl, self )
             if !isOk then
                 self:RemoveItem( id )
@@ -104,7 +114,7 @@ hook.Add( 'Think', 'svbackpack', function()
 
     function PL:GetItemCount( class )
 
-        local data = self:GetInventory()
+        local data = self:CurrentCharInventory()
         local i = 0
 
         for k, v in pairs( data ) do
@@ -121,7 +131,7 @@ hook.Add( 'Think', 'svbackpack', function()
         if self:HasItem( ID ) then
             
             local I = ents.Create 'polystore_item'
-            local itemData = polyinv.List[self:GetInventory()[ID]]
+            local itemData = polyinv.List[self:CurrentCharInventory()[ID]]
             local trace = util.TraceLine({
                 start = self:EyePos(),
                 endpos = self:EyePos() + self:EyeAngles():Forward() * 50,
@@ -156,7 +166,7 @@ hook.Add( 'Think', 'svbackpack', function()
 
     netstream.Hook( 'polyinv.sv-open', function( ply ) 
         
-        ply:GetInventory()
+        ply:CurrentCharInventory()
         ply:isValidItems()
         ply:OpenInventory( ply:SteamID() )
 
