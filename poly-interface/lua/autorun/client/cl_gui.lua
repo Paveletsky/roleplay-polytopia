@@ -50,7 +50,7 @@ netstream.Hook( 'polygui.drawAction', function( ent, text, time )
 			cam.Start2D()
 				local tAl = math.Clamp(350 * baseAl - Vector(x,y,0):DistToSqr(Vector(ScrW()/2, ScrH()/2, 0)) / 100, 0, 150)
 				draw.Text {
-					text = text .. ('.'):rep(math.floor(CurTime() * 2 % 4)) or 'Не ясно что он делает (0_o)',
+					text = text .. ('.'):rep(math.floor(CurTime() * 4 % 4)) or 'Не ясно что он делает (0_o)',
 					font = 'polyfont.sm',
 					pos = { x, y + 50 },
 					color = Color( 255,255,255, tAl ),
