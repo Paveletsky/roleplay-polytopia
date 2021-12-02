@@ -275,26 +275,40 @@ function SKIN:PaintTooltip( pnl, w, h )
 
 end
 
+
+function SKIN:PaintButtonDown( pnl, w, h )
+
+	if not pnl.m_bBackground or pnl:GetDisabled() then return end
+
+
+end
+
+function SKIN:PaintButtonUp( pnl, w, h )
+
+	if not pnl.m_bBackground or pnl:GetDisabled() then return end
+
+end
+
 function SKIN:PaintVScrollBar( panel, w, h )
 
-	draw.RoundedBox(4, w/2-2, w+3, 4, h-6 - w*2, Color(255,255,255, 25))
+	draw.RoundedBox(3, w/2-2, w-12, 4, h - w+8, Color(255,255,255,10))
 
 end
 
 function SKIN:PaintScrollBarGrip( panel, w, h )
 
-	draw.RoundedBox(4, w/2-4, 0, 8, h, Color(255,255,255, 25))
+	draw.RoundedBox(15, w/2-4, 0, 8, h, Color( 184, 53, 64 ))
 
 	if ( panel:GetDisabled() ) then
-		return draw.RoundedBox(4, w/2-4, 0, 8, h, Color(255,255,255, 25))
+		return draw.RoundedBox(15, w/2-4, 0, 8, h, Color( 184, 53, 64 ))
 	end
 
 	if ( panel.Depressed ) then
-		return draw.RoundedBox(4, w/2-4, 0, 8, h, Color(255,255,255, 25))
+		return draw.RoundedBox(15, w/2-4, 0, 8, h, Color( 184, 53, 64 ))
 	end
 
 	if ( panel.Hovered ) then
-		return draw.RoundedBox(4, w/2-4, 0, 8, h, Color(255,255,255, 25))
+		return draw.RoundedBox(15, w/2-4, 0, 8, h-5, Color( 184, 53, 64 ))
 	end
 
 end

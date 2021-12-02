@@ -1,5 +1,4 @@
-hook.Add( 'Think', 'init.cmds', function()
-    hook.Remove('Think', 'init.cmds')
+hook.Add( 'Initialize', 'loadCommands', function()
 
     --
     --  remove default drp commands
@@ -25,37 +24,43 @@ hook.Add( 'Think', 'init.cmds', function()
 
     DarkRP.declareChatCommand{
         command = "me",
-        description = "Chat roleplay to say you're doing things that you can't show otherwise.",
+        author = 'poly',
+        description = "Действие от первого лица, то, что вы выполняете на данный момент. \n\nНапример: \n\nХасан Агаджери вытаскивает из кармана пистолет, передает его Кургану и 'ехидно' улыбается.",
         delay = 1.5
     }
 
     DarkRP.declareChatCommand{
         command = "doit",
-        description = "Chat roleplay to say you're doing things that you can't show otherwise.",
+        author = 'poly',
+        description = "Действие, которое происходит в окружении вас и людей поблизости. \n\nВыглядит это так: \n\nОкружение могло наблюдать, как Хасан переглядывался с копами и хотел вот-вот дать дёру. <Хасан Агаджери>",
         delay = 1.5
     }
 
     DarkRP.declareChatCommand{
         command = "yit",
-        description = "Chat roleplay to say you're doing things that you can't show otherwise.",
+        author = 'poly',
+        description = "Описание окружения, которое окружающие могут наблюдать издалека от вас.",
         delay = 1.5
     }
 
     DarkRP.declareChatCommand{
         command = "wit",
-        description = "Chat roleplay to say you're doing things that you can't show otherwise.",
+        author = 'poly',
+        description = "Описание окружения, которое могут наблюдать лишь те, кто находится с вами в маленьком помещении или стоя очень близко.",
         delay = 1.5
     }
 
     DarkRP.declareChatCommand{
         command = "yme",
-        description = "Chat roleplay to say you're doing things that you can't show otherwise.",
+        author = 'poly',
+        description = "Действие от первого лица, которое могут наблюдать издалека.",
         delay = 1.5
     }
 
     DarkRP.declareChatCommand{
         command = "wme",
-        description = "Chat roleplay to say you're doing things that you can't show otherwise.",
+        author = 'poly',
+        description = "Это действие от первого лица, которое отображается прямо на вашей модели, но не пишется в чат, надпись исчезает через 15 секунд. Используйте чтобы не засорять чат, или выполнять мелкие дейстия. Текст заменяется если прописать команду вновь.",
         delay = 1.5
     }
 

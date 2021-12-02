@@ -1,15 +1,75 @@
 polychat.Core = polychat.Core or {}
 
---
--- core
---
+----------------------------------------------------------------------------
+-- core --------------------------------------------------------------------
+----------------------------------------------------------------------------
 
 hook.Add('Think', 'polychat.build', function()
     hook.Remove('Think', 'polychat.build')
-    
+
+    timer.Simple( 0.2, function() polychat.Core.font() end)
     polychat.Core.build()
 
 end)
+
+----------------------------------------------------------------------------
+
+function polychat.Core.font()
+
+    surface.CreateFont('polyfont.sm', {
+        font = 'Roboto Regular',
+        extended = true,
+        size = 20,
+        weight = 300,
+        shadow = true,
+    })
+
+end
+
+function chat.GetChatBoxPos()
+
+    if not IsValid(polychat.Core.pnl) then 
+        polychat.Core.build()
+    end
+
+    if IsValid(polychat.Core.pnl) then
+        local x, y = polychat.Core.pnl:GetPos()
+        return x, y
+    else
+        return 10, ScrH() * 0.5
+    end
+    
+end
+
+function chat.GetChatBoxSize()
+
+    if not IsValid(polychat.Core.pnl) then 
+        polychat.Core.build()
+    end
+
+    if IsValid(polychat.Core.pnl) then
+        local x, y = polychat.Core.pnl:GetSize()
+        return x, y
+    else
+        return 650, 400
+    end
+
+end
+
+function chat.AddText(...)
+
+    if not IsValid(polychat.Core.pnl) then 
+        polychat.Core.build()
+    end    
+    
+    polychat.msg(...)
+
+end
+chat.AddNonParsedText = chat.AddText
+
+--------------------------------------------------------------------------
+--  hooks   --------------------------------------------------------------
+--------------------------------------------------------------------------
 
 hook.Add('HUDShouldDraw', 'clearDefaultChat', function(name)
 
@@ -20,7 +80,10 @@ end)
 hook.Add('PlayerBindPress', 'polychat', function(ply, bind, press)
 
     if bind == 'messagemode' or bind == 'messagemode2' then
-        if not IsValid(polychat.Core.pnl) then polychat.Core.build() end
+        if not IsValid(polychat.Core.pnl) then 
+            polychat.Core.build()
+        end
+
         polychat.Core.open()
         return true
     end
@@ -36,46 +99,98 @@ hook.Add('OnPlayerChat', 'polychat', function(ply, msg, team, dead, prefixText, 
 
 end)
 
-function chat.GetChatBoxPos()
+--------------------------------------------------------------------------
+--  design  --------------------------------------------------------------
+--------------------------------------------------------------------------
+polychat.chatCommands()
+function polychat.chatCommands()
 
-    if IsValid(polychat.Core.pnl) then
-        local x, y = polychat.Core.pnl:GetPos()
-        return x, y
-    else
-        return 10, ScrH() * 0.5
+    if polychat.cmds then polychat.cmds:Remove() end
+    polychat.cmds = vgui.Create 'DFrame'
+
+    local pnl = polychat.cmds
+    pnl:SetTitle( '' )
+    pnl:SetDraggable(false)
+    pnl:SetSize( 400, 200 )
+    pnl:ShowCloseButton( false )
+    pnl:SetPos( (ScrW() / 1.52) / 1.47, (ScrH() / 1.5955) )
+    pnl.Paint = function( self, w, h )
+
+		draw.RoundedBox( 10, 0, 0, w, h, Color( 0, 0, 0, 200))
+		draw.RoundedBoxEx(4, 0, h / 500, w, 15, Color(250, 160, 0, 250), false, false, true, true)
+
     end
+
+    polychat.cmds.lst = pnl:Add 'DPanel' 
+    local list = polychat.cmds.lst
+    list:Dock( LEFT )
+    list:SetSize( 110 )
+    list:SetAlpha( 190 )
+    list:DockMargin( 0, -5, 0, 0 )
     
-end
+    local scroll = list:Add 'DScrollPanel'
+    scroll:Dock(FILL)   
 
-function chat.GetChatBoxSize()
+    local dsc = pnl:Add 'RichText'
+    dsc:Dock(FILL)
 
-    if IsValid(polychat.Core.pnl) then
-        local x, y = polychat.Core.pnl:GetSize()
-        return x, y
-    else
-        return 650, 400
+    local function openImage(url)
+        if image then image:Remove() end
+        image = vgui.Create 'HTML'
+        image:SetHTML( "<img src="..url.." width=430 height=860 alt=lorem>" )        
+        image:SetSize( 500, 900 )
+        image:MoveTo( ScrW()/60, pnl:GetPos()/9, 0.3, 0, -1 )   
     end
 
+    local imBut = dsc:Add 'DButton'
+    imBut:SetText( 'Показать' ) 
+    imBut:Dock(BOTTOM)     
+    imBut:SetVisible(false)
+    imBut:SetTall(15)
+    imBut:DockMargin( 190, 0, 0, 0 )
+    
+    local bt = list:Add 'DListView'
+    bt:Dock(FILL)
+    bt:SetMultiSelect( false )    
+    bt:AddColumn( 'LL' )
+    bt:SetDataHeight( 25 )
+    bt:DockMargin( 0, -16, 0, 0)   
+    for k, but in pairs( DarkRP.getChatCommands() ) do
+        if but.author == 'poly' then
+            local lv = bt:AddLine( '/'..but.command )
+            lv.Columns[1]:SetFont( 'polyfont.sm' )
+            function lv:OnSelect( line, isSel )
+                dsc:SetText( '' )
+                dsc:AppendText( but.description )     
+                if but.command == 'wme' then imBut:SetVisible(true) 
+                        imBut.DoClick = function()
+                            if not IsValid(image) then openImage( 'https://i.imgur.com/zQ5PMyd.png' ) else image:Remove() end                    
+                        end
+                    else imBut:SetVisible(false) if IsValid(image) then image:Remove() end
+                end           
+            end                   
+        end
+                
+    end
+
+	function dsc.PerformLayout(self)
+		dsc:SetFontInternal('polyfont.sm')
+        dsc:SetFGColor( Color( 255, 255 , 255 ) )
+	end
+
 end
-
-function chat.AddText(...)
-
-    if not IsValid(polychat.Core.pnl) then polychat.build() end
-    polychat.msg(...)
-
-end
-chat.AddNonParsedText = chat.AddText
 
 function polychat.Core.build()
-
+    
     if polychat.Core.pnl then polychat.Core.pnl:Remove() end
+    polychat.Core.font()
+    
     polychat.Core.pnl = vgui.Create 'DFrame'
 
     local pnl = polychat.Core.pnl
     pnl.alpha = 0
     pnl:SetSize( 650, 400 )
-    pnl:AlignRight( 5 )
-    pnl:AlignBottom( 5 )
+    pnl:SetPos( ScrW() / 1.52, ScrH() / 1.6 )
     pnl:SetMinWidth(500)
     pnl:SetMinHeight(200)
     pnl:ShowCloseButton( false )
@@ -103,6 +218,7 @@ function polychat.Core.build()
     hst:SetCursorColor(Color(255,120,0))
     hst:RequestFocus()
     hst:SetHistoryEnabled( true )
+    hst.keyDown = false
 	hst.Think = function(self)
         if gui.IsGameUIVisible() then
             polychat.Core.close()
@@ -110,14 +226,21 @@ function polychat.Core.build()
         end
 
         if input.IsKeyDown(KEY_TAB) and self:HasFocus() then
-            self:RequestFocus()
-        end
+            self:RequestFocus()        
 
-        if input.IsKeyDown(KEY_ESCAPE) then
+        elseif input.IsKeyDown( KEY_F2 ) then
+            if self.keyDown then return end
+			self.keyDown = true             
+            if not IsValid(polychat.cmds) then polychat.chatCommands() end
+            polychat.cmds:SetVisible( not polychat.cmds:IsVisible() )
+
+        elseif input.IsKeyDown(KEY_ESCAPE) then
             if not pnl.entry:IsVisible() then return end
 			polychat.Core.close()
 			gui.HideGameUI()
 
+        else
+            self.keyDown = false 
 		end
 	end
 
@@ -185,6 +308,9 @@ function polychat.msg(...)
 end
 
 function polychat.Core.close()
+    
+    if polychat.cmds then polychat.cmds:SetVisible( false ) end
+    if image then image:Remove() end
 
     local pnl = polychat.Core.pnl
     
@@ -196,7 +322,7 @@ function polychat.Core.close()
 
 	hook.Run( "FinishChat" )
     polychat.isOpen = false
-
+    
 end
 
 function polychat.Core.open()

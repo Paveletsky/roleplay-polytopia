@@ -61,7 +61,7 @@ hook.Add( 'Initialize', 'loadCommands', function()
             end
 
             local col = Color(250, 160, 0)
-            for _, target in ipairs( who_can_hear( ply:GetPos(), 2 ) ) do
+            for _, target in ipairs( who_can_hear( ply:GetPos(), 900 ) ) do
                 DarkRP.talkToPerson(target, col, 'Окружение могло наблюдать, ' .. text .. ' <'..getCharName(ply)..'>')
             end
 
@@ -71,5 +71,3 @@ hook.Add( 'Initialize', 'loadCommands', function()
     DarkRP.defineChatCommand("doit", doit, 1.5)
 
 end)
-
-Entity(1):SetNetVar( 'char.name', nil )
