@@ -48,6 +48,6 @@ polyinv.registerCustomItem({
     isCustom = true,
 })   
 
--- Entity(1):GiveItem( 'poly_custom_tester' )
+-- Entity(1):GiveItem( 'weapon_357' )
 
 -- PrintTable( Entity(1):GetBodyGroups() )

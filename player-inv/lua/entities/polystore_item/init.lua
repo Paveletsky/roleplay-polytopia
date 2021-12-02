@@ -8,6 +8,7 @@ function ENT:Initialize()
     self:SetMoveType( MOVETYPE_VPHYSICS )
     self:SetSolid( SOLID_VPHYSICS )
     self:SetUseType( SIMPLE_USE )
+    self:SetCollisionGroup(15)
     self:DropToFloor()
 
 end
@@ -24,19 +25,26 @@ end
 function ENT:Use( c, a )
    
     local A = self:GetNetVar 'item'
-    local data = c:GetInventory()
+    local data = c:CurrentCharInventory()
     local fraq = 0
 
     local class = A.class
 
-    if c:GetCount( class ) >= polyinv.List[class].max then c:polychatNotify( 1, 'У вас максимальное кол-во "' .. polyinv.List[class].name .. '"' ) return end
-    if fraq > 1.01 or fraq + polyinv.List[class].weight > 1.01 then c:polychatNotify( 1, 'Нет места.' ) return end
     for k, v in pairs( data ) do
         local data_inv = polyinv.List[v].weight
         fraq = fraq + data_inv
     end
-        
-    c:GiveItem( A.class )
-    self:Remove()
 
+    if c:GetItemCount( class ) >= polyinv.List[class].max then 
+        polychat.sendNotify( c, 1, 'У вас максимальное кол-во "' .. polyinv.List[class].name .. '"' ) 
+    
+    return elseif fraq > 1.01 or fraq + polyinv.List[class].weight > 1.01 then
+        polychat.sendNotify( c, 1, 'Нет места.' )
+    
+    return else
+        c:GiveItem( A.class )
+        self:Remove()
+    end
+    
 end
+-- PrintTable(Entity(1):CurrentCharInventory())
