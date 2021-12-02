@@ -1,22 +1,21 @@
-hook.Add( 'Initialize', 'loadCommands', function()
+-- hook.Add( 'Initialize', 'loadCommands', function()
 
     --
     --  remove default drp commands
     --
 
-    DarkRP.removeChatCommand( 'me' )
-    DarkRP.removeChatCommand( 'w' )
-    DarkRP.removeChatCommand( 'y' )
-    DarkRP.removeChatCommand( '//' )
-    DarkRP.removeChatCommand( '/' )
-    DarkRP.removeChatCommand( 'ooc' )
-    DarkRP.removeChatCommand( 'a' )
-    DarkRP.removeChatCommand( 'broadcast' )
-    DarkRP.removeChatCommand( 'channel' )
-    DarkRP.removeChatCommand( 'radio' )
-    DarkRP.removeChatCommand( 'group' )
-    DarkRP.removeChatCommand( 'credits' )
-    
+    local whitelist = {
+        ['job'] = true,
+        ['buyammo'] = true,
+    }
+
+    for k, list in pairs( DarkRP.getChatCommands() ) do
+        if list.author != 'poly' and !whitelist[list.command] then DarkRP.removeChatCommand( list.command ) end
+    end
+
+    -- for k, list in pairs( DarkRP.getChatCommands() ) do
+    --     print( list.command )
+    -- end
 
     --
     --  register custom commands
@@ -64,4 +63,4 @@ hook.Add( 'Initialize', 'loadCommands', function()
         delay = 1.5
     }
 
-end)
+-- end)
