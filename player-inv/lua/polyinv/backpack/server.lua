@@ -57,13 +57,13 @@ hook.Add( 'Think', 'svbackpack', function()
 
         local fraq = 0
 
-        if !polyinv.List[class] then return end
-        if self:GetItemCount( class ) >= polyinv.List[class].max then return end
+        if !polyinv.List[class] then polychat.sendNotify( self, 1, 'Где ты откопал этот никому неизвестный предмет? 0_o' ) return end
+        if self:GetItemCount( class ) >= polyinv.List[class].max then polychat.sendNotify( self, 1, 'У тебя максимальное количество "' .. polyinv.List[class].name .. '".' ) return end
         for k, v in pairs( data[charId].inventory ) do
             local data_inv = polyinv.List[v].weight
             fraq = fraq + data_inv
         end
-        if fraq > 1.01 or fraq + polyinv.List[class].weight > 1.01 then  return end
+        if fraq > 1.01 or fraq + polyinv.List[class].weight > 1.01 then polychat.sendNotify( self, 1, 'В рюкзаке нет места для этого предмета.' ) return end
 
         table.insert( data[charId].inventory, class )
         sql.Query( "REPLACE INTO polytopia_characters ( steamid, chars ) VALUES ( " .. SQLStr( self:SteamID() ) .. ", " .. SQLStr( pon.encode( data ) ) .. " )" )

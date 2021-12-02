@@ -20,10 +20,10 @@ surface.CreateFont( "info", {
 
 function ENT:Draw()
 	
-	local A = self:GetNetVar 'item'
-
 	self:DrawModel()
 
+	local A = self:GetNetVar 'item'
+	
     local dist = EyePos():DistToSqr(self:GetPos())
     if dist < 15000 then
         local baseAl = (15000 - dist) / 8000

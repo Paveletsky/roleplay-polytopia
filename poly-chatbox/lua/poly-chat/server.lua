@@ -19,4 +19,6 @@ netstream.Hook( 'polychat.sendMessage', function( ply, text, team )
     
 end)
 
--- Entity(2):GiveItem( 'poly_custom_tester' )
+function polychat.sendNotify( stm, t, txt )
+    netstream.Start( ent, 'poly.sendNotify', t, txt )
+end
