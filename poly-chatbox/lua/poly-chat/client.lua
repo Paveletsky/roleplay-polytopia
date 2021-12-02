@@ -102,7 +102,7 @@ end)
 --------------------------------------------------------------------------
 --  design  --------------------------------------------------------------
 --------------------------------------------------------------------------
-
+polychat.chatCommands()
 function polychat.chatCommands()
 
     if polychat.cmds then polychat.cmds:Remove() end
@@ -137,7 +137,7 @@ function polychat.chatCommands()
     local function openImage(url)
         if image then image:Remove() end
         image = vgui.Create 'HTML'
-        image:SetHTML( "<img src="..url.." width=430 height=860 alt=lorem>" )        
+        image:SetHTML( "<img src="..url.." width=350 height=860 alt=lorem>" )        
         image:SetSize( 500, 900 )
         image:MoveTo( ScrW()/60, pnl:GetPos()/9, 0.3, 0, -1 )   
     end
@@ -164,7 +164,7 @@ function polychat.chatCommands()
                 dsc:AppendText( but.description )     
                 if but.command == 'wme' then imBut:SetVisible(true) 
                         imBut.DoClick = function()
-                            if not IsValid(image) then openImage( 'https://i.imgur.com/zQ5PMyd.png' ) else image:Remove() end                    
+                            if not IsValid(image) then openImage( 'https://i.imgur.com/fe5dbqu.gif' ) else image:Remove() end                    
                         end
                     else imBut:SetVisible(false) if IsValid(image) then image:Remove() end
                 end           
