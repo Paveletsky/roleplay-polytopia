@@ -1,5 +1,6 @@
--- hook.Add( 'Initialize', 'loadCommands', function()
-
+hook.Add( 'Initialize', 'loadCommands', function()
+    hook.Remove( 'Initialize', 'loadCommands' )
+    
     --
     --  remove default drp commands
     --
@@ -63,4 +64,4 @@
         delay = 1.5
     }
 
--- end)
+end)
