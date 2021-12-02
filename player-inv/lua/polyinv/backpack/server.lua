@@ -35,9 +35,6 @@ hook.Add( 'Think', 'svbackpack', function()
 
     end
 
-    PrintTable(Entity(1):GetCharInventory())
-    -- Entity(1):openPlayerChars()
-
     function PL:OpenInventory( owner )
 
         local steam = player.GetBySteamID( owner )
@@ -66,7 +63,6 @@ hook.Add( 'Think', 'svbackpack', function()
             local data_inv = polyinv.List[v].weight
             fraq = fraq + data_inv
         end
-
         if fraq > 1.01 or fraq + polyinv.List[class].weight > 1.01 then  return end
 
         table.insert( data[charId].inventory, class )
@@ -95,10 +91,6 @@ hook.Add( 'Think', 'svbackpack', function()
         end
 
     end
-
-    -- PrintTable( Entity(1):CurrentCharInventory() )
-    -- Entity(1):RemoveItem(1)
-    -- Entity(1):openPlayerChars()
 
     function PL:UseItem( id )
 
