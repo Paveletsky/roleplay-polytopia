@@ -346,7 +346,3 @@ function polychat.Core.open()
     polychat.isOpen = true
 
 end
-
--- netstream.Hook( 'polychat.Emote', function( txt )
--- 	chat.AddText( txt )
--- end)

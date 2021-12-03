@@ -11,8 +11,9 @@ hook.Add( 'Think', 'men', function()
     local sw, sh = ScrW(), ScrH()
     local ply = LocalPlayer()
 
-    function polyinv.build( data, items, ch, customs )
+    -- polyinv.build()
 
+    function polyinv.build( data, items, ch, customs )
 
         local function showItemInfo( data )            
 
@@ -25,8 +26,7 @@ hook.Add( 'Think', 'men', function()
             inf:SetDraggable( false )
             inf:SetTitle( 'Описание предмета' )
             inf:SetAlpha( 0 )
-            inf:AlignLeft( ScrW() / 2.8 )
-            inf:AlignTop( ScrH() / 3.169 )
+            inf:AlignLeft( m:GetPos() * 9 )
             inf:SizeTo( 350, 350, 0.2, 0, 0.2 )
             inf:AlphaTo( 230, 0.2, 0 )
 
@@ -79,18 +79,28 @@ hook.Add( 'Think', 'men', function()
             return inf
         end
 
-        if m then m:Remove() end 
+        if m then m:Remove() end
 
-        m = vgui.Create 'DFrame'
+        m = vgui.Create 'DFrame'                
         m:SetSize( 600, 400 )
         m:MakePopup()
-        m:SetTitle( 'Рюкзак' )
+        m:SetTitle( '' )
+        m:ShowCloseButton(false)
         m:Center()
         m:SetScreenLock( true )
         m:AlignLeft(0)
+        m:SetDraggable(false)
         m:SetAlpha(0)
         m:MoveTo( ScrW() / 25, ScrH() / 2 - m:GetTall() / 2, 0.2, 0, -1 )
         m:AlphaTo( 255, 0.5, 0 )
+
+        m.Paint = function( self, w, h )
+
+            draw.RoundedBox( 1, 0, 18, w / 19 - 25, h-25, Color( 20, 20, 20, 220 ))
+            draw.RoundedBox( 10, 0, 0, w, h, Color( 20, 20, 20, 220 ))
+            draw.RoundedBoxEx(4, 0, h / 500, w, 15, Color(250, 160, 0, 200 ), false, false, true, true)
+
+        end
 
         local md = m:Add 'DPanel'
         md:Dock( RIGHT )
@@ -102,8 +112,19 @@ hook.Add( 'Think', 'men', function()
 
         local sd2 = m:Add 'DPanel'
         sd2:Dock( BOTTOM )
-        sd2:SetTall(65)
+        sd2:SetTall(65)        
 
+        m.keyDown = true
+
+        md.Paint = function( self, w, h )
+            draw.RoundedBox( 1, 0, 0, w, h, Color( 20, 20, 20, 190 ))
+        end
+        sd1.Paint = function( self, w, h )
+            draw.RoundedBox( 1, 0, 0, w, h, Color( 20, 20, 20, 190 ))
+        end
+        sd2.Paint = function( self, w, h )
+            draw.RoundedBox( 1, 0, 0, w, h, Color( 20, 20, 20, 190 ))
+        end        
 
         local chInfo = pon.decode( ch[1].chars )
         local chName = sd1:Add 'RichText'
@@ -111,10 +132,12 @@ hook.Add( 'Think', 'men', function()
         chName:AppendText( 'Имя: ' .. chInfo[1].rpname .. '\n' )
         chName:AppendText( 'Деятельность: nil' )
         chName:ResetAllFades(false, true, 0)
+        chName:SetVerticalScrollbarEnabled( false )
 
         local sdInfo = sd2:Add 'RichText'
         sdInfo:Dock(FILL)
         sdInfo:AppendText( 'Тип хранения: средний рюкзак \n' )
+        sdInfo:SetVerticalScrollbarEnabled( false )
 
         function sdInfo:Paint( w, h )
             self:SetFontInternal( 'polyfont.rich2' )
@@ -185,7 +208,7 @@ hook.Add( 'Think', 'men', function()
 
         local gr = vgui.Create( "DGrid", scr )
         gr:Dock( TOP )
-        gr:DockMargin(2.5, 15, 0, 0)
+        gr:DockMargin(11.5, 15, 0, 0)
         gr:SetCols( 2 )
         gr:SetRowHeight( 60)
         gr:SetColWide( 155 )
@@ -253,6 +276,18 @@ hook.Add( 'Think', 'men', function()
             end)   
         end
     
+        md.Think = function( self )
+
+            if input.IsKeyDown( KEY_F4 ) then
+                if m.keyDown then return end
+                m.keyDown = true             
+                if IsValid(m) then m:MoveTo( ScrW() / -5, ScrH() / 2 - m:GetTall() / 2, 0.05, 0, -1, function() m:Remove() end) end
+            else
+                m.keyDown = false 
+            end
+
+        end
+
         return m
     end
 
@@ -260,4 +295,16 @@ hook.Add( 'Think', 'men', function()
 
     netstream.Hook( 'polyinv.noteOpen', polyinv.note )
 
+    hook.Add( "PlayerBindPress", "polyinv.build", function( ply, bind, pressed )
+
+        if ( string.find( bind, "impulse 100" ) ) then
+            netstream.Start( 'polyinv.sv-open' )
+            if IsValid(m) then m:Remove() end            
+            return false
+        end
+    
+    end)
+
 end)
+
+netstream.Start( 'polyinv.sv-open' )
