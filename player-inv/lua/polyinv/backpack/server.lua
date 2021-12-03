@@ -156,8 +156,6 @@ hook.Add( 'Think', 'svbackpack', function()
 
     netstream.Hook( 'polyinv.sv-open', function( ply ) 
         
-        ply:CurrentCharInventory()
-        ply:isValidItems()
         ply:OpenInventory( ply:SteamID() )
 
     end)
@@ -166,8 +164,8 @@ hook.Add( 'Think', 'svbackpack', function()
         ply:openCustomItemsMenu()
     end)
 
-    hook.Add( 'ShowSpare2', 'polychars.openOnSay', function( ply )
-        ply:OpenInventory( ply:SteamID() )
-    end)
+    -- hook.Add( 'ShowSpare2', 'polychars.openOnSay', function( ply )
+    --     ply:OpenInventory( ply:SteamID() )
+    -- end)
 
 end)
