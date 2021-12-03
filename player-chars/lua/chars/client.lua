@@ -123,7 +123,7 @@ function library.openMenu( owner, data )
     end
 
 end
-
+library.charMenu()
 function library.charMenu()
 
     if charFr then charFr:Remove() end
@@ -133,11 +133,6 @@ function library.charMenu()
     charFr:SetTitle( 'Создать персонажа' )
     charFr:Center()
     charFr:MakePopup()
-
-
-    -- local slr = charFr:Add 'DSlider'
-
-    -- slr:SetSize( 10, 50 ) 
 
 
     mpnl = charFr:Add 'DPanel'
@@ -156,7 +151,7 @@ function library.charMenu()
 
     namName = charFr:Add 'DTextEntry'
     namName:SetFont('lib.notify')
-    namName:SetText( 'Введите имя' )
+    namName:SetPlaceholderText( 'Имя персонажа' )
     namName:SetSize( 300, 22 )
     namName:SetPos( 20, 50 )
     namName.OnEnter = function( self )
@@ -166,7 +161,7 @@ function library.charMenu()
     namDesc = charFr:Add 'DTextEntry'
     namDesc:Center()    
     namDesc:SetFont('lib.notify')
-    namDesc:SetText( 'Введите описание' )
+    namDesc:SetPlaceholderText( 'Описание внешности' )
     namDesc:SetMultiline( true )
     namDesc:SetSize( 300, 120 )
     namDesc:SetPos( 20, 80 )
@@ -176,9 +171,14 @@ function library.charMenu()
         end
     end
 
-    mdlType = charFr:Add 'DNumSlider'
-    mdlType:SetSize( 550, 15)
-    mdlType:SetPos( -200, 260 )
+    local scroll = charFr:Add 'DScrollPanel'
+    scroll:Dock(TOP)
+    scroll:SetSize( 0, 300 )
+    scroll:DockMargin( 0, 200, 0, 00 )
+
+    mdlType = mdl:Add 'DNumSlider'
+    mdlType:SetSize( 350, 15 )    
+    mdlType:SetPos( -mdl:GetSize() * 1.6 )
     mdlType:SetMax( 1.10 )
     mdlType:SetMin( 1 )
     mdlType.OnValueChanged = function( self, value )
@@ -190,35 +190,37 @@ function library.charMenu()
         i = i + 1
     end
 
-
-    local function getIndex(val, tab_to_pasre)
-
-        for k,v in pairs(tab_to_pasre) do 
-            if v==val then return k end
-        end
-        return nil
-
-    end
-
-local mdlBgroups = {}
+    local mdlBgroups = {}
     local prevVal = 1
     local fromTop = 250
-    mdlSkin = charFr:Add 'DNumSlider'
-    mdlSkin:SetSize( 550, 15)
-    mdlSkin:SetPos( -200, 300)
+    mdlSkin = scroll:Add 'DNumSlider'
+    mdlSkin:SetSize( 350, 15)
+    mdlSkin:SetPos( 0, 60)
     mdlSkin:SetMax( i )
     mdlSkin:SetMin( 1 )
     mdlSkin:SetDecimals( 0 )    
-    
+
+    local getSkins = mdl.Entity:SkinCount()
+
+    mdlSkin2 = scroll:Add 'DNumSlider'
+    mdlSkin2:SetSize( 350, 15)
+    mdlSkin2:SetPos( 0, 110)
+    mdlSkin2:SetMax( getSkins )
+    mdlSkin2:SetMin( 1 )
+    mdlSkin2:SetDecimals( 0 )    
+    mdlSkin2.OnValueChanged = function( self, value )
+        mdl.Entity:SetSkin( value )
+    end
+
     mdlSkin.OnValueChanged = function( self, value )
-    
+        
         if math.Round(value) != prevVal then 
 
             prevVal = math.Round(value)
             mdl.Entity:SetAnimation( 1 )
             local model = LocalPlayer():getJobTable()['model'][math.Round(value)]
             mdl.Entity:SetModel(model)
-            fromTop = 340
+            fromTop = 110
 
             for k,v in pairs( mdlBgroups ) do
                 v:InvalidateParent( true )
@@ -230,21 +232,31 @@ local mdlBgroups = {}
             table.Empty(mdlBgroups)
 
             for k,v in pairs(mdl.Entity:GetBodyGroups()) do
+                
+                -- PrintTable( v )
+
                 charFr:Refresh()
-                table.insert( mdlBgroups, charFr:Add( 'DNumSlider' ) )
+                table.insert( mdlBgroups, scroll:Add( 'DNumSlider' ) )
                 mdlBgroups[#mdlBgroups]:SetSize( 550, 15 )
                 mdlBgroups[#mdlBgroups]:SetPos( -200, fromTop )
-                fromTop = fromTop + 40
+                fromTop = fromTop + 50
                 mdlBgroups[#mdlBgroups]:SetMax(v['num'] - 1)
+                if v.name == 'head' then mdlBgroups[#mdlBgroups]:SetVisible(false) end
+
                 mdlBgroups[#mdlBgroups]:SetMin(0)
                 mdlBgroups[#mdlBgroups]:SetDecimals(0)
                 mdlBgroups[#mdlBgroups].OnValueChanged = function(self, value)
                     mdl.Entity:SetAnimation(1)
-                    mdl.Entity:SetBodygroup(v['id'], value)
+                    if v.name == 'Pants' or 'Torso' then value = value - 1 end
+                    mdl.Entity:SetBodygroup(v['id'], value )
                 end
             
             end
-    
+
+            local getSkins2 = mdl.Entity:SkinCount()
+            mdlSkin2:SetMax( getSkins2 )
+
+
         end
     
     end

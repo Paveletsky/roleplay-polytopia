@@ -3,6 +3,7 @@ if CLIENT then
 	local surface = surface
 	local Color = Color
 
+
 	local SKIN = {}
 	SKIN.PrintName = 'PolytopiaGM Skin'
 	SKIN.Author = 'Lasexille'
@@ -193,6 +194,31 @@ if CLIENT then
 	function SKIN:PaintCategoryList( panel, w, h )
 
 		-- self.tex.CategoryList.Outer( 0, 0, w, h )
+
+	end
+
+	surface.CreateFont('ico', {
+		font = 'Calibri',
+		extended = true,
+		size = 30,
+		weight = 400,
+	})
+
+	function SKIN:PaintSliderKnob( pnl, w, h )
+
+		if pnl:GetDisabled() then
+			return draw.SimpleText('◈', 'ico', w/2, h/2, Color(235, 130, 19, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		elseif pnl.Depressed or pnl.Hovered then
+			return draw.SimpleText('◈', 'ico', w/2, h/2, Color(235, 170, 19, 215), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		else
+			draw.SimpleText('◈', 'ico', w/2, h/2, Color(245, 170, 19), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		end
+
+	end
+
+	function SKIN:PaintNumSlider( panel, w, h )
+
+		draw.RoundedBox(9, 0, 7, w, h / 6, Color( 184, 53, 64, 50))
 
 	end
 

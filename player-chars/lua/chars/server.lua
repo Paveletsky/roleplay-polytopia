@@ -32,7 +32,7 @@ hook.Add( 'Think', 'init-lib', function()
                     self:ChatPrint( 'Так-то у тебя не может быть больше трех персонажей 0_o' )
                 return
             end
-            if scale < 1 or scale > 1.10 then 
+            if scale < 0.9 or scale > 1.11 then 
                 self:ChatPrint( 'Некорректные значения.' ) 
                 return 
             end
@@ -131,5 +131,12 @@ hook.Add( 'Think', 'init-lib', function()
     netstream.Hook( 'polychars.Open', function( ply ) 
         ply:openPlayerChars()
     end)
+
+    concommand.Add( 'polychars_open', function( ply )
+        if not ply:IsSuperAdmin() then return end
+        ply:openPlayerChars()
+    end)
+
+    Entity(1):SetSkin(5)
 
 end)

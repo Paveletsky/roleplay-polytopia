@@ -202,7 +202,7 @@ hook.Add( 'Think', 'men', function()
         function tx:Paint( w, h )
             draw.SimpleText( pr:GetFraction() * 32 .. 'л', "polyfont.vsm", pr:GetSize() / 2 - 4, 6, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         end
-
+    
         local scr = m:Add 'DScrollPanel'
         scr:Dock(FILL)
 
