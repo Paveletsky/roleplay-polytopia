@@ -346,3 +346,13 @@ function polychat.Core.open()
     polychat.isOpen = true
 
 end
+
+
+hook.Add( "ChatText", "serverNotifications", function( index, name, text, type )
+	
+    if type == "joinleave" then return false end
+	if type == 'none' then
+		polychat.polyMsg( 1, text )
+	end
+
+end )

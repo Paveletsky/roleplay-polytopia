@@ -129,7 +129,7 @@ hook.Add( 'Think', 'men', function()
         local chInfo = pon.decode( ch[1].chars )
         local chName = sd1:Add 'RichText'
         chName:Dock(FILL)
-        chName:AppendText( 'Имя: ' .. chInfo[1].rpname .. '\n' )
+        chName:AppendText( 'Имя: ' .. ply:GetNetVar( 'char.name' ) .. '\n' )
         chName:AppendText( 'Деятельность: nil' )
         chName:ResetAllFades(false, true, 0)
         chName:SetVerticalScrollbarEnabled( false )
@@ -282,6 +282,10 @@ hook.Add( 'Think', 'men', function()
                 if m.keyDown then return end
                 m.keyDown = true             
                 if IsValid(m) then m:MoveTo( ScrW() / -5, ScrH() / 2 - m:GetTall() / 2, 0.05, 0, -1, function() m:Remove() end) end
+                if not IsValid(inf) then return end
+                inf:AlphaTo( 0, 0.2, 0, function() 
+                    inf:Remove()
+                end)
             else
                 m.keyDown = false 
             end
@@ -295,16 +299,6 @@ hook.Add( 'Think', 'men', function()
 
     netstream.Hook( 'polyinv.noteOpen', polyinv.note )
 
-    hook.Add( "PlayerBindPress", "polyinv.build", function( ply, bind, pressed )
-
-        if ( string.find( bind, "impulse 100" ) ) then
-            netstream.Start( 'polyinv.sv-open' )
-            if IsValid(m) then m:Remove() end            
-            return false
-        end
-    
-    end)
-
 end)
 
-netstream.Start( 'polyinv.sv-open' )
+-- netstream.Start( 'polyinv.sv-open' )

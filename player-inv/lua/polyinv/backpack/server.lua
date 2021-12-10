@@ -138,10 +138,6 @@ hook.Add( 'Think', 'svbackpack', function()
 
     end
 
-    function PL:openCustomItemsMenu()
-        netstream.Start( self, 'polyinv.openCustoms', polyinv.List )
-    end
-
     netstream.Hook( 'polyinv.sv-useItem', function( ply, id ) 
         ply:UseItem( id )
     end)
@@ -160,12 +156,8 @@ hook.Add( 'Think', 'svbackpack', function()
 
     end)
 
-    netstream.Hook( 'polyinv.sv-customOpen', function( ply ) 
-        ply:openCustomItemsMenu()
+    hook.Add( 'ShowSpare2', 'polychars.openOnSay', function( ply )
+        ply:OpenInventory( ply:SteamID() )
     end)
-
-    -- hook.Add( 'ShowSpare2', 'polychars.openOnSay', function( ply )
-    --     ply:OpenInventory( ply:SteamID() )
-    -- end)
 
 end)

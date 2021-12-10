@@ -25,6 +25,8 @@ hook.Add( 'Think', 'init-lib', function()
         return val
     end
 
+    -- PrintTable( pon.decode( Entity(1):getCharacters()[1].chars ) )
+
     function PL:createCharacter( rpname, desc, scale, skin, bg )
         local cache = {}
         for k, v in pairs( self:getCharacters() ) do
@@ -98,8 +100,8 @@ hook.Add( 'Think', 'init-lib', function()
         end
 
         local i = 0
-        if chInfo[1].bg == '' then return end
-        for k, v in pairs( chInfo[1].bg ) do
+        if chInfo[id].bg == '' then return end
+        for k, v in pairs( chInfo[id].bg ) do
             self:SetBodygroup( i, v )
             i = i + 1
         end
@@ -136,7 +138,5 @@ hook.Add( 'Think', 'init-lib', function()
         if not ply:IsSuperAdmin() then return end
         ply:openPlayerChars()
     end)
-
-    Entity(1):SetSkin(5)
 
 end)

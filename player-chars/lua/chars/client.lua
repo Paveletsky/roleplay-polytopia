@@ -1,5 +1,36 @@
 local pl = LocalPlayer()
 
+LIB_CONFIG_RANDNAMES = {
+	'Джэк Старший',
+    'Винсент Лейн',
+    'Винчензо Чили',
+	'Йозеф Чарк',
+    'Рэнди Армстронг',
+    'Кристофер Уайтфилд',
+    'Джон Мэтьюс',
+    'Джеймс Кейтфилд',
+    'Дин Йеванс',
+	'Пол Роланд',
+	'Джимми Стюарт',
+	'Клифолд Бэверли',
+	'Брайан Феллер',
+	'Ларри Бэнсон',
+	'Рудольф Тэйту',
+	'Луис Нельсон',
+	'Грант Шультц',
+	'Джон Бёрс',
+	'Стивен Дайк',
+}
+
+LIB_CONFIG_RANDDESCRIPTIONS = {
+    'Парень, лицо побитое, на вид ему около 27 лет.',
+    'Молодой человек низкого роста, худощавого телосложения, с редкими короткими курчавыми волосами рыжего цвета.',
+    'Мужчина высокого роста, стройный, вдоль глаза имеется шрам.',
+    'Измученный парень, под глазами мешки.',
+    'Мужчина 30-ти лет, большие выразительные глаза с ироническим взглядом.',
+}
+
+
 function library.openMenu( owner, data )
     hook.Remove( 'HUDPaint', 'library-hud')
     hook.Add( 'CalcView', 'lib-flycam', flycam )
@@ -123,13 +154,13 @@ function library.openMenu( owner, data )
     end
 
 end
-library.charMenu()
+
 function library.charMenu()
 
     if charFr then charFr:Remove() end
     
     charFr = vgui.Create 'DFrame'
-    charFr:SetSize( 600, 650)
+    charFr:SetSize( 600, 550)
     charFr:SetTitle( 'Создать персонажа' )
     charFr:Center()
     charFr:MakePopup()
@@ -151,6 +182,7 @@ function library.charMenu()
 
     namName = charFr:Add 'DTextEntry'
     namName:SetFont('lib.notify')
+    namName:SetText( table.Random(LIB_CONFIG_RANDNAMES) )
     namName:SetPlaceholderText( 'Имя персонажа' )
     namName:SetSize( 300, 22 )
     namName:SetPos( 20, 50 )
@@ -161,6 +193,7 @@ function library.charMenu()
     namDesc = charFr:Add 'DTextEntry'
     namDesc:Center()    
     namDesc:SetFont('lib.notify')
+    namDesc:SetText( table.Random(LIB_CONFIG_RANDDESCRIPTIONS) )
     namDesc:SetPlaceholderText( 'Описание внешности' )
     namDesc:SetMultiline( true )
     namDesc:SetSize( 300, 120 )
@@ -173,17 +206,23 @@ function library.charMenu()
 
     local scroll = charFr:Add 'DScrollPanel'
     scroll:Dock(TOP)
-    scroll:SetSize( 0, 300 )
-    scroll:DockMargin( 0, 200, 0, 00 )
+    scroll:SetSize( 0, 250 )
+    scroll:DockMargin( 0, 200, 0, 0 )
 
     mdlType = mdl:Add 'DNumSlider'
-    mdlType:SetSize( 350, 15 )    
-    mdlType:SetPos( -mdl:GetSize() * 1.6 )
+    mdlType:SetSize( 330, 15 )    
+    mdlType:SetPos( -mdl:GetSize() * 1.2, 5 )
     mdlType:SetMax( 1.10 )
     mdlType:SetMin( 1 )
     mdlType.OnValueChanged = function( self, value )
         mdl.Entity:SetModelScale( value )
     end
+
+    local tx1 = mdl:Add 'DLabel'
+    tx1:SetText( 'Рост' )
+    tx1:SetPos(10, 0)
+    tx1:SetFont( 'lib.notify' )
+
 
     local i = 0
     for k, mdls in pairs( LocalPlayer():getJobTable()['model'] ) do
@@ -194,23 +233,32 @@ function library.charMenu()
     local prevVal = 1
     local fromTop = 250
     mdlSkin = scroll:Add 'DNumSlider'
-    mdlSkin:SetSize( 350, 15)
-    mdlSkin:SetPos( 0, 60)
+    mdlSkin:SetSize( 400, 15)
+    mdlSkin:SetPos( -50, 0)
     mdlSkin:SetMax( i )
     mdlSkin:SetMin( 1 )
     mdlSkin:SetDecimals( 0 )    
 
     local getSkins = mdl.Entity:SkinCount()
-
     mdlSkin2 = scroll:Add 'DNumSlider'
-    mdlSkin2:SetSize( 350, 15)
-    mdlSkin2:SetPos( 0, 110)
+    mdlSkin2:SetSize( 400, 15)
+    mdlSkin2:SetPos( -50, 40)
     mdlSkin2:SetMax( getSkins )
     mdlSkin2:SetMin( 1 )
     mdlSkin2:SetDecimals( 0 )    
     mdlSkin2.OnValueChanged = function( self, value )
         mdl.Entity:SetSkin( value )
     end
+
+    local tx1 = scroll:Add 'DLabel'
+    tx1:SetText( 'Типаж' )
+    tx1:SetPos(30, -4)
+    tx1:SetFont( 'lib.notify' )
+
+    local tx1 = scroll:Add 'DLabel'
+    tx1:SetText( 'Лицо' )
+    tx1:SetPos(30, 36)
+    tx1:SetFont( 'lib.notify' )
 
     mdlSkin.OnValueChanged = function( self, value )
         
@@ -220,7 +268,7 @@ function library.charMenu()
             mdl.Entity:SetAnimation( 1 )
             local model = LocalPlayer():getJobTable()['model'][math.Round(value)]
             mdl.Entity:SetModel(model)
-            fromTop = 110
+            fromTop = 80
 
             for k,v in pairs( mdlBgroups ) do
                 v:InvalidateParent( true )
@@ -239,9 +287,8 @@ function library.charMenu()
                 table.insert( mdlBgroups, scroll:Add( 'DNumSlider' ) )
                 mdlBgroups[#mdlBgroups]:SetSize( 550, 15 )
                 mdlBgroups[#mdlBgroups]:SetPos( -200, fromTop )
-                fromTop = fromTop + 50
+                fromTop = fromTop + 40
                 mdlBgroups[#mdlBgroups]:SetMax(v['num'] - 1)
-                if v.name == 'head' then mdlBgroups[#mdlBgroups]:SetVisible(false) end
 
                 mdlBgroups[#mdlBgroups]:SetMin(0)
                 mdlBgroups[#mdlBgroups]:SetDecimals(0)
@@ -266,6 +313,9 @@ function library.charMenu()
     crtBut:SetSize( 100, 26 )
     crtBut:AlignBottom( 5 )	crtBut:AlignLeft( 5 )
     crtBut.DoClick = function( ply )
+
+        if namName:GetValue() == '' then polychat.polyMsg( 1, 'Укажите имя персонажа!' ) return end
+
         local bGrps = {}
         for k,v in pairs (mdlBgroups) do
             table.insert(bGrps,math.floor(v:GetValue()))
