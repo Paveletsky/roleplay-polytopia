@@ -11,7 +11,6 @@ function polyinv.registerItem( data )
     polyinv.List[class] = data
 end
 
-
 function polyinv.registerCustomItem( data )
     local class = data.class
     polyinv.List[class] = data
