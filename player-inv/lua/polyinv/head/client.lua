@@ -78,7 +78,6 @@ function polyinv.openCustoms( itemList, charInv )
             local b = itpanel:Add 'DButton'
             b:Dock( BOTTOM )
             b:SetText( 'Выдать' )
-
             b.DoClick = function(self)
         
                 if n:GetValue() == it.name and
