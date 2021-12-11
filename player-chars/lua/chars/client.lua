@@ -106,6 +106,7 @@ function library.openMenu( owner, data )
             mdl:SetFOV( 10 )
             mdl:SetLookAt( Vector( 0, -2, 67 ) )
             mdl:SetModel( v.skin )
+            mdl.Entity:SetSkin( v.mdskin )
             
             local i = 0
             for k, v in pairs( v.bg ) do
@@ -320,7 +321,7 @@ function library.charMenu()
         for k,v in pairs (mdlBgroups) do
             table.insert(bGrps,math.floor(v:GetValue()))
         end                            
-        netstream.Start( 'polychars.Create', namName:GetValue(), namDesc:GetValue(), mdl.Entity:GetModelScale(), mdl.Entity:GetModel(), bGrps )
+        netstream.Start( 'polychars.Create', namName:GetValue(), namDesc:GetValue(), mdl.Entity:GetModelScale(), mdl.Entity:GetModel(), math.floor(mdlSkin2:GetValue()), bGrps )
         timer.Simple( 0.3, function()
             netstream.Start 'polychars.Open'
         end)

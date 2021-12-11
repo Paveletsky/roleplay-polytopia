@@ -96,9 +96,8 @@ hook.Add( 'Think', 'men', function()
 
         m.Paint = function( self, w, h )
 
-            draw.RoundedBox( 1, 0, 18, w / 19 - 25, h-25, Color( 20, 20, 20, 220 ))
-            draw.RoundedBox( 10, 0, 0, w, h, Color( 20, 20, 20, 220 ))
-            draw.RoundedBoxEx(4, 0, h / 500, w, 15, Color(250, 160, 0, 200 ), false, false, true, true)
+            draw.RoundedBox( 1, 0, 0, w, h, Color( 20, 20, 20, 220 ))
+            draw.RoundedBoxEx(10, 0, h / 150-3, w, 10, Color(250, 160, 0, 200 ), false, false, true, true)
 
         end
 
@@ -185,7 +184,6 @@ hook.Add( 'Think', 'men', function()
 
         local fraq = 0
         local inv_data = data
-
         if inv_data != '[}' then
             for k, v in pairs( inv_data ) do
                 local ind = items[v].weight
@@ -301,4 +299,4 @@ hook.Add( 'Think', 'men', function()
 
 end)
 
--- netstream.Start( 'polyinv.sv-open' )
+netstream.Start( 'polyinv.sv-open' )

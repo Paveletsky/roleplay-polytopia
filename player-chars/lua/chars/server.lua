@@ -25,9 +25,9 @@ hook.Add( 'Think', 'init-lib', function()
         return val
     end
 
-    -- PrintTable( pon.decode( Entity(1):getCharacters()[1].chars ) )
+    PrintTable( pon.decode( Entity(1):getCharacters()[1].chars ) )
 
-    function PL:createCharacter( rpname, desc, scale, skin, bg )
+    function PL:createCharacter( rpname, desc, scale, skin, mdskin, bg )
         local cache = {}
         for k, v in pairs( self:getCharacters() ) do
             if ( v.chars != '' and #pon.decode(v.chars) == 3 ) then
@@ -44,6 +44,7 @@ hook.Add( 'Think', 'init-lib', function()
                 desc = desc,
                 scale = scale,
                 skin = skin,
+                mdskin = mdskin,
                 bg = bg,
                 hunger = 100,
                 inventory = {},                    
@@ -85,6 +86,7 @@ hook.Add( 'Think', 'init-lib', function()
             self:SetTeam( 2 )
             self:SetModel( charId.skin )
             self:SetModelScale( charId.scale )
+            self:SetSkin( charId.mdskin )
 
             self:setDarkRPVar( 'Energy', charId.hunger )
 
@@ -140,3 +142,4 @@ hook.Add( 'Think', 'init-lib', function()
     end)
 
 end)
+Entity(1):openPlayerChars()

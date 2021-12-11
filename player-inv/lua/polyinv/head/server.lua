@@ -53,7 +53,7 @@ netstream.Hook( 'polyinv.createItem', function( ply, name, desc, logo, max, weig
     })
     ply:GiveItem( 'lol' )
 end)
-Entity(1):GiveItem( 'lol' )
+-- Entity(1):GiveItem( 'lol' )
 
 netstream.Hook( 'polyinv.sv-infoOpen', function( ply, id ) 
     polyinv.infoPage( id )
