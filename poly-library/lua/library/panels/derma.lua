@@ -520,3 +520,39 @@ end)
 -- for k,v in pairs(derma.GetSkinTable()) do print(k) end -- Prints all defined skins
 
 end
+
+
+
+if CLIENT then
+
+	--
+	-- QUICK PANEL CREATION
+	--
+
+	function library.button(pnl, txt, click)
+
+		local b = vgui.Create 'DButton'
+		if pnl.AddItem then pnl:AddItem(b) else pnl:Add(b) end
+		b:Dock(TOP)
+		b:SetTall(25)
+		b:SetText(txt)
+		b.DoClick = click
+
+		return b
+
+	end
+
+	function library.label(pnl, txt)
+
+		local t = vgui.Create 'DLabel'
+		if pnl.AddItem then pnl:AddItem(t) else pnl:Add(t) end
+		t:Dock(TOP)
+		t:SetTall(18)
+		t:SetContentAlignment(4)
+		t:SetText(txt)
+
+		return t
+
+	end
+
+end

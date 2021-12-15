@@ -20,12 +20,11 @@ hook.Add( 'Think', 'init-lib', function()
         netstream.Start( self, 'polychars.open', _, val )
     end
 
+
     function PL:getCharacters()
         local val = sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) )
         return val
     end
-
-    PrintTable( pon.decode( Entity(1):getCharacters()[1].chars ) )
 
     function PL:createCharacter( rpname, desc, scale, skin, mdskin, bg )
         local cache = {}
@@ -101,11 +100,9 @@ hook.Add( 'Think', 'init-lib', function()
             
         end
 
-        local i = 0
-        if chInfo[id].bg == '' then return end
-        for k, v in pairs( chInfo[id].bg ) do
-            self:SetBodygroup( i, v )
-            i = i + 1
+        local b = pon.decode( self:getCharacters()[1].chars )    
+        for k, v in pairs( b[id].bg ) do
+            self:SetBodygroup( k, v )
         end
 
     end
@@ -142,4 +139,3 @@ hook.Add( 'Think', 'init-lib', function()
     end)
 
 end)
-Entity(1):openPlayerChars()

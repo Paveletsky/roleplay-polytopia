@@ -30,10 +30,11 @@ LIB_CONFIG_RANDDESCRIPTIONS = {
     'Мужчина 30-ти лет, большие выразительные глаза с ироническим взглядом.',
 }
 
+local tempModel, tSkin = 1, 1
 
 function library.openMenu( owner, data )
     hook.Remove( 'HUDPaint', 'library-hud')
-    hook.Add( 'CalcView', 'lib-flycam', flycam )
+    -- hook.Add( 'CalcView', 'lib-flycam', flycam )
     netstream.Start( 'lib-lockplayer' )
 
     if IsValid(MENU) then MENU:Remove() end
@@ -107,11 +108,8 @@ function library.openMenu( owner, data )
             mdl:SetLookAt( Vector( 0, -2, 67 ) )
             mdl:SetModel( v.skin )
             mdl.Entity:SetSkin( v.mdskin )
-            
-            local i = 0
             for k, v in pairs( v.bg ) do
-                mdl.Entity:SetBodygroup( i, v )
-                i = i + 1
+                mdl.Entity:SetBodygroup( k, v )
             end
 
             y = y + mdl:GetTall()
@@ -161,152 +159,239 @@ function library.charMenu()
     if charFr then charFr:Remove() end
     
     charFr = vgui.Create 'DFrame'
-    charFr:SetSize( 600, 550)
-    charFr:SetTitle( 'Создать персонажа' )
+    charFr:SetSize( 800, ScrH() / 1.02 )
+    charFr:ShowCloseButton(false)
+    charFr:SetDraggable(false)
+    charFr:SetTitle( '' )
     charFr:Center()
     charFr:MakePopup()
+    charFr.Paint = function( self, w, h )
 
+        draw.RoundedBox( 1, 0, 0, w, h, Color( 20, 20, 20, 220 ))
+        draw.RoundedBoxEx(10, 0, h / 150-9, w, 10, Color(250, 160, 0, 200 ), false, false, true, true)
 
-    mpnl = charFr:Add 'DPanel'
-    mpnl:SetSize( 250, 0 )
-    mpnl:DockMargin( 0, 0, 0, 0 )
-    mpnl:Dock(RIGHT)
-
-    mdl = mpnl:Add 'DModelPanel'
-    mdl:Dock(FILL)
-    mdl:SetFOV( 30 )
-    mdl:SetAmbientLight(Color(255, 150, 0, 150))
-    mdl:SetAnimated( true )
-    mdl:SetModel( table.Random( LocalPlayer():getJobTable()['model'] ) )
+    end
 
     -- mdl:SetLookAt( Vector( 0,10,0 ) )
 
+    mpnl = charFr:Add 'DPanel'
+    mpnl:SetSize( 0, 0 )
+    mpnl:DockMargin( 2, 5, 2, 0 )
+    mpnl:Dock(FILL)
+    mpnl:SetAlpha(220)
+
+	modelPreview = mpnl:Add('DModelPanel')
+	modelPreview:SetFont('lib.notify')
+    modelPreview:SetSize( 750, 950 )
+    -- modelPreview:SetTall( mpnl:GetTall()  )
+    modelPreview:SetFOV(40)
+    modelPreview:SetModel( polychars.Models[tempModel] )
+	modelPreview:SetCamPos(Vector(100,0,34))
+	modelPreview:SetLookAng(Angle(0,180,0))
+    modelPreview:SetAnimated(true)
+	modelPreview.vRawCamPos = Vector(0,0,5.5)
+	modelPreview.tgtLookAngle = Angle(0,180,0)
+
     namName = charFr:Add 'DTextEntry'
+    namName:Dock( TOP )    
+    namName:DockMargin( 0, 0, charFr:GetSize() / 1.8, 5 )
     namName:SetFont('lib.notify')
     namName:SetText( table.Random(LIB_CONFIG_RANDNAMES) )
     namName:SetPlaceholderText( 'Имя персонажа' )
-    namName:SetSize( 300, 22 )
-    namName:SetPos( 20, 50 )
     namName.OnEnter = function( self )
         chat.AddText( self:GetValue() )
     end
 
+    --
+    --  MODEL PROPERTIES
+    --
+
+    local tbl = {}
+    local t1 = {}
+
+    function getParams( model )
+        
+        for _, v in pairs( tbl ) do
+            v:InvalidateParent( true )
+            v:Remove()            
+        end
+
+        for _, v in pairs( t1 ) do
+            v:InvalidateParent( true )
+            v:Remove()            
+        end    
+
+        table.Empty(tbl)
+        table.Empty(t1)
+
+        for k, v in pairs( modelPreview.Entity:GetBodyGroups() ) do                        
+            if string.find( v['submodels'][0], 'reference.smd' ) or v['submodels'][0] == 'pm_male_06_male_06_body0_model0.smd' then continue end            
+
+            PrintTable( v )   
+            local bodyGroupID = 1
+            
+            local cr = table.insert( tbl, mpnl:Add 'DPanel' )
+            local ct = table.insert( t1, mpnl:Add 'DLabel' )
+
+            local pnl = tbl[#tbl]
+            local t = t1[#t1]
+
+            pnl:Dock( TOP )
+            pnl:SetTall( 40 )
+            pnl:DockMargin( 200, 60, 200, 50 )
+            -- pnl:Remove()
+            pnl.Paint = function(self)
+                
+            end
+            
+            local b = pnl:Add 'DButton'
+            b:Dock( LEFT )
+            b:SetText '<'
+            b:SetFont 'lib.notify'
+            b.Paint = function( self, w, h )
+            end
+            b.DoClick = function( self )
+                if v['submodels'][bodyGroupID] == '' then
+                    -- bodyGroupID = -1
+                end
+                if bodyGroupID != -1 then
+                    bodyGroupID = bodyGroupID - 1
+                    modelPreview.Entity:SetBodygroup( v['id'], bodyGroupID )
+                else 
+                    bodyGroupID = #v['submodels']
+                end
+            end
+
+            local b = pnl:Add 'DButton'
+            b:Dock( RIGHT )
+            b:SetText '>'
+            b:SetFont 'lib.notify'
+            b.Paint = function( self, w, h )
+            end
+            b.DoClick = function( self )
+                if polychars.BlockedBg[v['submodels'][bodyGroupID + 1]] then
+                    bodyGroupID = -1
+                end        
+                if bodyGroupID != #v['submodels'] then
+                    bodyGroupID = bodyGroupID + 1
+                    modelPreview.Entity:SetBodygroup( v['id'], bodyGroupID )
+                else
+                    bodyGroupID = -1
+                end
+            end  
+            
+            t:Dock( TOP )
+            t:DockMargin( 30, -80, 0, 0 )
+            t:SetText(polychars.Lang[v['name']])    
+            t:SetFont 'lib.notify'    
+
+        end
+        
+    end
+
+    local pnl = mpnl:Add 'DPanel'
+    pnl:Dock( TOP )
+    pnl:SetTall( 40 )
+    pnl:DockMargin( 150, 10, 150, 50 )
+    -- pnl:Remove()
+    pnl.Paint = function(self)
+        draw.SimpleText( 'Типаж', 'lib.notify', pnl:GetSize() / 2, 6, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP )
+    end
+
+    local pnl2 = mpnl:Add 'DPanel'
+    pnl2:Dock( TOP )
+    pnl2:SetTall( 40 )
+    pnl2:DockMargin( 150, -50, 150, 50 )
+    -- pnl:Remove()
+    pnl2.Paint = function(self)
+        draw.SimpleText( 'Лицо', 'lib.notify', pnl:GetSize() / 2, 6, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP )
+    end
+
+    local b = pnl2:Add 'DButton'
+    b:Dock( LEFT )
+    b:DockMargin( 0, 0, 0, 0 )
+    b:SetText '<'
+    b:SetFont 'lib.notify'
+    b.Paint = function( self, w, h )
+    end
+    b.DoClick = function( self )
+        if tSkin != 1 then
+            tSkin = tSkin - 1 
+            modelPreview.Entity:SetSkin( tSkin )   
+        else
+            tSkin = modelPreview.Entity:SkinCount() + 1   
+        end
+    end
+
+    local b = pnl2:Add 'DButton'
+    b:Dock( RIGHT )
+    b:DockMargin( 0, 0, 0, 0 )
+    b:SetText '>'
+    b:SetFont 'lib.notify'
+    b.Paint = function( self, w, h )
+    end
+    b.DoClick = function( self )
+        if tSkin ~= modelPreview.Entity:SkinCount() then
+            tSkin = tSkin + 1
+            modelPreview.Entity:SetSkin( tSkin )
+        end
+        if tSkin == modelPreview.Entity:SkinCount() then
+            tSkin = 1
+        end
+    end 
+
+    local b = pnl:Add 'DButton'
+    b:Dock( LEFT )
+    b:DockMargin( 0, 0, 0, 0 )
+    b:SetText '<'
+    b:SetFont 'lib.notify'
+    b.Paint = function( self, w, h )
+    end
+    b.DoClick = function( self )
+        if tempModel != 1 then
+            tempModel = tempModel - 1 
+            modelPreview:SetModel( polychars.Models[tempModel] )    
+        else
+            tempModel = #polychars.Models + 1   
+        end
+        tSkin = 1
+    end
+
+    local b = pnl:Add 'DButton'
+    b:Dock( RIGHT )
+    b:DockMargin( 0, 0, 0, 0 )
+    b:SetText '>'
+    b:SetFont 'lib.notify'
+    b.Paint = function( self, w, h )
+    end
+    b.DoClick = function( self )
+        modelPreview.Entity:SetBodyGroups( '000000000' )
+        if tempModel ~= #polychars.Models then
+            tempModel = tempModel + 1
+            modelPreview:SetModel( polychars.Models[tempModel] )
+        end
+        if tempModel == #polychars.Models then
+            tempModel = 1
+        end
+        tSkin = 1
+        getParams( modelPreview.Entity )
+    end 
+
+    --
+    --  TEXT ENTRIES
+    --
+
     namDesc = charFr:Add 'DTextEntry'
-    namDesc:Center()    
+    namDesc:Dock(TOP)
+    namDesc:SetTall( 50 )
     namDesc:SetFont('lib.notify')
     namDesc:SetText( table.Random(LIB_CONFIG_RANDDESCRIPTIONS) )
     namDesc:SetPlaceholderText( 'Описание внешности' )
     namDesc:SetMultiline( true )
-    namDesc:SetSize( 300, 120 )
-    namDesc:SetPos( 20, 80 )
     function namDesc.AllowInput( self, stringValue )
         if string.len( namDesc:GetValue() ) > 150 then
             return true
         end
-    end
-
-    local scroll = charFr:Add 'DScrollPanel'
-    scroll:Dock(TOP)
-    scroll:SetSize( 0, 250 )
-    scroll:DockMargin( 0, 200, 0, 0 )
-
-    mdlType = mdl:Add 'DNumSlider'
-    mdlType:SetSize( 330, 15 )    
-    mdlType:SetPos( -mdl:GetSize() * 1.2, 5 )
-    mdlType:SetMax( 1.10 )
-    mdlType:SetMin( 1 )
-    mdlType.OnValueChanged = function( self, value )
-        mdl.Entity:SetModelScale( value )
-    end
-
-    local tx1 = mdl:Add 'DLabel'
-    tx1:SetText( 'Рост' )
-    tx1:SetPos(10, 0)
-    tx1:SetFont( 'lib.notify' )
-
-
-    local i = 0
-    for k, mdls in pairs( LocalPlayer():getJobTable()['model'] ) do
-        i = i + 1
-    end
-
-    local mdlBgroups = {}
-    local prevVal = 1
-    local fromTop = 250
-    mdlSkin = scroll:Add 'DNumSlider'
-    mdlSkin:SetSize( 400, 15)
-    mdlSkin:SetPos( -50, 0)
-    mdlSkin:SetMax( i )
-    mdlSkin:SetMin( 1 )
-    mdlSkin:SetDecimals( 0 )    
-
-    local getSkins = mdl.Entity:SkinCount()
-    mdlSkin2 = scroll:Add 'DNumSlider'
-    mdlSkin2:SetSize( 400, 15)
-    mdlSkin2:SetPos( -50, 40)
-    mdlSkin2:SetMax( getSkins )
-    mdlSkin2:SetMin( 1 )
-    mdlSkin2:SetDecimals( 0 )    
-    mdlSkin2.OnValueChanged = function( self, value )
-        mdl.Entity:SetSkin( value )
-    end
-
-    local tx1 = scroll:Add 'DLabel'
-    tx1:SetText( 'Типаж' )
-    tx1:SetPos(30, -4)
-    tx1:SetFont( 'lib.notify' )
-
-    local tx1 = scroll:Add 'DLabel'
-    tx1:SetText( 'Лицо' )
-    tx1:SetPos(30, 36)
-    tx1:SetFont( 'lib.notify' )
-
-    mdlSkin.OnValueChanged = function( self, value )
-        
-        if math.Round(value) != prevVal then 
-
-            prevVal = math.Round(value)
-            mdl.Entity:SetAnimation( 1 )
-            local model = LocalPlayer():getJobTable()['model'][math.Round(value)]
-            mdl.Entity:SetModel(model)
-            fromTop = 80
-
-            for k,v in pairs( mdlBgroups ) do
-                v:InvalidateParent( true )
-                v:Remove()
-                charFr:Refresh()
-                
-            end
-
-            table.Empty(mdlBgroups)
-
-            for k,v in pairs(mdl.Entity:GetBodyGroups()) do
-                
-                -- PrintTable( v )
-
-                charFr:Refresh()
-                table.insert( mdlBgroups, scroll:Add( 'DNumSlider' ) )
-                mdlBgroups[#mdlBgroups]:SetSize( 550, 15 )
-                mdlBgroups[#mdlBgroups]:SetPos( -200, fromTop )
-                fromTop = fromTop + 40
-                mdlBgroups[#mdlBgroups]:SetMax(v['num'] - 1)
-
-                mdlBgroups[#mdlBgroups]:SetMin(0)
-                mdlBgroups[#mdlBgroups]:SetDecimals(0)
-                mdlBgroups[#mdlBgroups].OnValueChanged = function(self, value)
-                    mdl.Entity:SetAnimation(1)
-                    if v.name == 'Pants' or 'Torso' then value = value - 1 end
-                    mdl.Entity:SetBodygroup(v['id'], value )
-                end
-            
-            end
-
-            local getSkins2 = mdl.Entity:SkinCount()
-            mdlSkin2:SetMax( getSkins2 )
-
-
-        end
-    
     end
 
     local crtBut = charFr:Add 'DButton'
@@ -314,26 +399,27 @@ function library.charMenu()
     crtBut:SetSize( 100, 26 )
     crtBut:AlignBottom( 5 )	crtBut:AlignLeft( 5 )
     crtBut.DoClick = function( ply )
-
         if namName:GetValue() == '' then polychat.polyMsg( 1, 'Укажите имя персонажа!' ) return end
 
-        local bGrps = {}
-        for k,v in pairs (mdlBgroups) do
-            table.insert(bGrps,math.floor(v:GetValue()))
-        end                            
-        netstream.Start( 'polychars.Create', namName:GetValue(), namDesc:GetValue(), mdl.Entity:GetModelScale(), mdl.Entity:GetModel(), math.floor(mdlSkin2:GetValue()), bGrps )
+        local bgs = {}
+        for k, v in pairs( modelPreview.Entity:GetBodyGroups() ) do                    
+            table.insert( bgs, modelPreview.Entity:GetBodygroup( k ) )
+        end
+                  
+        netstream.Start( 'polychars.Create', namName:GetValue(), namDesc:GetValue(), modelPreview.Entity:GetModelScale(), modelPreview.Entity:GetModel(), tSkin, bgs )
         timer.Simple( 0.3, function()
             netstream.Start 'polychars.Open'
         end)
         charFr:Remove()
     end
 
-    function mdl:LayoutEntity( ent )
+    function modelPreview:LayoutEntity( ent )
         ent:SetSequence( ent:LookupSequence( 'pose_standing_01' ) )
-        mdl:RunAnimation()
+        modelPreview:RunAnimation()
     end
 
 end
 
+-- library.charMenu()
+-- netstream.Start 'polychars.Open'
 netstream.Hook( 'polychars.open', library.openMenu )
-

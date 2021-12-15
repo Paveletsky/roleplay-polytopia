@@ -155,6 +155,7 @@ hook.Add( 'Think', 'men', function()
         local headpos = mdl.Entity:GetBonePosition(mdl.Entity:LookupBone("ValveBiped.Bip01_Spine"))
         mdl:SetCamPos( Vector( 50, 0, 80 ) )
         mdl:SetLookAt(headpos - Vector( 0, -2, -15 ))
+        mdl.Entity:SetSkin( LocalPlayer():GetSkin() )
 
         local i = 0
         for k, v in pairs( chInfo[1].bg ) do
