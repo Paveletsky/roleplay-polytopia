@@ -422,4 +422,5 @@ end
 
 -- library.charMenu()
 -- netstream.Start 'polychars.Open'
+
 netstream.Hook( 'polychars.open', library.openMenu )
