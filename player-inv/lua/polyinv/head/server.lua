@@ -29,6 +29,10 @@ function PL:openCustomItemsMenu()
     netstream.Start( self, 'polyinv.openCustoms', polyinv.List, self:CurrentCharInventory() )
 end
 
+function PL:InvEdit()
+    netstream.Start( self, 'polyinv.openCustoms', polyinv.List, self:CurrentCharInventory() )
+end
+
 netstream.Hook( 'polyinv.give', function( ply, id )
     if !ply:IsSuperAdmin() then ply:ChatPrint( 'Что, решил побаловаться?' ) return end
     ply:GiveItem( id ) 
@@ -62,6 +66,10 @@ end)
 netstream.Hook( 'polyinv.sv-noteOpen', polyinv.notesOpen )
 
 netstream.Hook( 'polyinv.sv-customOpen', function( ply ) 
+    ply:openCustomItemsMenu()
+end)
+
+netstream.Hook( 'polyinv.edit', function( ply ) 
     ply:openCustomItemsMenu()
 end)
 
