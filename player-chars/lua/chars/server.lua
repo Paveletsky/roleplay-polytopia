@@ -20,7 +20,6 @@ hook.Add( 'Think', 'init-lib', function()
         netstream.Start( self, 'polychars.open', _, val )
     end
 
-
     function PL:getCharacters()
         local val = sql.Query("SELECT chars FROM polytopia_characters WHERE steamid = " .. SQLStr( self:SteamID() ) )
         return val

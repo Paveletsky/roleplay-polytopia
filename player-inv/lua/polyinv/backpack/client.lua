@@ -157,10 +157,8 @@ hook.Add( 'Think', 'men', function()
         mdl:SetLookAt(headpos - Vector( 0, -2, -15 ))
         mdl.Entity:SetSkin( LocalPlayer():GetSkin() )
 
-        local i = 0
         for k, v in pairs( chInfo[1].bg ) do
-            mdl.Entity:SetBodygroup( i, v )
-            i = i + 1
+            mdl.Entity:SetBodygroup( k, v )
         end
 
         local i = 0

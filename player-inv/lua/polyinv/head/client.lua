@@ -4,8 +4,6 @@ local ply = LocalPlayer()
 
 function polyinv.openCustoms( itemList, charInv )
 
-    PrintTable( itemList )
-
     if mn then mn:Remove() end
     mn = vgui.Create 'DFrame'
     mn:SetSize( 700, 500 )
@@ -114,5 +112,55 @@ function polyinv.openCustoms( itemList, charInv )
 
 end
 
-netstream.Start 'polyinv.sv-customOpen'
+function polyinv.edit( plInv, itemList )
+
+    if inp then inp:Remove() end
+	inp = vgui.Create("DFrame")
+	inp:SetSize( 500, 75 )
+	inp:MakePopup()
+	inp:Center()
+	inp:SetTitle( 'Редактор игрока' )
+	inp:SetKeyBoardInputEnabled( true )
+	
+	local inpEn = inp:Add 'DTextEntry'
+	inpEn:SetEditable( true )
+	inpEn:Dock( TOP )
+
+	local inpBut = inp:Add 'DButton'
+	inpBut:Dock( TOP )
+	inpBut:SetText( 'Открыть профиль' )
+	inpBut.DoClick = function( self )
+
+		-- netstream.Start( 'polyshop.orderMdl', inpEn:GetValue() )
+		inp:Remove()
+
+	end
+
+	inp.PaintOver = function(self, w, h)
+
+		local sendTxt = inpEn:GetText()
+		surface.SetDrawColor(54,255,54)
+		inpBut:SetDisabled( false )
+		inpBut:SetText( 'Отправить' )
+        
+		if not sendTxt:match("STEAM_") then
+			surface.SetDrawColor(255,54,54)
+			inpBut:SetDisabled( true )
+			inpBut:SetText( 'Некорректный SteamID' )
+		end
+
+		surface.DrawOutlinedRect(0,0,w,h)
+	
+	end
+    
+    function build()
+    
+    end
+
+end
+
+-- polyinv.edit()
+
+-- netstream.Start 'polyinv.sv-customOpen'
 netstream.Hook( 'polyinv.openCustoms', polyinv.openCustoms )
+netstream.Hook( 'polyinv.edit', polyinv.edit )
