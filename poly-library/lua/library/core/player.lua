@@ -59,5 +59,43 @@ hook.Add( 'Think', 'init-player', function()
     
 end)
 
+local allowed = {
+    ['STEAM_0:0:30588797'] = true,
+    ['STEAM_0:1:116256417'] = true,
+    ['STEAM_0:0:72860823'] = true,
+    ['STEAM_0:1:458158516'] = true,
+}
 
+local cache = {}
+
+gameevent.Listen( "player_connect" )
+hook.Add("player_connect", "access_whitelist1", function( data, steamID64 )
+    for k, v in pairs( data ) do
+        if not cache[data.networkid] then game.KickID( data.networkid, 
+[[ ИНФОРМАЦИЯ ДЛЯ НОВЕНЬКИХ!
+
+Сервер нацелен на серьезную игру ЧЕЛОВЕКА, и если ты относишься тем, кто любит веселиться и убивать - проходи мимо. 
+
+Если хочешь приобщиться к настоящей серьезной ролевой игре - милости просим, просто закрой табличку и перезайди]] 
+        ) end
+        cache[data.networkid] = true
+    end
+    
+    PrintTable( cache )
+
+end)
+
+    -- local allowed = {
+    --     ['STEAM_0:0:30588797'] = true,
+    --     ['STEAM_0:1:116256417'] = true,
+    --     ['STEAM_0:0:72860823'] = true,
+    --     ['STEAM_0:1:458158516'] = true,
+    -- }
+
+    -- gameevent.Listen( "player_connect" )
+    -- hook.Add("player_connect", "access_whitelist1", function( data, steamID64 )
+    --     for k, v in pairs( data ) do
+    --         if not allowed[data.networkid] then game.KickID( data.networkid, "Тебя нет в вайтлисте. Наш проект - https://discord.gg/7vES6nzqYC" ) end
+    --     end
+    -- end)
 -- PrintTable( Entity(1).getJobTable() )
