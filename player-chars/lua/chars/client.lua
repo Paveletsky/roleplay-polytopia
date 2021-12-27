@@ -292,7 +292,7 @@ function library.charMenu()
     local pnl = mpnl:Add 'DPanel'
     pnl:Dock( TOP )
     pnl:SetTall( 40 )
-    pnl:DockMargin( 150, 10, 150, 50 )
+    pnl:DockMargin( 10, 10, 10, 50 )
     -- pnl:Remove()
     pnl.Paint = function(self)
         draw.SimpleText( 'Типаж', 'lib.notify', pnl:GetSize() / 2, 6, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP )
@@ -301,7 +301,7 @@ function library.charMenu()
     local pnl2 = mpnl:Add 'DPanel'
     pnl2:Dock( TOP )
     pnl2:SetTall( 40 )
-    pnl2:DockMargin( 150, -50, 150, 50 )
+    pnl2:DockMargin( 10, -50, 10, 50 )
     -- pnl:Remove()
     pnl2.Paint = function(self)
         draw.SimpleText( 'Лицо', 'lib.notify', pnl:GetSize() / 2, 6, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP )
@@ -420,7 +420,7 @@ function library.charMenu()
 
 end
 
--- library.charMenu()
-netstream.Start 'polychars.Open'
+library.charMenu()
+-- netstream.Start 'polychars.Open'
 
 netstream.Hook( 'polychars.open', library.openMenu )
